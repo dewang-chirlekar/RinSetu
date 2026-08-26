@@ -1,0 +1,28 @@
+{
+  "_README": {
+    "warning": "EVERY VALUE IN THIS FILE IS SIMULATED. Per-partner NPA and fund-utilisation figures are internal MIS data and are not published. Nothing here describes any real institution.",
+    "why_it_exists": "The routing feature needs a health signal to rank capable partners. Rather than omit the feature or pretend the data is real, we define the schema, ship an admin upload path that consumes it, and seed it with labelled simulated values.",
+    "production_path": "Replace via the admin CSV/XLSX upload at /admin/health-upload. The expected columns are exactly the keys of each row below. A real load sets data_origin to MIS_UPLOAD; that is the only way a row can lose the SIMULATED label.",
+    "ui_contract": "PartnerHealth.data_origin is non-nullable. Every component that reads a health figure reads data_origin alongside it and renders the origin chip. tests/health.labelling.test.ts asserts no row can exist without an origin."
+  },
+
+  "as_of": "2026-08-01",
+
+  "rows": [
+    { "partner_code": "SCA_MH_PUNE_001",      "funds_sanctioned": 120000000, "funds_utilised": 78000000,  "overdue_amount": 4200000, "npa_pct": 3.1,  "avg_processing_days": 21, "capacity_flag": "OPEN",       "data_origin": "SIMULATED" },
+    { "partner_code": "SCA_MH_NAGPUR_002",    "funds_sanctioned": 60000000,  "funds_utilised": 51000000,  "overdue_amount": 5400000, "npa_pct": 7.8,  "avg_processing_days": 34, "capacity_flag": "CONSTRAINED","data_origin": "SIMULATED" },
+    { "partner_code": "PSB_MH_NASHIK_003",    "funds_sanctioned": 95000000,  "funds_utilised": 41000000,  "overdue_amount": 1900000, "npa_pct": 2.2,  "avg_processing_days": 17, "capacity_flag": "OPEN",       "data_origin": "SIMULATED" },
+    { "partner_code": "RRB_MH_SOLAPUR_004",   "funds_sanctioned": 38000000,  "funds_utilised": 36500000,  "overdue_amount": 3100000, "npa_pct": 9.4,  "avg_processing_days": 45, "capacity_flag": "CONSTRAINED","data_origin": "SIMULATED" },
+    { "partner_code": "MFI_MH_PUNE_005",      "funds_sanctioned": 22000000,  "funds_utilised": 9000000,   "overdue_amount": 450000,  "npa_pct": 1.4,  "avg_processing_days": 9,  "capacity_flag": "OPEN",       "data_origin": "SIMULATED" },
+    { "partner_code": "MFI_MH_MUMBAI_006",    "funds_sanctioned": 31000000,  "funds_utilised": 19000000,  "overdue_amount": 1250000, "npa_pct": 4.6,  "avg_processing_days": 12, "capacity_flag": "OPEN",       "data_origin": "SIMULATED" },
+    { "partner_code": "SCA_KA_BENGALURU_007", "funds_sanctioned": 140000000, "funds_utilised": 62000000,  "overdue_amount": 3300000, "npa_pct": 2.6,  "avg_processing_days": 19, "capacity_flag": "OPEN",       "data_origin": "SIMULATED" },
+    { "partner_code": "PSB_KA_BENGALURU_008", "funds_sanctioned": 88000000,  "funds_utilised": 70000000,  "overdue_amount": 2100000, "npa_pct": 3.4,  "avg_processing_days": 26, "capacity_flag": "OPEN",       "data_origin": "SIMULATED" },
+    { "partner_code": "MFI_KA_HUBBALLI_009",  "funds_sanctioned": 14000000,  "funds_utilised": 12800000,  "overdue_amount": 980000,  "npa_pct": 8.1,  "avg_processing_days": 15, "capacity_flag": "CONSTRAINED","data_origin": "SIMULATED" },
+    { "partner_code": "SCA_UP_LUCKNOW_010",   "funds_sanctioned": 110000000, "funds_utilised": 44000000,  "overdue_amount": 6800000, "npa_pct": 6.2,  "avg_processing_days": 38, "capacity_flag": "OPEN",       "data_origin": "SIMULATED" },
+    { "partner_code": "RRB_UP_VARANASI_011",  "funds_sanctioned": 27000000,  "funds_utilised": 15000000,  "overdue_amount": 1400000, "npa_pct": 5.1,  "avg_processing_days": 29, "capacity_flag": "OPEN",       "data_origin": "SIMULATED" },
+    { "partner_code": "SCA_TN_CHENNAI_012",   "funds_sanctioned": 130000000, "funds_utilised": 58000000,  "overdue_amount": 2600000, "npa_pct": 1.9,  "avg_processing_days": 14, "capacity_flag": "OPEN",       "data_origin": "SIMULATED" },
+    { "partner_code": "MFI_TN_MADURAI_013",   "funds_sanctioned": 18000000,  "funds_utilised": 7500000,   "overdue_amount": 320000,  "npa_pct": 1.1,  "avg_processing_days": 8,  "capacity_flag": "OPEN",       "data_origin": "SIMULATED" },
+    { "partner_code": "PSB_MP_BHOPAL_014",    "funds_sanctioned": 76000000,  "funds_utilised": 39000000,  "overdue_amount": 2900000, "npa_pct": 4.1,  "avg_processing_days": 23, "capacity_flag": "OPEN",       "data_origin": "SIMULATED" },
+    { "partner_code": "SCA_RJ_JAIPUR_015",    "funds_sanctioned": 84000000,  "funds_utilised": 79000000,  "overdue_amount": 7600000, "npa_pct": 10.8, "avg_processing_days": 52, "capacity_flag": "CLOSED",     "data_origin": "SIMULATED" }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "_README": {
+    "what_this_is": "The partner-health composite score's weights and normalisation bounds. These are OUR DESIGN DECISION, not a scheme parameter and not a transcribed figure — so they are labelled 'design_decision' rather than left null. They are in a data file, and exported to the UI, because ROADMAP §7 requires the score to be transparent and defensible rather than clever.",
+    "deliberately_not_a_model": "There is no training data for partner performance, so a learned score would be unexplainable and strictly worse than four weights we can justify on stage. Do not replace this with a model.",
+    "formula": "health = w_fund_availability·fund_availability_norm + w_npa·(1 − npa_norm) + w_overdue·(1 − overdue_norm) + w_speed·speed_norm",
+    "invariant": "The four weights must sum to exactly 1. tests/health.weights.test.ts asserts this.",
+    "note_on_bounds": "Normalisation bounds turn raw figures into 0..1. They are judgement calls about what 'bad' looks like, and changing them changes the ranking — which is exactly why they live here in the open and not inside the scoring function."
+  },
+
+  "weights": {
+    "fund_availability": 0.35,
+    "npa": 0.25,
+    "overdue": 0.20,
+    "speed": 0.20
+  },
+
+  "weight_rationale_keys": {
+    "fund_availability": "health.weight.fund_availability.rationale",
+    "npa": "health.weight.npa.rationale",
+    "overdue": "health.weight.overdue.rationale",
+    "speed": "health.weight.speed.rationale"
+  },
+
+  "normalisation": {
+    "npa_pct_worst": 12.0,
+    "overdue_ratio_worst": 0.15,
+    "processing_days_best": 7,
+    "processing_days_worst": 60
+  },
+
+  "capacity_multipliers": {
+    "OPEN": 1.0,
+    "CONSTRAINED": 0.85,
+    "CLOSED": 0.0
+  },
+
+  "capacity_note": "CLOSED multiplies the composite to zero rather than hard-filtering the partner out, so the UI can still show the partner with an explanation instead of silently dropping it. Hard filters are reserved for capability, ticket range and jurisdiction — see src/core/partners/match.ts.",
+
+  "source": "design_decision",
+  "source_date": "2026-08-26",
+  "verified": true,
+  "verified_note": "verified:true here means 'this is genuinely our stated design decision', not 'this came from a guideline'. It is the only file in data/ where that distinction applies."
+}

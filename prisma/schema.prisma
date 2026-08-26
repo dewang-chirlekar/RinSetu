@@ -1,0 +1,398 @@
+// prisma/schema.prisma
+//
+// RinSetu's persistence layer. The shape here deliberately mirrors src/core/types.ts
+// rather than inventing a second vocabulary, because the engine is the customer:
+// prisma/seed.ts writes what data/*.json holds, and a future loader reads rows back
+// into the same SchemeSpec / Partner / PartnerHealthRecord that src/lib/dataset.ts
+// produces today. Nothing in src/core/ imports Prisma — the boundary check would
+// fail — so the database is an input to the engine, never a participant in it.
+//
+// Three rules govern every column below.
+//
+//   1. Nullable means unknown, and unknown must survive the round trip. Every scheme
+//      figure we have not sourced is null in the seed, and it is null here too. A
+//      NOT NULL DEFAULT 0 on max_unit_cost would turn "we do not know the ceiling"
+//      into "the ceiling is nothing", which is the exact failure this project is
+//      built to prevent (CLAUDE.md hard rule 1).
+//
+//   2. `verified` is not a column. It is derived from the provenance source by
+//      isCitable(), and deriving it is what makes it impossible to forge. If a
+//      boolean lived here, someone would eventually set it by hand — probably the
+//      night before the demo — and every caveat in the UI would silently vanish.
+//      The same reasoning keeps figures_authoritative out of the schema.
+//
+//   3. Money is stored in whole rupees as Int, matching the integers the core's
+//      rounding policy produces (src/core/finance/rounding.ts). Percentages and
+//      rates are Float because they are dimensionless multipliers the core already
+//      handles as floats; no rupee amount is ever stored as a float.
+//
+// Migrations are not generated yet: DATABASE_URL points at nothing until the
+// Supabase project exists. `npm run seed` writes through this schema and is the
+// first thing to run after `prisma migrate dev`.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Prisma 7 no longer accepts `url` here. The connection string for `prisma
+// migrate` lives in prisma.config.ts, and the runtime client takes a driver
+// adapter built from the same env var. One place, read twice.
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------------------------------------------------------------------------
+// Enums — the same closed sets as the `as const` arrays in src/core/types.ts.
+// Keeping them as database enums means a bad value fails at write time rather
+// than surfacing as an unhandled branch in a switch three layers up.
+// ---------------------------------------------------------------------------
+
+enum SchemeType {
+  MICRO
+  TERM
+  EDUCATION
+}
+
+enum SubsidyTiming {
+  FRONT
+  BACK
+}
+
+/// The known trap. CAPITALISED / SERVICED / WAIVED produce materially different
+/// EMIs from identical inputs, so this is never defaulted — a scheme whose
+/// guideline we have not read stores null and the engine refuses to price it.
+enum MoratoriumTreatment {
+  CAPITALISED
+  SERVICED
+  WAIVED
+}
+
+enum PartnerType {
+  SCA
+  PSB
+  RRB
+  NBFC_MFI
+}
+
+enum CapacityFlag {
+  OPEN
+  CONSTRAINED
+  CLOSED
+}
+
+/// Non-nullable wherever it appears. A health figure with no stated origin is
+/// worse than no health figure, because the UI would render it as fact.
+enum DataOrigin {
+  MIS_UPLOAD
+  SIMULATED
+}
+
+enum ProvenanceSource {
+  official_guideline
+  ps_text
+  placeholder
+  demo_overlay
+  design_decision
+  common_practice
+  fabricated
+  open_data
+}
+
+/// Deliberately short. These are the states the application itself can observe;
+/// what a bank does with a file after we hand it over is not ours to model, and
+/// inventing PENDING_SANCTION / DISBURSED would imply an integration we do not
+/// have.
+enum ApplicationStatus {
+  DRAFT
+  PACKET_GENERATED
+}
+
+// ---------------------------------------------------------------------------
+// Schemes
+// ---------------------------------------------------------------------------
+
+model Scheme {
+  code            String     @id
+  type            SchemeType
+  /// { "en": "...", "hi": "..." } — the same map SchemeSpec.name_i18n carries.
+  nameI18n        Json       @map("name_i18n")
+  descriptionKey  String     @map("description_key")
+
+  // Money ceilings and floors, in whole rupees. All nullable: see rule 1 above.
+  maxUnitCost     Int?       @map("max_unit_cost")
+  maxLoan         Int?       @map("max_loan")
+  minLoan         Int?       @map("min_loan")
+  minProjectCost  Int?       @map("min_project_cost")
+
+  // Fractions in 0..1, not percentages — loanPctCap 0.9 means ninety percent.
+  loanPctCap      Float?     @map("loan_pct_cap")
+  marginPct       Float?     @map("margin_pct")
+  subsidyPct      Float?     @map("subsidy_pct")
+  /// Rupee ceiling on the subsidy, applied after subsidyPct.
+  subsidyCap      Int?       @map("subsidy_cap")
+  /// FRONT reduces the loan and therefore the EMI; BACK is adjusted at closure
+  /// and leaves the EMI unchanged. Not interchangeable.
+  subsidyTiming   SubsidyTiming? @map("subsidy_timing")
+
+  moratoriumMonthsMin     Int?  @map("moratorium_months_min")
+  moratoriumMonthsMax     Int?  @map("moratorium_months_max")
+  /// Form pre-fill only, never a scheme rule. The applicant picks within the range.
+  moratoriumMonthsDefault Int?  @map("moratorium_months_default")
+  moratoriumTreatment     MoratoriumTreatment? @map("moratorium_interest_treatment")
+
+  tenureMonthsMax Int?       @map("tenure_months_max")
+  /// Tri-state on purpose. The two readings of "maximum tenure" differ by up to a
+  /// year of instalments, so null blocks the computation rather than guessing.
+  tenureIncludesMoratorium Boolean? @map("tenure_includes_moratorium")
+
+  /// Purpose codes, never free text. An applicant's purpose must appear here.
+  eligiblePurposes    String[]      @map("eligible_purposes")
+  allowedPartnerTypes PartnerType[] @map("allowed_partner_types")
+  /// PredicateCode values. The engine evaluates exactly these, in order.
+  predicates          String[]
+
+  /// FieldProvenance per field name, e.g. { "margin_pct": { "source": "placeholder" } }.
+  /// A Json column rather than a provenance table: the map is always read whole,
+  /// alongside its scheme, and never queried field-by-field.
+  provenance      Json
+  /// Null until someone finds the published guideline. The seed's literal "TODO"
+  /// is normalised to null on the way in — a string that looks like a citation
+  /// but is not one is worse than an empty column.
+  sourceUrl       String?    @map("source_url")
+  sourceDate      String?    @map("source_date")
+
+  interestRules   InterestRule[]
+  costCeilingRules CostCeilingRule[]
+  documentReqs    DocumentReq[]
+  applications    Application[]
+
+  createdAt       DateTime   @default(now()) @map("created_at")
+  updatedAt       DateTime   @updatedAt @map("updated_at")
+
+  @@map("schemes")
+}
+
+/// A banded rate card. Rows are conditions, not a formula: the resolver in
+/// src/core/finance/rules.ts picks the most specific matching row and reports
+/// `matched: false` when none matches, which is not the same as a zero rate.
+model InterestRule {
+  id            Int        @id @default(autoincrement())
+  scheme        Scheme     @relation(fields: [schemeCode], references: [code], onDelete: Cascade)
+  schemeCode    String     @map("scheme_code")
+
+  // The applies_when conditions. All nullable — a null condition is not stated,
+  // and an unstated condition matches anything. Specificity is the count of
+  // conditions a row states, so nulls are load-bearing rather than filler.
+  loanBandMin   Int?       @map("loan_band_min")
+  loanBandMax   Int?       @map("loan_band_max")
+  purpose       String?
+  gender        String?
+
+  annualRatePct Float?     @map("annual_rate_pct")
+
+  provenance    Json
+  /// Ties on specificity resolve to the lowest ordinal, so file order is data.
+  ordinal       Int
+
+  @@index([schemeCode])
+  @@map("interest_rules")
+}
+
+/// Purpose-specific overrides of the scheme's ceilings. A row overrides only the
+/// fields it states, so a rule with maxLoan set and maxUnitCost null leaves the
+/// unit cost alone.
+model CostCeilingRule {
+  id           Int      @id @default(autoincrement())
+  scheme       Scheme   @relation(fields: [schemeCode], references: [code], onDelete: Cascade)
+  schemeCode   String   @map("scheme_code")
+
+  purpose      String?
+  maxUnitCost  Int?     @map("max_unit_cost")
+  maxLoan      Int?     @map("max_loan")
+
+  provenance   Json
+  ordinal      Int
+
+  @@index([schemeCode])
+  @@map("cost_ceiling_rules")
+}
+
+/// Global rules that apply across every scheme — the income ceiling, the reserved
+/// category, the age window. One row, held as a table rather than constants so it
+/// carries provenance like everything else. `id` is pinned to 1 by the seed.
+model GlobalEligibility {
+  id                    Int      @id @default(1)
+  annualFamilyIncomeCap Int?     @map("annual_family_income_cap")
+  categoryRequirement   String?  @map("category_requirement")
+  ageMin                Int?     @map("age_min")
+  ageMax                Int?     @map("age_max")
+  provenance            Json
+  updatedAt             DateTime @updatedAt @map("updated_at")
+
+  @@map("global_eligibility")
+}
+
+// ---------------------------------------------------------------------------
+// Channel partners
+// ---------------------------------------------------------------------------
+
+model Partner {
+  code       String      @id
+  name       String
+  type       PartnerType
+  state      String
+  district   String
+  address    String
+
+  /// Geocoded once by a seed script and committed. Never resolved at request
+  /// time (CLAUDE.md hard rule 9), which is why these are NOT NULL: a partner
+  /// with no coordinates cannot be routed to and does not belong in the registry.
+  lat        Float
+  lng        Float
+
+  contactPhone String?   @map("contact_phone")
+  contactEmail String?   @map("contact_email")
+
+  /// Hard filter. A partner that does not handle a scheme type must never appear
+  /// for it at any distance (CLAUDE.md hard rule 6).
+  handlesSchemeTypes SchemeType[] @map("handles_scheme_types")
+  /// Ticket range in rupees. Null means unstated, which the filter treats as
+  /// no bound — distinct from a bound of zero.
+  minTicket  Int?        @map("min_ticket")
+  maxTicket  Int?        @map("max_ticket")
+
+  languages          String[]
+  jurisdictionStates String[]    @map("jurisdiction_states")
+
+  /// One FieldProvenance for the whole row: every partner currently in the
+  /// registry is `fabricated`, and it is the row, not a field, that is invented.
+  provenanceSource ProvenanceSource @map("provenance_source")
+  provenanceNote   String?          @map("provenance_note")
+
+  health       PartnerHealth[]
+  applications Application[]
+
+  createdAt  DateTime    @default(now()) @map("created_at")
+  updatedAt  DateTime    @updatedAt @map("updated_at")
+
+  @@index([state, district])
+  @@map("partners")
+}
+
+/// One row per partner per reporting date, so uploads accumulate instead of
+/// overwriting. The scorer reads the latest row per partner; keeping history is
+/// what makes "this partner's NPA doubled since March" answerable later.
+model PartnerHealth {
+  id                Int          @id @default(autoincrement())
+  partner           Partner      @relation(fields: [partnerCode], references: [code], onDelete: Cascade)
+  partnerCode       String       @map("partner_code")
+  /// Reporting date of the MIS extract, as an ISO date string. Rendered next to
+  /// every score, because a six-month-old figure is a different claim.
+  asOf              String       @map("as_of")
+
+  fundsSanctioned   Int          @map("funds_sanctioned")
+  fundsUtilised     Int          @map("funds_utilised")
+  overdueAmount     Int          @map("overdue_amount")
+  npaPct            Float        @map("npa_pct")
+  avgProcessingDays Float        @map("avg_processing_days")
+  capacityFlag      CapacityFlag @map("capacity_flag")
+
+  /// No default and no null. Every screen that renders a health figure reads
+  /// this in the same query and labels the figure accordingly (invariant 2).
+  dataOrigin        DataOrigin   @map("data_origin")
+
+  /// Set by the admin upload; null for the simulated rows.
+  uploadedBy        String?      @map("uploaded_by")
+  createdAt         DateTime     @default(now()) @map("created_at")
+
+  @@unique([partnerCode, asOf])
+  @@index([partnerCode])
+  @@map("partner_health")
+}
+
+// ---------------------------------------------------------------------------
+// Documents
+// ---------------------------------------------------------------------------
+
+/// The document catalogue. Names and where-to-obtain text are message keys, not
+/// sentences (CLAUDE.md hard rule 3), so a Hindi checklist needs no new rows.
+model DocumentDef {
+  code             String           @id
+  nameKey          String           @map("name_key")
+  whereToObtainKey String           @map("where_to_obtain_key")
+  provenanceSource ProvenanceSource @map("provenance_source")
+  provenanceNote   String?          @map("provenance_note")
+
+  requirements     DocumentReq[]
+
+  @@map("document_defs")
+}
+
+/// Which documents a scheme needs, optionally narrowed to the class of partner
+/// processing the file. partnerType '*' is stored as null: a requirement that
+/// holds for every partner class is the absence of a narrowing condition, not a
+/// magic value.
+///
+/// The unique constraint below is a guard against accidental duplicates for the
+/// partner-specific rows only. Postgres treats two NULLs as distinct, so it does
+/// not constrain the '*' rows at all — which is why prisma/seed.ts replaces this
+/// table wholesale instead of upserting into it.
+model DocumentReq {
+  id          Int          @id @default(autoincrement())
+  scheme      Scheme       @relation(fields: [schemeCode], references: [code], onDelete: Cascade)
+  schemeCode  String       @map("scheme_code")
+  document    DocumentDef  @relation(fields: [docCode], references: [code], onDelete: Cascade)
+  docCode     String       @map("doc_code")
+  partnerType PartnerType? @map("partner_type")
+  mandatory   Boolean      @default(true)
+  notesKey    String?      @map("notes_key")
+
+  @@unique([schemeCode, docCode, partnerType])
+  @@index([schemeCode])
+  @@map("document_reqs")
+}
+
+// ---------------------------------------------------------------------------
+// Applications
+// ---------------------------------------------------------------------------
+
+/// A saved intake plus the result the engine produced for it.
+///
+/// `result` stores the whole RecommendationResult as written, including the
+/// failing verdicts and the provenance of every figure. That is the point: an
+/// application reopened in six months must show the numbers it was actually
+/// given, computed against the parameters in force that day, not silently
+/// re-priced against whatever the scheme master says by then. The engine stays
+/// the source of truth for new computations; this column is the receipt.
+model Application {
+  id            String            @id @default(uuid())
+  status        ApplicationStatus @default(DRAFT)
+
+  /// The Zod-validated ApplicantProfile as submitted.
+  applicant     Json
+
+  /// The recommended scheme, if the engine found one. Null is a real outcome —
+  /// "no scheme fits, here is why" is a supported result, not a failed save.
+  scheme        Scheme?           @relation(fields: [schemeCode], references: [code])
+  schemeCode    String?           @map("scheme_code")
+  /// The partner the applicant chose, once they choose one.
+  partner       Partner?          @relation(fields: [partnerCode], references: [code])
+  partnerCode   String?           @map("partner_code")
+
+  result        Json
+  /// Copied out of the result so a stale packet can be spotted without parsing
+  /// the whole blob. False for every application generated today.
+  figuresAuthoritative Boolean    @map("figures_authoritative")
+  /// The dataset label in force at computation time, e.g. 'seed + DEMO OVERLAY'.
+  datasetLabel  String            @map("dataset_label")
+
+  /// The applicant's own language, so a regenerated packet comes back in it.
+  language      String            @default("en")
+
+  createdAt     DateTime          @default(now()) @map("created_at")
+  updatedAt     DateTime          @updatedAt @map("updated_at")
+
+  @@index([schemeCode])
+  @@index([partnerCode])
+  @@map("applications")
+}

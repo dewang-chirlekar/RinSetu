@@ -1,0 +1,372 @@
+{
+  "_README": "Every user-facing string in RinSetu. src/core/ emits keys from this file and never an English sentence (CLAUDE.md hard rule 3). Placeholders are {braced} and substituted by t() in src/messages/index.ts. Phase 7 replaces that helper with next-intl and adds hi.json, mr.json and ta.json alongside this file — the keys do not change.",
+
+  "dataset": {
+    "label": {
+      "seed_only": "Scheme master (seed only)",
+      "seed_plus_demo_overlay": "Scheme master + DEMO OVERLAY"
+    },
+    "note": {
+      "demo_overlay_applied": "Some figures below come from a demo overlay so the calculator can run. They are placeholders with no official basis and must not be quoted.",
+      "unverified_figures_present": "One or more figures below have not yet been verified against a published guideline."
+    },
+    "banner": {
+      "not_authoritative": "Illustrative figures — not an offer",
+      "not_authoritative_detail": "This build is running on placeholder scheme parameters. Eligibility logic is real; the rupee amounts are not. Confirm every figure with the sanctioning authority before acting on it."
+    }
+  },
+
+  "provenance": {
+    "official_guideline": "From the published scheme guideline",
+    "ps_text": "Stated in the problem statement — not yet confirmed against a guideline",
+    "placeholder": "Placeholder — no source yet",
+    "demo_overlay": "Demo overlay — an arbitrary value so the calculator can run",
+    "design_decision": "Our stated design decision, not a scheme rule",
+    "common_practice": "General administrative practice — varies by state",
+    "fabricated": "Invented for development",
+    "open_data": "Open data (OpenStreetMap)",
+    "unverified_marker": "unverified",
+    "unverified_tooltip": "This figure has not been checked against a published guideline. Treat it as illustrative."
+  },
+
+  "status": {
+    "ELIGIBLE": "Eligible",
+    "NOT_ELIGIBLE": "Not eligible",
+    "INDETERMINATE": "Need one more answer",
+    "ELIGIBLE_detail": "You meet every condition we can check for this scheme.",
+    "NOT_ELIGIBLE_detail": "At least one condition is not met. The reasons are listed below.",
+    "INDETERMINATE_detail": "We could not decide. Something we need is missing — this is not a rejection."
+  },
+
+  "predicate": {
+    "INCOME_WITHIN_CAP": {
+      "label": "Annual family income",
+      "pass": "Annual family income of {actual} is within the ceiling of {required}.",
+      "fail": "Annual family income of {actual} is above the ceiling of {required}.",
+      "unknown": "We could not check the income ceiling."
+    },
+    "CATEGORY_SC": {
+      "label": "Social category",
+      "pass": "Recorded category is {actual}, which this scheme is reserved for.",
+      "fail": "This scheme is reserved for {required} applicants. The recorded category is {actual}.",
+      "unknown": "The social category has not been recorded yet."
+    },
+    "CASTE_CERT_AVAILABLE": {
+      "label": "Caste certificate",
+      "pass": "Caste certificate is available.",
+      "fail": "A caste certificate is needed and has not been listed as available.",
+      "unknown": "We could not check whether a caste certificate is available."
+    },
+    "INCOME_PROOF_AVAILABLE": {
+      "label": "Income certificate",
+      "pass": "Income certificate is available.",
+      "fail": "An income certificate is needed and has not been listed as available.",
+      "unknown": "We could not check whether an income certificate is available."
+    },
+    "AGE_WITHIN_RANGE": {
+      "label": "Age",
+      "pass": "Age {actual} is within the permitted range of {required}.",
+      "fail": "Age {actual} is outside the permitted range of {required}.",
+      "unknown": "We could not check the age range."
+    },
+    "PROJECT_COST_WITHIN_UNIT_COST": {
+      "label": "Project cost ceiling",
+      "pass": "Project cost of {actual} is within the ceiling of {required}.",
+      "fail": "Project cost of {actual} is above the ceiling of {required} for this scheme.",
+      "unknown": "We could not check the project cost ceiling."
+    },
+    "PROJECT_COST_ABOVE_MICRO_FLOOR": {
+      "label": "Minimum project cost",
+      "pass": "Project cost of {actual} is at or above the minimum of {required}.",
+      "fail": "Project cost of {actual} is below the minimum of {required} for this scheme. A smaller project may be financed under the micro scheme instead.",
+      "unknown": "We could not check the minimum project cost."
+    },
+    "PURPOSE_ELIGIBLE": {
+      "label": "Purpose of the loan",
+      "pass": "The stated purpose is covered by this scheme.",
+      "fail": "The stated purpose is not covered by this scheme.",
+      "unknown": "The purpose has not been chosen yet."
+    },
+    "ADMISSION_CONFIRMED": {
+      "label": "Confirmed admission",
+      "pass": "Admission is confirmed.",
+      "fail": "This scheme needs a confirmed admission. Provisional or awaited results do not qualify yet.",
+      "unknown": "We have not been told whether admission is confirmed."
+    },
+    "COURSE_ELIGIBLE": {
+      "label": "Course",
+      "pass": "The course is covered by this scheme.",
+      "fail": "The course is not covered by this scheme.",
+      "unknown": "The course has not been chosen yet."
+    }
+  },
+
+  "remediation": {
+    "heading": "What would change this",
+    "provide_data": "We need {fields} before we can decide.",
+    "await_guideline": "We are waiting on the published figure for {fields}. Nothing you can do — this is a gap on our side, and we would rather say so than guess.",
+    "INCOME_WITHIN_CAP": {
+      "reduce": "Assessed annual family income would need to be {delta} lower, at or below {target}. If the recorded figure is wrong, a fresh income certificate is the way to correct it."
+    },
+    "CATEGORY_SC": {
+      "not_remediable": "This scheme is reserved by statute for Scheduled Caste applicants. There is no step that changes this. A corresponding corporation exists for other categories."
+    },
+    "CASTE_CERT_AVAILABLE": {
+      "obtain": "Obtain a caste certificate from the Tehsil or Taluka office, or through your state's e-district portal."
+    },
+    "INCOME_PROOF_AVAILABLE": {
+      "obtain": "Obtain an income certificate from the Tehsil or Taluka office, or through your state's e-district portal."
+    },
+    "AGE_WITHIN_RANGE": {
+      "too_young": "Eligible in {delta} year(s), at age {target}.",
+      "too_old": "Age is above the permitted range and there is no step that changes this."
+    },
+    "PROJECT_COST_WITHIN_UNIT_COST": {
+      "reduce": "Reduce the project cost by {delta}, to {target} or less. Alternatively, look at a scheme with a higher ceiling."
+    },
+    "PROJECT_COST_ABOVE_MICRO_FLOOR": {
+      "increase": "This scheme starts at {target}. A project of your size is normally financed under the micro scheme."
+    },
+    "PURPOSE_ELIGIBLE": {
+      "choose": "This scheme covers: {alternatives}."
+    },
+    "ADMISSION_CONFIRMED": {
+      "obtain": "Apply once you hold an unconditional admission letter."
+    },
+    "COURSE_ELIGIBLE": {
+      "choose": "This scheme covers: {alternatives}."
+    }
+  },
+
+  "field": {
+    "global": {
+      "annual_family_income_cap": "the income ceiling for these schemes",
+      "category_requirement": "the category this scheme is reserved for",
+      "age_min": "the minimum age",
+      "age_max": "the maximum age"
+    },
+    "scheme": {
+      "max_unit_cost": "the project cost ceiling",
+      "max_loan": "the maximum loan",
+      "min_loan": "the minimum loan",
+      "min_project_cost": "the minimum project cost",
+      "loan_pct_cap": "the maximum share of the project that can be financed",
+      "margin_pct": "the applicant's own contribution",
+      "subsidy_pct": "the subsidy percentage",
+      "subsidy_cap": "the subsidy ceiling",
+      "subsidy_timing": "whether the subsidy is applied upfront or at the end",
+      "moratorium_months_min": "the shortest moratorium",
+      "moratorium_months_max": "the longest moratorium",
+      "moratorium_interest_treatment": "how interest is treated during the moratorium",
+      "tenure_months_max": "the maximum repayment period",
+      "tenure_includes_moratorium": "whether the repayment period includes the moratorium",
+      "eligible_purposes": "the list of eligible purposes",
+      "interest_rules": "the interest rate",
+      "annual_rate_pct": "the interest rate"
+    },
+    "applicant": {
+      "age": "your age",
+      "annual_family_income": "your annual family income",
+      "category": "your social category",
+      "project_cost": "the project cost",
+      "purpose": "what the loan is for",
+      "state": "your state",
+      "education": {
+        "admission_confirmed": "whether your admission is confirmed"
+      }
+    },
+    "derived": {
+      "repayment_months_below_one": "a repayment period long enough to have at least one instalment"
+    }
+  },
+
+  "loan": {
+    "not_computable": "We cannot produce figures for this scheme yet",
+    "not_computable_detail": "The following scheme parameters have not been published in our data yet: {fields}. We will not substitute a guess, because a plausible wrong EMI is worse than no EMI.",
+    "project_cost": "Project cost",
+    "eligible_cost": "Cost considered",
+    "eligible_cost_help": "The project cost, limited to the scheme's ceiling.",
+    "subsidy": "Subsidy",
+    "subsidy_front": "applied upfront, reducing the loan",
+    "subsidy_back": "credited against the loan later",
+    "own_contribution": "Your contribution (margin)",
+    "gross_loan": "Loan before caps",
+    "loan": "Loan amount",
+    "annual_rate_pct": "Interest rate",
+    "emi": "Monthly instalment",
+    "moratorium_months": "Moratorium",
+    "repayment_months": "Repayment period",
+    "tenure_months_total": "Total term",
+    "total_interest": "Total interest",
+    "total_outflow": "Total you repay",
+    "months": "{count} months",
+    "per_month": "per month",
+    "binding_constraint": {
+      "heading": "What limited the loan",
+      "GROSS": "The loan is the project cost less your contribution and any upfront subsidy — no cap was reached.",
+      "MAX_LOAN": "Limited by the scheme's maximum loan of {value}.",
+      "LOAN_PCT_CAP": "Limited to {pct}% of the cost considered."
+    },
+    "below_min": "This works out below the scheme's own minimum loan of {value}, so it may not be sanctionable as it stands.",
+    "moratorium": {
+      "CAPITALISED": "Interest accrues during the moratorium and is added to the principal, so the instalment is higher than it would otherwise be.",
+      "SERVICED": "Interest is paid monthly during the moratorium; principal repayment starts afterwards.",
+      "WAIVED": "No interest during the moratorium.",
+      "clamped": "You asked for a {requested}-month moratorium; this scheme permits {min} to {max} months, so {applied} has been applied."
+    },
+    "schedule": {
+      "heading": "Repayment schedule",
+      "month": "Month",
+      "phase": "Phase",
+      "opening_balance": "Opening",
+      "payment": "Payment",
+      "interest": "Interest",
+      "principal": "Principal",
+      "closing_balance": "Closing",
+      "MORATORIUM": "Moratorium",
+      "REPAYMENT": "Repayment",
+      "final_instalment_note": "The last instalment is adjusted by a few rupees so the balance closes at zero."
+    }
+  },
+
+  "partner": {
+    "heading": "Where to apply",
+    "straight_line_distance": "{km} km away (straight line, not by road)",
+    "distance_unknown": "Distance unknown — no location shared",
+    "rank_by_distance": "Nearest",
+    "rank_by_health": "Moving fastest",
+    "none_eligible": "No channel partner in our registry can take this file",
+    "none_eligible_detail": "You may well qualify. The gap is on the lending side, and the reasons for each partner are listed below.",
+    "loan_exceeds_all_tickets": "This loan is larger than any partner in our registry currently writes.",
+    "type": {
+      "SCA": "State Channelizing Agency",
+      "PSB": "Public Sector Bank",
+      "RRB": "Regional Rural Bank",
+      "NBFC_MFI": "Micro Finance Institution"
+    },
+    "filter": {
+      "heading": "Why this partner is not listed",
+      "DOES_NOT_HANDLE_SCHEME_TYPE": "Does not handle this scheme category (handles {actual}).",
+      "PARTNER_TYPE_NOT_ALLOWED_BY_SCHEME": "This scheme is not routed through {actual}. It permits {required}.",
+      "LOAN_BELOW_MIN_TICKET": "Does not write loans below {required}; this one is {actual}.",
+      "LOAN_ABOVE_MAX_TICKET": "Does not write loans above {required}; this one is {actual}.",
+      "OUTSIDE_JURISDICTION": "Does not cover {actual}."
+    }
+  },
+
+  "health": {
+    "heading": "Partner throughput",
+    "score": "Throughput score",
+    "score_help": "A transparent weighted score, not a prediction. Each factor's contribution is shown so you can see exactly why one partner ranks above another.",
+    "as_of": "As of {date}",
+    "simulated_badge": "SIMULATED DATA",
+    "simulated_detail": "These throughput figures are simulated for development. They are not a real partner's performance and must not be read as one.",
+    "mis_upload_badge": "From MIS upload",
+    "factor": {
+      "fund_availability": "Funds still available",
+      "npa": "Asset quality",
+      "overdue": "Overdue book",
+      "speed": "Processing speed"
+    },
+    "weight": {
+      "fund_availability": {
+        "rationale": "Weighted highest because a partner with no funds left cannot sanction your loan at any speed."
+      },
+      "npa": {
+        "rationale": "A high non-performing share tends to make a partner cautious, which slows new sanctions."
+      },
+      "overdue": {
+        "rationale": "Overdue recovery competes for the same staff time as new applications."
+      },
+      "speed": {
+        "rationale": "Average days from application to sanction — the delay the problem statement is about."
+      }
+    },
+    "capacity": {
+      "OPEN": "Accepting applications",
+      "CONSTRAINED": "Accepting applications, with limited capacity",
+      "CLOSED": "Not accepting applications at present",
+      "multiplier_note": "A closed partner scores zero rather than being hidden, so you can see it exists and why it is unavailable."
+    }
+  },
+
+  "checklist": {
+    "heading": "Documents to carry",
+    "ready": "Your file looks complete for this partner.",
+    "not_ready": "{count} mandatory document(s) still to obtain.",
+    "mandatory": "Mandatory",
+    "optional": "If applicable",
+    "have": "Have",
+    "missing": "To obtain",
+    "where_to_obtain": "Where to get it",
+    "required_by": {
+      "SCHEME": "Required by the scheme",
+      "PARTNER_TYPE": "Additionally required by this partner",
+      "BOTH": "Required by the scheme and this partner"
+    }
+  },
+
+  "doc": {
+    "CASTE_CERT": { "name": "Caste certificate", "where": "Tehsil or Taluka office, or your state's e-district portal." },
+    "INCOME_CERT": { "name": "Income certificate", "where": "Tehsil or Taluka office, or your state's e-district portal." },
+    "AADHAAR": { "name": "Aadhaar", "where": "Aadhaar enrolment centre, or download from the UIDAI portal." },
+    "PAN": { "name": "PAN card", "where": "Apply online through the Income Tax Department's PAN service." },
+    "PHOTO": { "name": "Passport-size photographs", "where": "Any photo studio." },
+    "RESIDENCE_PROOF": { "name": "Proof of residence", "where": "Ration card, electricity bill, voter ID or a domicile certificate." },
+    "QUOTATION": { "name": "Quotation for equipment or stock", "where": "The supplier you intend to buy from, on their letterhead." },
+    "PROJECT_REPORT": { "name": "Project report", "where": "Prepared by you, or with help from the District Industries Centre." },
+    "BANK_STATEMENT": { "name": "Bank statement", "where": "Your bank branch or its net banking service." },
+    "ADMISSION_LETTER": { "name": "Admission letter", "where": "The institution's admissions office." },
+    "FEE_STRUCTURE": { "name": "Official fee structure", "where": "The institution's accounts or admissions office." },
+    "MARKSHEETS": { "name": "Marksheets", "where": "Your school, college or examination board." },
+    "BANK_PASSBOOK": { "name": "Bank passbook", "where": "Your bank branch." },
+    "GUARANTOR_FORM": { "name": "Guarantor form", "where": "The lending partner provides the form." },
+    "GROUP_REFERENCE": { "name": "Self-help group reference", "where": "Your group's office bearers or the sponsoring institution." },
+    "SHOP_LICENCE": { "name": "Shop or trade licence", "where": "Your municipal corporation or panchayat." },
+    "note": {
+      "caste_must_be_state_issued": "Must be issued by the competent authority of your own state.",
+      "income_recent": "Usually expected to be recent — confirm the accepted age with the partner.",
+      "photo_count": "Carry several; different forms ask for different numbers.",
+      "quotation_itemised": "Itemised, on the supplier's letterhead, with GST details where applicable.",
+      "only_if_premises": "Only if you are renting or own business premises.",
+      "mfi_group": "Micro finance institutions commonly lend through groups.",
+      "sca_disburses_to_account": "The agency disburses to a bank account in your name.",
+      "project_report_contents": "Should cover the activity, costing, expected income and repayment.",
+      "bank_statement_months": "Number of months varies by partner — ask before you print it.",
+      "guarantor_bank_policy": "Guarantor requirements are set by the partner, not the scheme.",
+      "admission_unconditional": "A provisional or conditional letter is usually not accepted.",
+      "fee_structure_official": "Must be the institution's official structure, not an estimate.",
+      "marksheets_last_qualifying": "Usually the last qualifying examination.",
+      "pan_of_coborrower": "Also needed for a co-borrower, where there is one.",
+      "guarantor_above_threshold": "Commonly asked for above a certain loan size; the threshold is the partner's policy."
+    }
+  },
+
+  "scheme": {
+    "micro": { "description": "Small loans for petty trade, artisan work and small service units." },
+    "term": { "description": "Larger loans for manufacturing, transport, agriculture-allied and service enterprises." },
+    "edu": { "description": "Loans for professional and technical courses, in India or abroad." }
+  },
+
+  "recommendation": {
+    "heading": "Recommended",
+    "policy": {
+      "largest_share_then_lowest_rate": "Chosen because it funds the largest share of your project, and where two schemes fund the same share, at the lower interest rate. This is our ranking rule, not a scheme rule."
+    },
+    "none": "No scheme comes out eligible on the information given.",
+    "generated_at": "Prepared {timestamp}"
+  },
+
+  "common": {
+    "yes": "Yes",
+    "no": "No",
+    "unknown": "Not known",
+    "currency_symbol": "₹",
+    "and": "and",
+    "back": "Back",
+    "next": "Next",
+    "print": "Print",
+    "show_details": "Show details",
+    "hide_details": "Hide details"
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "_README": {
+    "warning": "The 'where_to_obtain' guidance below is general Indian administrative practice, not transcribed from a scheme guideline, and issuing authorities vary by state. Every row is verified:false with source 'common_practice'. Phase 0 must confirm each against the sponsoring corporation's own application checklist before any of this text is shown to a beneficiary.",
+    "shape": "Two tables. 'documents' is the catalogue — one row per document code, carrying its i18n keys. 'requirements' is the scheme × partner_type matrix. partner_type '*' means the requirement applies whichever partner class processes the file; a specific partner_type row is an ADDITIONAL requirement that class imposes.",
+    "resolver": "src/core/documents/resolve.ts merges the '*' rows with the rows for the chosen partner's type, dedupes by doc_code taking the stricter 'mandatory', and marks each entry HAVE or MISSING against ApplicantProfile.documents_available."
+  },
+
+  "documents": [
+    { "code": "CASTE_CERT",      "name_key": "doc.CASTE_CERT.name",      "where_to_obtain_key": "doc.CASTE_CERT.where",      "source": "common_practice", "verified": false },
+    { "code": "INCOME_CERT",     "name_key": "doc.INCOME_CERT.name",     "where_to_obtain_key": "doc.INCOME_CERT.where",     "source": "common_practice", "verified": false },
+    { "code": "AADHAAR",         "name_key": "doc.AADHAAR.name",         "where_to_obtain_key": "doc.AADHAAR.where",         "source": "common_practice", "verified": false },
+    { "code": "PAN",             "name_key": "doc.PAN.name",             "where_to_obtain_key": "doc.PAN.where",             "source": "common_practice", "verified": false },
+    { "code": "PHOTO",           "name_key": "doc.PHOTO.name",           "where_to_obtain_key": "doc.PHOTO.where",           "source": "common_practice", "verified": false },
+    { "code": "RESIDENCE_PROOF", "name_key": "doc.RESIDENCE_PROOF.name", "where_to_obtain_key": "doc.RESIDENCE_PROOF.where", "source": "common_practice", "verified": false },
+    { "code": "QUOTATION",       "name_key": "doc.QUOTATION.name",       "where_to_obtain_key": "doc.QUOTATION.where",       "source": "common_practice", "verified": false },
+    { "code": "PROJECT_REPORT",  "name_key": "doc.PROJECT_REPORT.name",  "where_to_obtain_key": "doc.PROJECT_REPORT.where",  "source": "common_practice", "verified": false },
+    { "code": "BANK_STATEMENT",  "name_key": "doc.BANK_STATEMENT.name",  "where_to_obtain_key": "doc.BANK_STATEMENT.where",  "source": "common_practice", "verified": false },
+    { "code": "ADMISSION_LETTER","name_key": "doc.ADMISSION_LETTER.name","where_to_obtain_key": "doc.ADMISSION_LETTER.where","source": "common_practice", "verified": false },
+    { "code": "FEE_STRUCTURE",   "name_key": "doc.FEE_STRUCTURE.name",   "where_to_obtain_key": "doc.FEE_STRUCTURE.where",   "source": "common_practice", "verified": false },
+    { "code": "MARKSHEETS",      "name_key": "doc.MARKSHEETS.name",      "where_to_obtain_key": "doc.MARKSHEETS.where",      "source": "common_practice", "verified": false },
+    { "code": "BANK_PASSBOOK",   "name_key": "doc.BANK_PASSBOOK.name",   "where_to_obtain_key": "doc.BANK_PASSBOOK.where",   "source": "common_practice", "verified": false },
+    { "code": "GUARANTOR_FORM",  "name_key": "doc.GUARANTOR_FORM.name",  "where_to_obtain_key": "doc.GUARANTOR_FORM.where",  "source": "common_practice", "verified": false },
+    { "code": "GROUP_REFERENCE", "name_key": "doc.GROUP_REFERENCE.name", "where_to_obtain_key": "doc.GROUP_REFERENCE.where", "source": "common_practice", "verified": false },
+    { "code": "SHOP_LICENCE",    "name_key": "doc.SHOP_LICENCE.name",    "where_to_obtain_key": "doc.SHOP_LICENCE.where",    "source": "common_practice", "verified": false }
+  ],
+
+  "requirements": [
+    { "scheme_code": "MICRO", "partner_type": "*",        "doc_code": "CASTE_CERT",      "mandatory": true,  "notes_key": "doc.note.caste_must_be_state_issued" },
+    { "scheme_code": "MICRO", "partner_type": "*",        "doc_code": "INCOME_CERT",     "mandatory": true,  "notes_key": "doc.note.income_recent" },
+    { "scheme_code": "MICRO", "partner_type": "*",        "doc_code": "AADHAAR",         "mandatory": true,  "notes_key": null },
+    { "scheme_code": "MICRO", "partner_type": "*",        "doc_code": "PHOTO",           "mandatory": true,  "notes_key": "doc.note.photo_count" },
+    { "scheme_code": "MICRO", "partner_type": "*",        "doc_code": "RESIDENCE_PROOF", "mandatory": true,  "notes_key": null },
+    { "scheme_code": "MICRO", "partner_type": "*",        "doc_code": "QUOTATION",       "mandatory": true,  "notes_key": "doc.note.quotation_itemised" },
+    { "scheme_code": "MICRO", "partner_type": "*",        "doc_code": "SHOP_LICENCE",    "mandatory": false, "notes_key": "doc.note.only_if_premises" },
+    { "scheme_code": "MICRO", "partner_type": "NBFC_MFI", "doc_code": "GROUP_REFERENCE", "mandatory": true,  "notes_key": "doc.note.mfi_group" },
+    { "scheme_code": "MICRO", "partner_type": "NBFC_MFI", "doc_code": "BANK_PASSBOOK",   "mandatory": true,  "notes_key": null },
+    { "scheme_code": "MICRO", "partner_type": "SCA",      "doc_code": "BANK_PASSBOOK",   "mandatory": true,  "notes_key": "doc.note.sca_disburses_to_account" },
+
+    { "scheme_code": "TERM", "partner_type": "*",   "doc_code": "CASTE_CERT",      "mandatory": true,  "notes_key": "doc.note.caste_must_be_state_issued" },
+    { "scheme_code": "TERM", "partner_type": "*",   "doc_code": "INCOME_CERT",     "mandatory": true,  "notes_key": "doc.note.income_recent" },
+    { "scheme_code": "TERM", "partner_type": "*",   "doc_code": "AADHAAR",         "mandatory": true,  "notes_key": null },
+    { "scheme_code": "TERM", "partner_type": "*",   "doc_code": "PAN",             "mandatory": true,  "notes_key": null },
+    { "scheme_code": "TERM", "partner_type": "*",   "doc_code": "PHOTO",           "mandatory": true,  "notes_key": "doc.note.photo_count" },
+    { "scheme_code": "TERM", "partner_type": "*",   "doc_code": "RESIDENCE_PROOF", "mandatory": true,  "notes_key": null },
+    { "scheme_code": "TERM", "partner_type": "*",   "doc_code": "PROJECT_REPORT",  "mandatory": true,  "notes_key": "doc.note.project_report_contents" },
+    { "scheme_code": "TERM", "partner_type": "*",   "doc_code": "QUOTATION",       "mandatory": true,  "notes_key": "doc.note.quotation_itemised" },
+    { "scheme_code": "TERM", "partner_type": "*",   "doc_code": "BANK_STATEMENT",  "mandatory": true,  "notes_key": "doc.note.bank_statement_months" },
+    { "scheme_code": "TERM", "partner_type": "*",   "doc_code": "SHOP_LICENCE",    "mandatory": false, "notes_key": "doc.note.only_if_premises" },
+    { "scheme_code": "TERM", "partner_type": "PSB", "doc_code": "GUARANTOR_FORM",  "mandatory": true,  "notes_key": "doc.note.guarantor_bank_policy" },
+    { "scheme_code": "TERM", "partner_type": "PSB", "doc_code": "BANK_PASSBOOK",   "mandatory": true,  "notes_key": null },
+    { "scheme_code": "TERM", "partner_type": "RRB", "doc_code": "GUARANTOR_FORM",  "mandatory": true,  "notes_key": "doc.note.guarantor_bank_policy" },
+    { "scheme_code": "TERM", "partner_type": "RRB", "doc_code": "BANK_PASSBOOK",   "mandatory": true,  "notes_key": null },
+    { "scheme_code": "TERM", "partner_type": "SCA", "doc_code": "BANK_PASSBOOK",   "mandatory": true,  "notes_key": "doc.note.sca_disburses_to_account" },
+
+    { "scheme_code": "EDU", "partner_type": "*",   "doc_code": "CASTE_CERT",       "mandatory": true,  "notes_key": "doc.note.caste_must_be_state_issued" },
+    { "scheme_code": "EDU", "partner_type": "*",   "doc_code": "INCOME_CERT",      "mandatory": true,  "notes_key": "doc.note.income_recent" },
+    { "scheme_code": "EDU", "partner_type": "*",   "doc_code": "AADHAAR",          "mandatory": true,  "notes_key": null },
+    { "scheme_code": "EDU", "partner_type": "*",   "doc_code": "PHOTO",            "mandatory": true,  "notes_key": "doc.note.photo_count" },
+    { "scheme_code": "EDU", "partner_type": "*",   "doc_code": "RESIDENCE_PROOF",  "mandatory": true,  "notes_key": null },
+    { "scheme_code": "EDU", "partner_type": "*",   "doc_code": "ADMISSION_LETTER", "mandatory": true,  "notes_key": "doc.note.admission_unconditional" },
+    { "scheme_code": "EDU", "partner_type": "*",   "doc_code": "FEE_STRUCTURE",    "mandatory": true,  "notes_key": "doc.note.fee_structure_official" },
+    { "scheme_code": "EDU", "partner_type": "*",   "doc_code": "MARKSHEETS",       "mandatory": true,  "notes_key": "doc.note.marksheets_last_qualifying" },
+    { "scheme_code": "EDU", "partner_type": "*",   "doc_code": "BANK_PASSBOOK",    "mandatory": true,  "notes_key": null },
+    { "scheme_code": "EDU", "partner_type": "PSB", "doc_code": "PAN",              "mandatory": true,  "notes_key": "doc.note.pan_of_coborrower" },
+    { "scheme_code": "EDU", "partner_type": "PSB", "doc_code": "GUARANTOR_FORM",   "mandatory": false, "notes_key": "doc.note.guarantor_above_threshold" },
+    { "scheme_code": "EDU", "partner_type": "PSB", "doc_code": "BANK_STATEMENT",   "mandatory": true,  "notes_key": "doc.note.bank_statement_months" },
+    { "scheme_code": "EDU", "partner_type": "SCA", "doc_code": "PAN",              "mandatory": false, "notes_key": "doc.note.pan_of_coborrower" }
+  ]
+}

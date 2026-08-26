@@ -1,0 +1,142 @@
+{
+  "_README": {
+    "warning": "EVERY NUMERIC VALUE IN THIS FILE IS A PLACEHOLDER. None of it is verified against an official scheme guideline. Do not put any figure from this file on a demo slide or in a pitch until 'verified' is true and 'source_url' points at a real document.",
+    "provenance_legend": {
+      "ps_text": "Stated in the SIH26092 problem statement itself. Indicative only — the PS contradicts itself on interest rates (background says 6.5-8%, deliverable 2 says 6.5-15%), so treat even these as unverified.",
+      "placeholder": "Invented purely to make the schema concrete and the tests runnable. Has no basis. MUST be replaced.",
+      "official_guideline": "Transcribed from the sponsoring corporation's published scheme guideline. Only these may be shown publicly."
+    },
+    "how_to_use": "Two team members transcribe the official guidelines into this file independently, then diff and reconcile. Flip 'verified' to true only for values you can point at in a source document. Any row still false at demo time goes in VERIFY.md and stays off the slides.",
+    "schema_note": "Interest rates deliberately live in 'interest_rules' as condition-keyed bands, not as a scalar, because these schemes band rates by loan size and applicant category. A single rate column would force a hardcoded inaccuracy.",
+    "null_semantics": "A null 'value' means UNKNOWN, not zero. The engine treats a null required parameter as NOT COMPUTABLE and reports the missing parameter path — it never substitutes a default. See src/core/finance/loan.ts.",
+    "demo_overlay_note": "Because almost every value here is null, the engine cannot produce figures from this file alone. data/schemes.demo-overlay.json supplies exercisable NON-AUTHORITATIVE values so tests, the personas CLI and the UI can run. Any result computed with the overlay carries figures_authoritative:false and the UI renders a permanent banner. Never merge overlay values into this file."
+  },
+
+  "_CHANGELOG": [
+    "2026-08-26 — structural additions only, no provenanced value altered: (a) added 'tenure_includes_moratorium' as an explicit field because ROADMAP §8.1 lists it as an open question and it must not be an assumption; (b) added 'cost_ceiling_rules' to EDU because ROADMAP §6 flags that education schemes set separate ceilings for study in India vs abroad and one scalar ceiling would force a wrong number; (c) split the composite predicate 'CATEGORY_SC_VERIFIED' into 'CATEGORY_SC' and 'CASTE_CERT_AVAILABLE' so remediation can name a single concrete action — a composite predicate cannot yield a minimum qualifying change; (d) added 'INCOME_PROOF_AVAILABLE' for the same reason; (e) added 'min_project_cost' distinct from 'min_loan' because ROADMAP asks for the floor that separates MICRO from TERM and a cost floor and a loan floor are different things."
+  ],
+
+  "schemes": [
+    {
+      "code": "MICRO",
+      "type": "MICRO",
+      "name_i18n": { "en": "Micro Finance Scheme", "hi": "माइक्रो फाइनेंस योजना" },
+      "description_key": "scheme.micro.description",
+      "max_unit_cost": { "value": 140000, "source": "ps_text", "note": "PS states micro projects 'up to ₹1.40 lakh'. Confirm whether this is the unit cost ceiling or the loan ceiling — they are different things." },
+      "max_loan": { "value": 140000, "source": "ps_text", "note": "Likely lower than max_unit_cost once margin money is applied. VERIFY." },
+      "min_loan": { "value": null, "source": "placeholder" },
+      "min_project_cost": { "value": null, "source": "placeholder", "note": "Added field. A cost floor, if any, below which no scheme applies." },
+      "loan_pct_cap": { "value": 0.90, "source": "ps_text", "note": "PS states assistance covers 'up to 90% of project or education costs'." },
+      "margin_pct": { "value": null, "source": "placeholder", "note": "Beneficiary own-contribution share. Not stated in the PS. VERIFY." },
+      "subsidy_pct": { "value": null, "source": "placeholder", "note": "Many such schemes carry a subsidy component. Confirm whether one exists here." },
+      "subsidy_cap": { "value": null, "source": "placeholder" },
+      "subsidy_timing": { "value": "FRONT", "source": "placeholder", "note": "FRONT reduces the loan and therefore the EMI; BACK is adjusted at closure and leaves the EMI unchanged. Getting this wrong changes every number on screen." },
+      "moratorium_months_min": { "value": 3, "source": "ps_text" },
+      "moratorium_months_max": { "value": 12, "source": "ps_text" },
+      "moratorium_interest_treatment": { "value": "CAPITALISED", "source": "placeholder", "note": "One of CAPITALISED | SERVICED | WAIVED. This is the single most consequential unverified field in the file." },
+      "tenure_months_max": { "value": null, "source": "placeholder", "note": "Also confirm whether tenure is inclusive or exclusive of the moratorium." },
+      "tenure_includes_moratorium": { "value": null, "source": "placeholder", "note": "Added field. ROADMAP §8.1 open question. If true, repayment months = tenure_months_max − moratorium; if false, repayment months = tenure_months_max. The engine refuses to guess." },
+      "eligible_purposes": { "value": ["PLACEHOLDER_petty_trade", "PLACEHOLDER_artisan_activity", "PLACEHOLDER_service_unit"], "source": "placeholder" },
+      "allowed_partner_types": { "value": ["SCA", "NBFC_MFI"], "source": "placeholder", "note": "Which partner classes may actually process this category is central to the routing feature. VERIFY carefully." },
+      "predicates": ["INCOME_WITHIN_CAP", "CATEGORY_SC", "CASTE_CERT_AVAILABLE", "INCOME_PROOF_AVAILABLE", "PROJECT_COST_WITHIN_UNIT_COST", "PURPOSE_ELIGIBLE", "AGE_WITHIN_RANGE"],
+      "required_documents": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "PHOTO", "QUOTATION", "RESIDENCE_PROOF"],
+      "interest_rules": [
+        { "applies_when": { "loan_band_max": null }, "annual_rate_pct": null, "source": "placeholder", "note": "PS gives 6.5%-8% in background and 6.5%-15% in deliverable 2. Do not pick one. Get the real rate card." }
+      ],
+      "cost_ceiling_rules": [],
+      "source_url": "TODO",
+      "source_date": null,
+      "verified": false
+    },
+
+    {
+      "code": "TERM",
+      "type": "TERM",
+      "name_i18n": { "en": "Term Loan Scheme", "hi": "सावधि ऋण योजना" },
+      "description_key": "scheme.term.description",
+      "max_unit_cost": { "value": 5000000, "source": "ps_text", "note": "PS states larger projects 'up to ₹50.00 lakh'." },
+      "max_loan": { "value": 5000000, "source": "ps_text", "note": "VERIFY whether ₹50 lakh is the project ceiling or the loan ceiling." },
+      "min_loan": { "value": null, "source": "placeholder", "note": "There is probably a floor that separates TERM from MICRO. Finding it matters — it defines the boundary personas." },
+      "min_project_cost": { "value": null, "source": "placeholder", "note": "Added field. The MICRO/TERM boundary expressed as project cost." },
+      "loan_pct_cap": { "value": 0.90, "source": "ps_text" },
+      "margin_pct": { "value": null, "source": "placeholder", "note": "Likely higher than MICRO and may scale with loan size." },
+      "subsidy_pct": { "value": null, "source": "placeholder" },
+      "subsidy_cap": { "value": null, "source": "placeholder" },
+      "subsidy_timing": { "value": "FRONT", "source": "placeholder" },
+      "moratorium_months_min": { "value": 3, "source": "ps_text" },
+      "moratorium_months_max": { "value": 12, "source": "ps_text" },
+      "moratorium_interest_treatment": { "value": "CAPITALISED", "source": "placeholder" },
+      "tenure_months_max": { "value": null, "source": "placeholder" },
+      "tenure_includes_moratorium": { "value": null, "source": "placeholder" },
+      "eligible_purposes": { "value": ["PLACEHOLDER_manufacturing", "PLACEHOLDER_transport", "PLACEHOLDER_agri_allied", "PLACEHOLDER_service_enterprise"], "source": "placeholder" },
+      "allowed_partner_types": { "value": ["SCA", "PSB", "RRB"], "source": "placeholder" },
+      "predicates": ["INCOME_WITHIN_CAP", "CATEGORY_SC", "CASTE_CERT_AVAILABLE", "INCOME_PROOF_AVAILABLE", "PROJECT_COST_WITHIN_UNIT_COST", "PROJECT_COST_ABOVE_MICRO_FLOOR", "PURPOSE_ELIGIBLE", "AGE_WITHIN_RANGE"],
+      "required_documents": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "PAN", "PHOTO", "PROJECT_REPORT", "QUOTATION", "RESIDENCE_PROOF", "BANK_STATEMENT"],
+      "interest_rules": [
+        { "applies_when": { "loan_band_max": null }, "annual_rate_pct": null, "source": "placeholder", "note": "Almost certainly banded by loan size here. Expect two or three bands." }
+      ],
+      "cost_ceiling_rules": [],
+      "source_url": "TODO",
+      "source_date": null,
+      "verified": false
+    },
+
+    {
+      "code": "EDU",
+      "type": "EDUCATION",
+      "name_i18n": { "en": "Educational Loan Scheme", "hi": "शिक्षा ऋण योजना" },
+      "description_key": "scheme.edu.description",
+      "max_unit_cost": { "value": null, "source": "placeholder", "note": "Education schemes usually set separate ceilings for study in India vs abroad. Model as two interest_rules / two ceilings, not one. See cost_ceiling_rules." },
+      "max_loan": { "value": null, "source": "placeholder" },
+      "min_loan": { "value": null, "source": "placeholder" },
+      "min_project_cost": { "value": null, "source": "placeholder" },
+      "loan_pct_cap": { "value": 0.90, "source": "ps_text" },
+      "margin_pct": { "value": null, "source": "placeholder" },
+      "subsidy_pct": { "value": null, "source": "placeholder" },
+      "subsidy_cap": { "value": null, "source": "placeholder" },
+      "subsidy_timing": { "value": "BACK", "source": "placeholder" },
+      "moratorium_months_min": { "value": 3, "source": "ps_text", "note": "Education loans commonly tie the moratorium to course duration plus a grace period rather than a fixed month count. If so, this field needs a different shape — flag it rather than forcing it." },
+      "moratorium_months_max": { "value": 12, "source": "ps_text" },
+      "moratorium_interest_treatment": { "value": "WAIVED", "source": "placeholder", "note": "Subsidised education schemes sometimes waive interest during study. Do not assume — verify." },
+      "tenure_months_max": { "value": null, "source": "placeholder" },
+      "tenure_includes_moratorium": { "value": null, "source": "placeholder" },
+      "eligible_purposes": { "value": ["PLACEHOLDER_professional_course_india", "PLACEHOLDER_professional_course_abroad"], "source": "placeholder" },
+      "allowed_partner_types": { "value": ["SCA", "PSB"], "source": "placeholder" },
+      "predicates": ["INCOME_WITHIN_CAP", "CATEGORY_SC", "CASTE_CERT_AVAILABLE", "INCOME_PROOF_AVAILABLE", "ADMISSION_CONFIRMED", "COURSE_ELIGIBLE", "AGE_WITHIN_RANGE"],
+      "required_documents": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "ADMISSION_LETTER", "FEE_STRUCTURE", "MARKSHEETS", "PHOTO", "RESIDENCE_PROOF"],
+      "interest_rules": [
+        { "applies_when": { "purpose": "PLACEHOLDER_professional_course_india" }, "annual_rate_pct": null, "source": "placeholder" },
+        { "applies_when": { "purpose": "PLACEHOLDER_professional_course_abroad" }, "annual_rate_pct": null, "source": "placeholder" }
+      ],
+      "cost_ceiling_rules": [
+        { "applies_when": { "purpose": "PLACEHOLDER_professional_course_india" }, "max_unit_cost": null, "max_loan": null, "source": "placeholder", "note": "Added structure. VERIFY whether India-study has its own ceiling." },
+        { "applies_when": { "purpose": "PLACEHOLDER_professional_course_abroad" }, "max_unit_cost": null, "max_loan": null, "source": "placeholder", "note": "Added structure. VERIFY whether abroad-study has a higher ceiling." }
+      ],
+      "source_url": "TODO",
+      "source_date": null,
+      "verified": false
+    }
+  ],
+
+  "global_eligibility": {
+    "annual_family_income_cap": { "value": 500000, "source": "ps_text", "note": "PS states 'annual family income of up to ₹5.00 Lakhs'. Income ceilings on schemes like these have been revised more than once, so confirm the figure AND its effective date against the current guideline." },
+    "category_requirement": { "value": "SC", "source": "ps_text" },
+    "age_min": { "value": null, "source": "placeholder" },
+    "age_max": { "value": null, "source": "placeholder" },
+    "verified": false
+  },
+
+  "open_questions_for_phase_0": [
+    "Which corporation sponsors this PS? The description matches a national SC finance and development corporation but never names it. Everything downstream depends on knowing whose guidelines are authoritative.",
+    "Is ₹1.40 lakh / ₹50 lakh the project cost ceiling or the loan ceiling?",
+    "Is there a subsidy component, and is it front-ended or back-ended?",
+    "What is the actual banded rate card, and does it vary by gender or applicant category?",
+    "Which moratorium interest treatment applies to each scheme?",
+    "Is the maximum tenure inclusive or exclusive of the moratorium?",
+    "What is the loan floor that separates MICRO from TERM?",
+    "Which partner types are actually authorised to process each scheme category? This is the backbone of the routing feature.",
+    "Does the education scheme have separate ceilings for study in India vs abroad?",
+    "Is the education moratorium a fixed month count or course-duration-plus-grace? If the latter, moratorium_months_* is the wrong shape and must become a formula field.",
+    "Can one applicant be eligible for more than one scheme at the same time? In this seed they cannot — the purpose lists are disjoint and the cost predicates mutually exclusive — so the engine's multi-scheme ranking never fires on real data. If the published guidelines do overlap, RECOMMENDATION_POLICY in src/core/recommend.ts becomes user-visible and needs review; see the known_gaps note in data/personas.fixtures.json."
+  ]
+}

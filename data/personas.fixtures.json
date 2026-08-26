@@ -1,0 +1,1106 @@
+{
+  "_README": {
+    "purpose": "40 applicant fixtures. They are the regression suite (tests/personas.snapshot.test.ts), the demo seed, and the answer to a judge asking 'what if someone...'. Every branch of the engine should be reachable from this file.",
+    "not_real_people": "No persona describes a real individual. 'name' is deliberately null; the human-readable 'label' is an occupation-and-place description only. Do not add invented personal names, phone numbers or Aadhaar-like identifiers to this file.",
+    "expectations_are_structural": "The 'expect' block asserts STRUCTURE (which scheme is eligible, which reason codes fire, whether a partner survives), never rupee amounts. Amounts depend on data/schemes.demo-overlay.json and would be a fabricated assertion. Exact figures are locked by tests/personas.snapshot.test.ts, whose snapshot is regenerated — never hand-written — and which carries a header saying the numbers inside are non-authoritative.",
+    "purpose_codes": "Purpose codes are the PLACEHOLDER_* strings from data/schemes.seed.json. They will all change when the real guidelines are transcribed, at which point this file changes with them. That is expected: the persona IDs and their intent survive, the codes do not.",
+    "coverage_checklist": {
+      "income_at_cap_and_one_rupee_over": ["P02", "P03"],
+      "micro_term_project_cost_boundary": ["P04", "P05", "P06"],
+      "education_india_vs_abroad": ["P36", "P37"],
+      "missing_caste_certificate": ["P07", "P09"],
+      "missing_income_proof": ["P08", "P09"],
+      "ineligible_purpose": ["P15"],
+      "no_eligible_partner_in_district": ["P20", "P21", "P19"],
+      "loan_exceeds_every_partner_ticket": ["P31"],
+      "eligible_for_more_than_one_scheme": [],
+      "indeterminate_because_applicant_field_missing": ["P11", "P14", "P16", "P17", "P18", "P39"],
+      "all_three_moratorium_treatments": ["P01 CAPITALISED", "P36 WAIVED"],
+      "jurisdiction_is_not_the_state_column": ["P32", "P33"],
+      "interest_band_resolution": ["P28", "P29", "P30"],
+      "purpose_specific_cost_ceiling": ["P37"],
+      "loan_below_scheme_min_loan": ["P19"],
+      "checklist_incomplete_but_eligible": ["P40"]
+    },
+    "known_gaps_in_this_file": [
+      "eligible_for_more_than_one_scheme is EMPTY and cannot currently be filled. MICRO and TERM have disjoint eligible_purposes in the seed, and PROJECT_COST_WITHIN_UNIT_COST (<= 140000) versus PROJECT_COST_ABOVE_MICRO_FLOOR (>= 140001) makes them mutually exclusive on cost as well. No applicant can be eligible for two schemes at once. Whether that is true of the real schemes is open question 11 in data/schemes.seed.json and a line in VERIFY.md. The multi-eligible ranking path is therefore covered by a direct unit test on pickRecommended rather than by a persona.",
+      "SERVICED moratorium is not reachable from any persona, because all three seed placeholders are CAPITALISED or WAIVED and the demo overlay deliberately does not override the treatment. SERVICED is covered by tests/finance.golden.test.ts calling amortise directly."
+    ]
+  },
+
+  "personas": [
+    {
+      "id": "P01",
+      "label": "Tailoring unit, Pune — the happy path",
+      "tests": ["MICRO baseline", "CAPITALISED moratorium", "front-ended subsidy", "partner match with distance and health"],
+      "expect": {
+        "MICRO": "ELIGIBLE",
+        "TERM": "NOT_ELIGIBLE",
+        "EDU": "NOT_ELIGIBLE",
+        "partners_for_recommended": "at least one",
+        "notes": "The reference run. If this persona breaks, something fundamental broke."
+      },
+      "applicant": {
+        "name": null,
+        "age": 32,
+        "gender": "FEMALE",
+        "category": "SC",
+        "annual_family_income": 180000,
+        "state": "Maharashtra",
+        "district": "Pune",
+        "lat": 18.5204,
+        "lng": 73.8567,
+        "intent": "LIVELIHOOD",
+        "purpose": "PLACEHOLDER_petty_trade",
+        "project_cost": 100000,
+        "documents_available": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "PAN", "PHOTO", "RESIDENCE_PROOF", "QUOTATION", "BANK_PASSBOOK"],
+        "preferred_language": "en"
+      }
+    },
+    {
+      "id": "P02",
+      "label": "Grocery kiosk, Nagpur — income exactly at the cap",
+      "tests": ["INCOME_WITHIN_CAP boundary, inclusive"],
+      "expect": {
+        "MICRO": "ELIGIBLE",
+        "notes": "Income equals the cap exactly. The predicate uses <=, so this must pass. An off-by-one here excludes a genuinely eligible beneficiary."
+      },
+      "applicant": {
+        "name": null,
+        "age": 41,
+        "gender": "MALE",
+        "category": "SC",
+        "annual_family_income": 500000,
+        "state": "Maharashtra",
+        "district": "Nagpur",
+        "lat": 21.1458,
+        "lng": 79.0882,
+        "intent": "LIVELIHOOD",
+        "purpose": "PLACEHOLDER_petty_trade",
+        "project_cost": 90000,
+        "documents_available": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "PHOTO", "RESIDENCE_PROOF", "QUOTATION"],
+        "preferred_language": "mr"
+      }
+    },
+    {
+      "id": "P03",
+      "label": "Grocery kiosk, Nagpur — one rupee over the cap",
+      "tests": ["INCOME_WITHIN_CAP fails", "REDUCE_NUMERIC remediation with delta = 1"],
+      "expect": {
+        "MICRO": "NOT_ELIGIBLE",
+        "TERM": "NOT_ELIGIBLE",
+        "EDU": "NOT_ELIGIBLE",
+        "reason_codes": ["INCOME_WITHIN_CAP"],
+        "notes": "The remediation delta must be exactly 1, not 'reduce your income'. This is the persona that proves the numbers in remediations are computed, not narrated."
+      },
+      "applicant": {
+        "name": null,
+        "age": 41,
+        "gender": "MALE",
+        "category": "SC",
+        "annual_family_income": 500001,
+        "state": "Maharashtra",
+        "district": "Nagpur",
+        "lat": 21.1458,
+        "lng": 79.0882,
+        "intent": "LIVELIHOOD",
+        "purpose": "PLACEHOLDER_petty_trade",
+        "project_cost": 90000,
+        "documents_available": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "PHOTO", "RESIDENCE_PROOF", "QUOTATION"],
+        "preferred_language": "mr"
+      }
+    },
+    {
+      "id": "P04",
+      "label": "Mobile repair bench, Mumbai — project cost exactly at the micro ceiling",
+      "tests": ["PROJECT_COST_WITHIN_UNIT_COST boundary, inclusive", "subsidy hits its cap"],
+      "expect": {
+        "MICRO": "ELIGIBLE",
+        "TERM": "NOT_ELIGIBLE",
+        "notes": "Cost equals max_unit_cost exactly. Also the first persona where the percentage subsidy exceeds the subsidy cap, so the min() in step 2 of the loan pipeline binds."
+      },
+      "applicant": {
+        "name": null,
+        "age": 27,
+        "gender": "MALE",
+        "category": "SC",
+        "annual_family_income": 240000,
+        "state": "Maharashtra",
+        "district": "Mumbai",
+        "lat": 19.076,
+        "lng": 72.8777,
+        "intent": "LIVELIHOOD",
+        "purpose": "PLACEHOLDER_service_unit",
+        "project_cost": 140000,
+        "documents_available": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "PAN", "PHOTO", "RESIDENCE_PROOF", "QUOTATION", "SHOP_LICENCE"],
+        "preferred_language": "hi"
+      }
+    },
+    {
+      "id": "P05",
+      "label": "Small dal mill, Solapur — project cost one rupee above the micro ceiling",
+      "tests": ["PROJECT_COST_ABOVE_MICRO_FLOOR boundary, inclusive", "TERM at its lowest rate band"],
+      "expect": {
+        "MICRO": "NOT_ELIGIBLE",
+        "TERM": "ELIGIBLE",
+        "notes": "One rupee above P04 and the applicable scheme changes. The pair P04/P05 is the boundary demonstration for the slide."
+      },
+      "applicant": {
+        "name": null,
+        "age": 35,
+        "gender": "MALE",
+        "category": "SC",
+        "annual_family_income": 300000,
+        "state": "Maharashtra",
+        "district": "Solapur",
+        "lat": 17.6599,
+        "lng": 75.9064,
+        "intent": "LIVELIHOOD",
+        "purpose": "PLACEHOLDER_manufacturing",
+        "project_cost": 140001,
+        "documents_available": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "PAN", "PHOTO", "RESIDENCE_PROOF", "QUOTATION", "PROJECT_REPORT", "BANK_STATEMENT"],
+        "preferred_language": "mr"
+      }
+    },
+    {
+      "id": "P06",
+      "label": "Small dal mill, Solapur — sitting in the gap between the two schemes",
+      "tests": ["a manufacturing purpose at exactly the micro ceiling qualifies for neither scheme"],
+      "expect": {
+        "MICRO": "NOT_ELIGIBLE",
+        "TERM": "NOT_ELIGIBLE",
+        "reason_codes": ["PURPOSE_ELIGIBLE", "PROJECT_COST_ABOVE_MICRO_FLOOR"],
+        "notes": "FINDING, not a bug in the engine. With the seed's disjoint purpose lists, a manufacturing project costing exactly 140000 falls through: MICRO rejects the purpose, TERM rejects the cost. Either the real guidelines overlap here or the boundary really does exclude this applicant. Recorded in VERIFY.md."
+      },
+      "applicant": {
+        "name": null,
+        "age": 35,
+        "gender": "MALE",
+        "category": "SC",
+        "annual_family_income": 300000,
+        "state": "Maharashtra",
+        "district": "Solapur",
+        "lat": 17.6599,
+        "lng": 75.9064,
+        "intent": "LIVELIHOOD",
+        "purpose": "PLACEHOLDER_manufacturing",
+        "project_cost": 140000,
+        "documents_available": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "PAN", "PHOTO", "RESIDENCE_PROOF", "QUOTATION", "PROJECT_REPORT"],
+        "preferred_language": "mr"
+      }
+    },
+    {
+      "id": "P07",
+      "label": "Vegetable cart, Lucknow — no caste certificate yet",
+      "tests": ["CASTE_CERT_AVAILABLE fails", "OBTAIN_DOCUMENT remediation"],
+      "expect": {
+        "MICRO": "NOT_ELIGIBLE",
+        "reason_codes": ["CASTE_CERT_AVAILABLE"],
+        "notes": "The single most common real-world blocker. The remediation must name the document and where to obtain it, and must NOT be conflated with 'you are not Scheduled Caste' — that is why the composite predicate was split."
+      },
+      "applicant": {
+        "name": null,
+        "age": 29,
+        "gender": "FEMALE",
+        "category": "SC",
+        "annual_family_income": 150000,
+        "state": "Uttar Pradesh",
+        "district": "Lucknow",
+        "lat": 26.8467,
+        "lng": 80.9462,
+        "intent": "LIVELIHOOD",
+        "purpose": "PLACEHOLDER_petty_trade",
+        "project_cost": 60000,
+        "documents_available": ["INCOME_CERT", "AADHAAR", "PHOTO", "RESIDENCE_PROOF"],
+        "preferred_language": "hi"
+      }
+    },
+    {
+      "id": "P08",
+      "label": "Vegetable cart, Lucknow — no income certificate yet",
+      "tests": ["INCOME_PROOF_AVAILABLE fails independently of INCOME_WITHIN_CAP"],
+      "expect": {
+        "MICRO": "NOT_ELIGIBLE",
+        "reason_codes": ["INCOME_PROOF_AVAILABLE"],
+        "notes": "Income is within the cap AND the proof is missing. Two different verdicts on the same subject — INCOME_WITHIN_CAP passes while INCOME_PROOF_AVAILABLE fails. Collapsing them would make the remediation useless."
+      },
+      "applicant": {
+        "name": null,
+        "age": 29,
+        "gender": "FEMALE",
+        "category": "SC",
+        "annual_family_income": 150000,
+        "state": "Uttar Pradesh",
+        "district": "Lucknow",
+        "lat": 26.8467,
+        "lng": 80.9462,
+        "intent": "LIVELIHOOD",
+        "purpose": "PLACEHOLDER_petty_trade",
+        "project_cost": 60000,
+        "documents_available": ["CASTE_CERT", "AADHAAR", "PHOTO", "RESIDENCE_PROOF"],
+        "preferred_language": "hi"
+      }
+    },
+    {
+      "id": "P09",
+      "label": "First-time applicant, Gorakhpur — no paperwork at all",
+      "tests": ["multiple simultaneous OBTAIN_DOCUMENT remediations", "checklist mandatory_missing is large"],
+      "expect": {
+        "MICRO": "NOT_ELIGIBLE",
+        "reason_codes": ["CASTE_CERT_AVAILABLE", "INCOME_PROOF_AVAILABLE"],
+        "notes": "The 'where do I even start' case. Every failing verdict must be listed — the applicant needs the whole list, not the first blocker."
+      },
+      "applicant": {
+        "name": null,
+        "age": 24,
+        "gender": "MALE",
+        "category": "SC",
+        "annual_family_income": 96000,
+        "state": "Uttar Pradesh",
+        "district": "Gorakhpur",
+        "lat": 26.7606,
+        "lng": 83.3732,
+        "intent": "LIVELIHOOD",
+        "purpose": "PLACEHOLDER_artisan_activity",
+        "project_cost": 45000,
+        "documents_available": [],
+        "preferred_language": "hi"
+      }
+    },
+    {
+      "id": "P10",
+      "label": "Carpentry workshop, Nashik — OBC applicant",
+      "tests": ["CATEGORY_SC fails", "NOT_REMEDIABLE remediation"],
+      "expect": {
+        "MICRO": "NOT_ELIGIBLE",
+        "TERM": "NOT_ELIGIBLE",
+        "EDU": "NOT_ELIGIBLE",
+        "reason_codes": ["CATEGORY_SC"],
+        "notes": "The remediation kind must be NOT_REMEDIABLE. These schemes are category-reserved by statute; offering an 'action' would be both false and offensive. A future phase should point this applicant at the corresponding OBC corporation instead."
+      },
+      "applicant": {
+        "name": null,
+        "age": 38,
+        "gender": "MALE",
+        "category": "OBC",
+        "annual_family_income": 220000,
+        "state": "Maharashtra",
+        "district": "Nashik",
+        "lat": 19.9975,
+        "lng": 73.7898,
+        "intent": "LIVELIHOOD",
+        "purpose": "PLACEHOLDER_artisan_activity",
+        "project_cost": 110000,
+        "documents_available": ["INCOME_CERT", "AADHAAR", "PAN", "PHOTO", "RESIDENCE_PROOF", "QUOTATION"],
+        "preferred_language": "mr"
+      }
+    },
+    {
+      "id": "P11",
+      "label": "Walk-in enquiry, Aurangabad — category not stated",
+      "tests": ["CATEGORY_SC unevaluable", "INDETERMINATE status", "PROVIDE_DATA remediation"],
+      "expect": {
+        "MICRO": "INDETERMINATE",
+        "notes": "'UNKNOWN' is not 'not SC'. The status must be INDETERMINATE and the remediation must ask for the field, not deliver a rejection."
+      },
+      "applicant": {
+        "name": null,
+        "age": 33,
+        "gender": "UNDISCLOSED",
+        "category": "UNKNOWN",
+        "annual_family_income": 200000,
+        "state": "Maharashtra",
+        "district": "Aurangabad",
+        "lat": 19.8762,
+        "lng": 75.3433,
+        "intent": "LIVELIHOOD",
+        "purpose": "PLACEHOLDER_petty_trade",
+        "project_cost": 80000,
+        "documents_available": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "PHOTO"],
+        "preferred_language": "mr"
+      }
+    },
+    {
+      "id": "P12",
+      "label": "School-leaver, Kolhapur — below the age floor",
+      "tests": ["AGE_WITHIN_RANGE fails low", "INCREASE_NUMERIC remediation with a delta in years"],
+      "expect": {
+        "MICRO": "NOT_ELIGIBLE",
+        "reason_codes": ["AGE_WITHIN_RANGE"],
+        "notes": "The remediation should say how many years, and it is the one remediation that resolves itself with time."
+      },
+      "applicant": {
+        "name": null,
+        "age": 17,
+        "gender": "MALE",
+        "category": "SC",
+        "annual_family_income": 120000,
+        "state": "Maharashtra",
+        "district": "Kolhapur",
+        "lat": 16.705,
+        "lng": 74.2433,
+        "intent": "LIVELIHOOD",
+        "purpose": "PLACEHOLDER_service_unit",
+        "project_cost": 40000,
+        "documents_available": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "PHOTO", "RESIDENCE_PROOF"],
+        "preferred_language": "mr"
+      }
+    },
+    {
+      "id": "P13",
+      "label": "Retired weaver, Kalaburagi — above the age ceiling",
+      "tests": ["AGE_WITHIN_RANGE fails high", "NOT_REMEDIABLE"],
+      "expect": {
+        "MICRO": "NOT_ELIGIBLE",
+        "reason_codes": ["AGE_WITHIN_RANGE"],
+        "notes": "Fails high, so it is NOT_REMEDIABLE rather than a numeric nudge. Same predicate, two different remediation kinds depending on which side of the band you are on."
+      },
+      "applicant": {
+        "name": null,
+        "age": 62,
+        "gender": "MALE",
+        "category": "SC",
+        "annual_family_income": 90000,
+        "state": "Karnataka",
+        "district": "Kalaburagi",
+        "lat": 17.3297,
+        "lng": 76.8343,
+        "intent": "LIVELIHOOD",
+        "purpose": "PLACEHOLDER_artisan_activity",
+        "project_cost": 70000,
+        "documents_available": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "PHOTO", "RESIDENCE_PROOF"],
+        "preferred_language": "kn"
+      }
+    },
+    {
+      "id": "P14",
+      "label": "Phone enquiry, Mysuru — age not given",
+      "tests": ["AGE_WITHIN_RANGE unevaluable on the applicant side"],
+      "expect": {
+        "MICRO": "INDETERMINATE",
+        "notes": "missing must be ['applicant.age'] and the remediation kind PROVIDE_DATA — distinguishable from the same predicate being unevaluable because the scheme's age band has not been transcribed."
+      },
+      "applicant": {
+        "name": null,
+        "age": null,
+        "gender": "FEMALE",
+        "category": "SC",
+        "annual_family_income": 160000,
+        "state": "Karnataka",
+        "district": "Mysuru",
+        "lat": 12.2958,
+        "lng": 76.6394,
+        "intent": "LIVELIHOOD",
+        "purpose": "PLACEHOLDER_petty_trade",
+        "project_cost": 55000,
+        "documents_available": ["CASTE_CERT", "INCOME_CERT", "AADHAAR"],
+        "preferred_language": "kn"
+      }
+    },
+    {
+      "id": "P15",
+      "label": "Bar licence enquiry, Pune — an excluded activity",
+      "tests": ["PURPOSE_ELIGIBLE fails on every scheme", "CHANGE_CATEGORICAL remediation lists the alternatives"],
+      "expect": {
+        "MICRO": "NOT_ELIGIBLE",
+        "TERM": "NOT_ELIGIBLE",
+        "EDU": "NOT_ELIGIBLE",
+        "reason_codes": ["PURPOSE_ELIGIBLE", "COURSE_ELIGIBLE"],
+        "notes": "A purpose code that appears in no scheme's eligible_purposes. The remediation must return the permitted alternatives so the UI can offer them, rather than a dead end."
+      },
+      "applicant": {
+        "name": null,
+        "age": 36,
+        "gender": "MALE",
+        "category": "SC",
+        "annual_family_income": 280000,
+        "state": "Maharashtra",
+        "district": "Pune",
+        "lat": 18.5204,
+        "lng": 73.8567,
+        "intent": "LIVELIHOOD",
+        "purpose": "PLACEHOLDER_excluded_activity",
+        "project_cost": 200000,
+        "documents_available": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "PAN", "PHOTO"],
+        "preferred_language": "mr"
+      }
+    },
+    {
+      "id": "P16",
+      "label": "Undecided applicant, Indore — knows the budget, not the trade",
+      "tests": ["PURPOSE_ELIGIBLE unevaluable", "INDETERMINATE with everything else passing"],
+      "expect": {
+        "MICRO": "INDETERMINATE",
+        "notes": "The applicant is very likely eligible for something; we simply cannot say which until they choose. The UI must read as 'one more question', not as a rejection. TERM comes out NOT_ELIGIBLE rather than INDETERMINATE for this applicant, and correctly so: the stated 85000 budget breaks TERM's cost floor regardless of what purpose is eventually chosen, so that verdict is knowable now."
+      },
+      "applicant": {
+        "name": null,
+        "age": 30,
+        "gender": "FEMALE",
+        "category": "SC",
+        "annual_family_income": 175000,
+        "state": "Madhya Pradesh",
+        "district": "Indore",
+        "lat": 22.7196,
+        "lng": 75.8577,
+        "intent": "LIVELIHOOD",
+        "purpose": null,
+        "project_cost": 85000,
+        "documents_available": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "PHOTO", "RESIDENCE_PROOF"],
+        "preferred_language": "hi"
+      }
+    },
+    {
+      "id": "P17",
+      "label": "Tea stall plan, Varanasi — no costing yet",
+      "tests": ["PROJECT_COST_WITHIN_UNIT_COST unevaluable", "no loan figures produced"],
+      "expect": {
+        "MICRO": "INDETERMINATE",
+        "computation": "null, because the scheme is not ELIGIBLE",
+        "notes": "Proves the engine will not invent a project cost in order to produce a satisfying number."
+      },
+      "applicant": {
+        "name": null,
+        "age": 45,
+        "gender": "MALE",
+        "category": "SC",
+        "annual_family_income": 130000,
+        "state": "Uttar Pradesh",
+        "district": "Varanasi",
+        "lat": 25.3176,
+        "lng": 82.9739,
+        "intent": "LIVELIHOOD",
+        "purpose": "PLACEHOLDER_petty_trade",
+        "project_cost": null,
+        "documents_available": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "PHOTO"],
+        "preferred_language": "hi"
+      }
+    },
+    {
+      "id": "P18",
+      "label": "Daily-wage household, Madurai — income not quantified",
+      "tests": [
+        "INCOME_WITHIN_CAP unevaluable on the applicant side",
+        "an unevaluable rule alone, with nothing broken, yields INDETERMINATE"
+      ],
+      "expect": {
+        "MICRO": "INDETERMINATE",
+        "notes": "A large share of the target population cannot state an annual figure. INDETERMINATE plus a request for the amount is the correct response, not an assumed zero (which would silently pass) and not an assumed rejection. Note the applicant DOES hold the income certificate — the annual figure simply has not been entered in the form yet, which is the ordinary state of a half-filled intake. Without the certificate this persona would come out NOT_ELIGIBLE instead, because a broken rule outranks an unevaluable one in the status precedence, and it would then merely duplicate P08."
+      },
+      "applicant": {
+        "name": null,
+        "age": 39,
+        "gender": "FEMALE",
+        "category": "SC",
+        "annual_family_income": null,
+        "state": "Tamil Nadu",
+        "district": "Madurai",
+        "lat": 9.9252,
+        "lng": 78.1198,
+        "intent": "LIVELIHOOD",
+        "purpose": "PLACEHOLDER_artisan_activity",
+        "project_cost": 50000,
+        "documents_available": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "PHOTO", "RESIDENCE_PROOF"],
+        "preferred_language": "ta"
+      }
+    },
+    {
+      "id": "P19",
+      "label": "Handcart top-up, Pune — a project too small for anyone to finance",
+      "tests": ["loan_below_min true", "LOAN_BELOW_MIN_TICKET excludes every partner", "eligible scheme with zero eligible partners"],
+      "expect": {
+        "MICRO": "ELIGIBLE",
+        "partners_for_recommended": "none",
+        "notes": "Eligible on paper, unfinanceable in practice: the computed loan is under the scheme's own min_loan AND under every partner's minimum ticket. The UI must say so plainly instead of showing an empty list. This is the strongest argument for keeping excluded partners with reasons."
+      },
+      "applicant": {
+        "name": null,
+        "age": 47,
+        "gender": "FEMALE",
+        "category": "SC",
+        "annual_family_income": 84000,
+        "state": "Maharashtra",
+        "district": "Pune",
+        "lat": 18.5089,
+        "lng": 73.926,
+        "intent": "LIVELIHOOD",
+        "purpose": "PLACEHOLDER_petty_trade",
+        "project_cost": 8000,
+        "documents_available": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "PHOTO", "RESIDENCE_PROOF", "QUOTATION"],
+        "preferred_language": "mr"
+      }
+    },
+    {
+      "id": "P20",
+      "label": "Snack unit, Bhopal — eligible, but no micro lender in the state",
+      "tests": ["DOES_NOT_HANDLE_SCHEME_TYPE across the whole registry", "coverage gap surfaced"],
+      "expect": {
+        "MICRO": "ELIGIBLE",
+        "partners_for_recommended": "none",
+        "notes": "Designed-in gap: the interim registry has no MICRO-capable partner in Madhya Pradesh. The honest output is 'you qualify, and there is no channel partner here' — which is itself a finding worth showing a state officer."
+      },
+      "applicant": {
+        "name": null,
+        "age": 34,
+        "gender": "FEMALE",
+        "category": "SC",
+        "annual_family_income": 190000,
+        "state": "Madhya Pradesh",
+        "district": "Bhopal",
+        "lat": 23.2599,
+        "lng": 77.4126,
+        "intent": "LIVELIHOOD",
+        "purpose": "PLACEHOLDER_service_unit",
+        "project_cost": 95000,
+        "documents_available": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "PAN", "PHOTO", "RESIDENCE_PROOF", "QUOTATION"],
+        "preferred_language": "hi"
+      }
+    },
+    {
+      "id": "P21",
+      "label": "Poultry shed, Raipur — a state the registry does not cover at all",
+      "tests": ["OUTSIDE_JURISDICTION for every partner", "distance is computable but irrelevant"],
+      "expect": {
+        "MICRO": "ELIGIBLE",
+        "partners_for_recommended": "none",
+        "notes": "Chhattisgarh appears in no partner's jurisdiction_states. Every partner is excluded on jurisdiction even though several are geographically closer than partners that would serve a Maharashtra applicant. Hard filters before soft ranking, demonstrated."
+      },
+      "applicant": {
+        "name": null,
+        "age": 31,
+        "gender": "MALE",
+        "category": "SC",
+        "annual_family_income": 165000,
+        "state": "Chhattisgarh",
+        "district": "Raipur",
+        "lat": 21.2514,
+        "lng": 81.6296,
+        "intent": "LIVELIHOOD",
+        "purpose": "PLACEHOLDER_artisan_activity",
+        "project_cost": 120000,
+        "documents_available": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "PHOTO", "RESIDENCE_PROOF", "QUOTATION"],
+        "preferred_language": "hi"
+      }
+    },
+    {
+      "id": "P22",
+      "label": "Xerox and stationery shop, Mumbai — four partners, two different orderings",
+      "tests": ["ranked_by_distance differs from ranked_by_health"],
+      "expect": {
+        "MICRO": "ELIGIBLE",
+        "partners_for_recommended": "four",
+        "notes": "The persona for the 'nearest vs fastest-moving' screen. Both Maharashtra SCAs and both Maharashtra MFIs clear the hard filters, and the two orderings do diverge: the nearest is the Mumbai MFI, the healthiest is the Pune MFI. If they ever come out identical for this applicant, the demo loses its point and the health data needs re-spreading."
+      },
+      "applicant": {
+        "name": null,
+        "age": 28,
+        "gender": "OTHER",
+        "category": "SC",
+        "annual_family_income": 260000,
+        "state": "Maharashtra",
+        "district": "Mumbai",
+        "lat": 19.0176,
+        "lng": 72.8562,
+        "intent": "LIVELIHOOD",
+        "purpose": "PLACEHOLDER_service_unit",
+        "project_cost": 138000,
+        "documents_available": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "PAN", "PHOTO", "RESIDENCE_PROOF", "QUOTATION", "SHOP_LICENCE"],
+        "preferred_language": "en"
+      }
+    },
+    {
+      "id": "P23",
+      "label": "Weaving loom, Dharwad — Karnataka micro applicant",
+      "tests": ["state-scoped partner set", "Kannada language flag on the partner"],
+      "expect": {
+        "MICRO": "ELIGIBLE",
+        "notes": "Confirms jurisdiction filtering does not leak Maharashtra partners into a Karnataka result."
+      },
+      "applicant": {
+        "name": null,
+        "age": 44,
+        "gender": "FEMALE",
+        "category": "SC",
+        "annual_family_income": 145000,
+        "state": "Karnataka",
+        "district": "Dharwad",
+        "lat": 15.4589,
+        "lng": 75.0078,
+        "intent": "LIVELIHOOD",
+        "purpose": "PLACEHOLDER_artisan_activity",
+        "project_cost": 60000,
+        "documents_available": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "PHOTO", "RESIDENCE_PROOF", "QUOTATION"],
+        "preferred_language": "kn"
+      }
+    },
+    {
+      "id": "P24",
+      "label": "Flower vending, Madurai — Tamil Nadu micro applicant",
+      "tests": ["Tamil language flag", "MFI closest, SCA also eligible"],
+      "expect": {
+        "MICRO": "ELIGIBLE",
+        "notes": "Paired with P18, who is in the same district but cannot state an income — same place, different outcome, which is a good demo beat."
+      },
+      "applicant": {
+        "name": null,
+        "age": 37,
+        "gender": "FEMALE",
+        "category": "SC",
+        "annual_family_income": 132000,
+        "state": "Tamil Nadu",
+        "district": "Madurai",
+        "lat": 9.9312,
+        "lng": 78.1224,
+        "intent": "LIVELIHOOD",
+        "purpose": "PLACEHOLDER_petty_trade",
+        "project_cost": 45000,
+        "documents_available": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "PHOTO", "RESIDENCE_PROOF", "QUOTATION"],
+        "preferred_language": "ta"
+      }
+    },
+    {
+      "id": "P25",
+      "label": "Beauty parlour, Nagpur — asks for the shortest moratorium",
+      "tests": ["requested_moratorium_months at the scheme minimum is honoured"],
+      "expect": {
+        "MICRO": "ELIGIBLE",
+        "notes": "moratorium_months must come out as the requested 3, not the scheme default. The applicant's choice inside the permitted band is theirs."
+      },
+      "applicant": {
+        "name": null,
+        "age": 26,
+        "gender": "FEMALE",
+        "category": "SC",
+        "annual_family_income": 210000,
+        "state": "Maharashtra",
+        "district": "Nagpur",
+        "lat": 21.1458,
+        "lng": 79.0882,
+        "intent": "LIVELIHOOD",
+        "purpose": "PLACEHOLDER_service_unit",
+        "project_cost": 125000,
+        "requested_moratorium_months": 3,
+        "documents_available": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "PAN", "PHOTO", "RESIDENCE_PROOF", "QUOTATION"],
+        "preferred_language": "mr"
+      }
+    },
+    {
+      "id": "P26",
+      "label": "Seasonal jaggery unit, Ahmednagar — asks for a moratorium longer than allowed",
+      "tests": ["requested_moratorium_months is clamped to the scheme maximum, not rejected"],
+      "expect": {
+        "MICRO": "ELIGIBLE",
+        "notes": "Requests 24 months against a 12-month ceiling. The engine clamps and the UI must say it clamped — silently granting 24 would misstate the schedule, silently ignoring the request would be rude."
+      },
+      "applicant": {
+        "name": null,
+        "age": 40,
+        "gender": "MALE",
+        "category": "SC",
+        "annual_family_income": 205000,
+        "state": "Maharashtra",
+        "district": "Ahmednagar",
+        "lat": 19.0948,
+        "lng": 74.748,
+        "intent": "LIVELIHOOD",
+        "purpose": "PLACEHOLDER_artisan_activity",
+        "project_cost": 130000,
+        "requested_moratorium_months": 24,
+        "documents_available": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "PAN", "PHOTO", "RESIDENCE_PROOF", "QUOTATION"],
+        "preferred_language": "mr"
+      }
+    },
+    {
+      "id": "P27",
+      "label": "Cycle repair shop, Coimbatore — wants no moratorium at all",
+      "tests": ["requested_moratorium_months of 0 is clamped up to the scheme minimum"],
+      "expect": {
+        "MICRO": "ELIGIBLE",
+        "notes": "Zero is a legitimate request and an illegitimate outcome: the scheme's floor is 3. Tests the lower end of the same clamp as P26, and confirms 0 is not treated as 'not supplied'."
+      },
+      "applicant": {
+        "name": null,
+        "age": 33,
+        "gender": "MALE",
+        "category": "SC",
+        "annual_family_income": 178000,
+        "state": "Tamil Nadu",
+        "district": "Coimbatore",
+        "lat": 11.0168,
+        "lng": 76.9558,
+        "intent": "LIVELIHOOD",
+        "purpose": "PLACEHOLDER_service_unit",
+        "project_cost": 75000,
+        "requested_moratorium_months": 0,
+        "documents_available": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "PHOTO", "RESIDENCE_PROOF", "QUOTATION"],
+        "preferred_language": "ta"
+      }
+    },
+    {
+      "id": "P28",
+      "label": "Goods auto, Solapur — term loan in the lowest rate band",
+      "tests": ["interest_rules band selection, upper edge of band 1", "RRB partner eligible"],
+      "expect": {
+        "TERM": "ELIGIBLE",
+        "MICRO": "NOT_ELIGIBLE",
+        "notes": "Project cost 500000, so the loan lands at the top of the first band. P28/P29/P30 together prove the rate is resolved from data rather than hardcoded."
+      },
+      "applicant": {
+        "name": null,
+        "age": 30,
+        "gender": "MALE",
+        "category": "SC",
+        "annual_family_income": 320000,
+        "state": "Maharashtra",
+        "district": "Solapur",
+        "lat": 17.6599,
+        "lng": 75.9064,
+        "intent": "LIVELIHOOD",
+        "purpose": "PLACEHOLDER_transport",
+        "project_cost": 500000,
+        "documents_available": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "PAN", "PHOTO", "RESIDENCE_PROOF", "QUOTATION", "PROJECT_REPORT", "BANK_STATEMENT"],
+        "preferred_language": "mr"
+      }
+    },
+    {
+      "id": "P29",
+      "label": "Dairy unit, Nashik — term loan in the middle rate band",
+      "tests": ["interest_rules band 2", "PSB partner eligible, MFI excluded by scheme"],
+      "expect": {
+        "TERM": "ELIGIBLE",
+        "notes": "Also the persona for PARTNER_TYPE_NOT_ALLOWED_BY_SCHEME: the two Maharashtra micro finance institutions are excluded by the scheme's allowed_partner_types, not by distance or health."
+      },
+      "applicant": {
+        "name": null,
+        "age": 42,
+        "gender": "MALE",
+        "category": "SC",
+        "annual_family_income": 380000,
+        "state": "Maharashtra",
+        "district": "Nashik",
+        "lat": 19.9975,
+        "lng": 73.7898,
+        "intent": "LIVELIHOOD",
+        "purpose": "PLACEHOLDER_agri_allied",
+        "project_cost": 600000,
+        "documents_available": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "PAN", "PHOTO", "RESIDENCE_PROOF", "QUOTATION", "PROJECT_REPORT", "BANK_STATEMENT"],
+        "preferred_language": "mr"
+      }
+    },
+    {
+      "id": "P30",
+      "label": "Printing press, Chennai — term loan in the top rate band",
+      "tests": ["interest_rules band 3, unbounded upper edge", "LOAN_ABOVE_MAX_TICKET excludes some but not all partners"],
+      "expect": {
+        "TERM": "ELIGIBLE",
+        "notes": "Cost 2500000 puts the loan (2250000) in the open-ended top band, which is what this persona is really for. On partners, the outcome is narrower than expected: only the Chennai SCA survives, because LOAN_ABOVE_MAX_TICKET and OUTSIDE_JURISDICTION between them remove the other fourteen. The Madurai MFI is the informative exclusion — it is in the right state and fails on both capability and ticket size, so the 'why not' panel has two reasons to show."
+      },
+      "applicant": {
+        "name": null,
+        "age": 46,
+        "gender": "MALE",
+        "category": "SC",
+        "annual_family_income": 450000,
+        "state": "Tamil Nadu",
+        "district": "Chennai",
+        "lat": 13.0827,
+        "lng": 80.2707,
+        "intent": "LIVELIHOOD",
+        "purpose": "PLACEHOLDER_manufacturing",
+        "project_cost": 2500000,
+        "documents_available": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "PAN", "PHOTO", "RESIDENCE_PROOF", "QUOTATION", "PROJECT_REPORT", "BANK_STATEMENT", "GUARANTOR_FORM"],
+        "preferred_language": "ta"
+      }
+    },
+    {
+      "id": "P31",
+      "label": "Cold storage, Jaipur — a loan larger than any partner writes",
+      "tests": ["loan_exceeds_all_tickets true", "LOAN_ABOVE_MAX_TICKET for every partner", "loan capped by loan_pct_cap"],
+      "expect": {
+        "TERM": "ELIGIBLE",
+        "partners_for_recommended": "none",
+        "notes": "Project cost at the scheme's unit-cost ceiling. The resulting loan is above the largest max_ticket in the registry, so this reports a capacity gap rather than an eligibility failure. Deliberately designed into data/partners.seed.json."
+      },
+      "applicant": {
+        "name": null,
+        "age": 49,
+        "gender": "MALE",
+        "category": "SC",
+        "annual_family_income": 490000,
+        "state": "Rajasthan",
+        "district": "Jaipur",
+        "lat": 26.9124,
+        "lng": 75.7873,
+        "intent": "LIVELIHOOD",
+        "purpose": "PLACEHOLDER_manufacturing",
+        "project_cost": 5000000,
+        "documents_available": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "PAN", "PHOTO", "RESIDENCE_PROOF", "QUOTATION", "PROJECT_REPORT", "BANK_STATEMENT", "GUARANTOR_FORM"],
+        "preferred_language": "hi"
+      }
+    },
+    {
+      "id": "P32",
+      "label": "Marble polishing unit, Jaipur — served by an out-of-state partner",
+      "tests": ["jurisdiction_states is not the partner's own state column"],
+      "expect": {
+        "TERM": "ELIGIBLE",
+        "partners_for_recommended": "two",
+        "notes": "A Bhopal-based public sector bank lists Rajasthan in its jurisdiction. If the engine had filtered on partner.state this applicant would lose an eligible lender. That is why the filter reads jurisdiction_states."
+      },
+      "applicant": {
+        "name": null,
+        "age": 36,
+        "gender": "MALE",
+        "category": "SC",
+        "annual_family_income": 340000,
+        "state": "Rajasthan",
+        "district": "Jaipur",
+        "lat": 26.9124,
+        "lng": 75.7873,
+        "intent": "LIVELIHOOD",
+        "purpose": "PLACEHOLDER_agri_allied",
+        "project_cost": 400000,
+        "documents_available": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "PAN", "PHOTO", "RESIDENCE_PROOF", "QUOTATION", "PROJECT_REPORT", "BANK_STATEMENT"],
+        "preferred_language": "hi"
+      }
+    },
+    {
+      "id": "P33",
+      "label": "Tent house, Jodhpur — under the state agency's minimum ticket",
+      "tests": ["LOAN_BELOW_MIN_TICKET excludes one partner while another survives"],
+      "expect": {
+        "TERM": "ELIGIBLE",
+        "partners_for_recommended": "one",
+        "notes": "The nearest and largest partner is excluded for writing nothing under 300000; the survivor is the out-of-state bank from P32. The exclusion list is what explains 'why not the obvious one'."
+      },
+      "applicant": {
+        "name": null,
+        "age": 34,
+        "gender": "FEMALE",
+        "category": "SC",
+        "annual_family_income": 295000,
+        "state": "Rajasthan",
+        "district": "Jodhpur",
+        "lat": 26.2389,
+        "lng": 73.0243,
+        "intent": "LIVELIHOOD",
+        "purpose": "PLACEHOLDER_service_enterprise",
+        "project_cost": 300000,
+        "documents_available": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "PAN", "PHOTO", "RESIDENCE_PROOF", "QUOTATION", "PROJECT_REPORT"],
+        "preferred_language": "hi"
+      }
+    },
+    {
+      "id": "P34",
+      "label": "Rice hulling, Gorakhpur — regional rural bank at the top of its range",
+      "tests": ["RRB near its max_ticket", "distance ranking across a long gap"],
+      "expect": {
+        "TERM": "ELIGIBLE",
+        "notes": "Loan 630000 against the RRB's 800000 ceiling. Both UP partners survive and they are ~200 km apart, so the distance ranking is visibly meaningful rather than a rounding contest."
+      },
+      "applicant": {
+        "name": null,
+        "age": 43,
+        "gender": "MALE",
+        "category": "SC",
+        "annual_family_income": 310000,
+        "state": "Uttar Pradesh",
+        "district": "Gorakhpur",
+        "lat": 26.7606,
+        "lng": 83.3732,
+        "intent": "LIVELIHOOD",
+        "purpose": "PLACEHOLDER_service_enterprise",
+        "project_cost": 700000,
+        "documents_available": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "PAN", "PHOTO", "RESIDENCE_PROOF", "QUOTATION", "PROJECT_REPORT", "BANK_STATEMENT"],
+        "preferred_language": "hi"
+      }
+    },
+    {
+      "id": "P35",
+      "label": "Plastics factory, Bengaluru — above the scheme's unit cost ceiling",
+      "tests": ["PROJECT_COST_WITHIN_UNIT_COST fails on TERM", "REDUCE_NUMERIC remediation on project cost"],
+      "expect": {
+        "TERM": "NOT_ELIGIBLE",
+        "MICRO": "NOT_ELIGIBLE",
+        "EDU": "NOT_ELIGIBLE",
+        "reason_codes": ["PROJECT_COST_WITHIN_UNIT_COST"],
+        "notes": "One rupee above the ceiling. The remediation must state the reduction needed, which is the useful answer: bring the project inside the ceiling or seek commercial credit for the balance."
+      },
+      "applicant": {
+        "name": null,
+        "age": 51,
+        "gender": "MALE",
+        "category": "SC",
+        "annual_family_income": 480000,
+        "state": "Karnataka",
+        "district": "Bengaluru Urban",
+        "lat": 12.9716,
+        "lng": 77.5946,
+        "intent": "LIVELIHOOD",
+        "purpose": "PLACEHOLDER_manufacturing",
+        "project_cost": 5000001,
+        "documents_available": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "PAN", "PHOTO", "RESIDENCE_PROOF", "QUOTATION", "PROJECT_REPORT", "BANK_STATEMENT", "GUARANTOR_FORM"],
+        "preferred_language": "kn"
+      }
+    },
+    {
+      "id": "P36",
+      "label": "Engineering degree in Bengaluru — education loan, study in India",
+      "tests": ["EDUCATION scheme ELIGIBLE", "WAIVED moratorium", "India cost ceiling and India rate", "zero margin"],
+      "expect": {
+        "EDU": "ELIGIBLE",
+        "MICRO": "NOT_ELIGIBLE",
+        "TERM": "NOT_ELIGIBLE",
+        "notes": "The WAIVED code path: no interest accrues during the moratorium, so the schedule shows zero-payment rows and the EMI equals a plain amortisation of the principal."
+      },
+      "applicant": {
+        "name": null,
+        "age": 19,
+        "gender": "FEMALE",
+        "category": "SC",
+        "annual_family_income": 220000,
+        "state": "Karnataka",
+        "district": "Bengaluru Urban",
+        "lat": 12.9716,
+        "lng": 77.5946,
+        "intent": "EDUCATION",
+        "purpose": "PLACEHOLDER_professional_course_india",
+        "project_cost": 800000,
+        "education": {
+          "admission_confirmed": true,
+          "study_location": "INDIA",
+          "course_name": "PLACEHOLDER_four_year_engineering",
+          "course_duration_months": 48
+        },
+        "documents_available": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "PAN", "PHOTO", "RESIDENCE_PROOF", "ADMISSION_LETTER", "FEE_STRUCTURE", "MARKSHEETS"],
+        "preferred_language": "kn"
+      }
+    },
+    {
+      "id": "P37",
+      "label": "Master's abroad — education loan, purpose-specific ceiling binds",
+      "tests": ["abroad cost ceiling rule overrides the scheme ceiling", "abroad rate", "binding_constraint is LOAN_PCT_CAP"],
+      "expect": {
+        "EDU": "ELIGIBLE",
+        "notes": "Course cost 4000000 is clipped to the abroad ceiling before the percentage cap applies, so the loan is 90% of the ceiling, not 90% of the course cost. The UI must show both the clip and the cap — an applicant told '2700000' with no explanation will assume an error."
+      },
+      "applicant": {
+        "name": null,
+        "age": 23,
+        "gender": "MALE",
+        "category": "SC",
+        "annual_family_income": 410000,
+        "state": "Tamil Nadu",
+        "district": "Chennai",
+        "lat": 13.0827,
+        "lng": 80.2707,
+        "intent": "EDUCATION",
+        "purpose": "PLACEHOLDER_professional_course_abroad",
+        "project_cost": 4000000,
+        "education": {
+          "admission_confirmed": true,
+          "study_location": "ABROAD",
+          "course_name": "PLACEHOLDER_masters_abroad",
+          "course_duration_months": 24
+        },
+        "documents_available": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "PAN", "PHOTO", "RESIDENCE_PROOF", "ADMISSION_LETTER", "FEE_STRUCTURE", "MARKSHEETS", "GUARANTOR_FORM"],
+        "preferred_language": "ta"
+      }
+    },
+    {
+      "id": "P38",
+      "label": "Awaiting counselling result, Nashik — admission not yet confirmed",
+      "tests": ["ADMISSION_CONFIRMED fails on a stated false", "OBTAIN_DOCUMENT remediation naming the admission letter"],
+      "expect": {
+        "EDU": "NOT_ELIGIBLE",
+        "reason_codes": ["ADMISSION_CONFIRMED"],
+        "notes": "Explicitly false, not unknown. Distinct from P39 and the distinction matters: this applicant has an answer and it is 'not yet', which is a wait, not a missing field."
+      },
+      "applicant": {
+        "name": null,
+        "age": 18,
+        "gender": "MALE",
+        "category": "SC",
+        "annual_family_income": 175000,
+        "state": "Maharashtra",
+        "district": "Nashik",
+        "lat": 19.9975,
+        "lng": 73.7898,
+        "intent": "EDUCATION",
+        "purpose": "PLACEHOLDER_professional_course_india",
+        "project_cost": 600000,
+        "education": {
+          "admission_confirmed": false,
+          "study_location": "INDIA",
+          "course_name": "PLACEHOLDER_four_year_engineering",
+          "course_duration_months": 48
+        },
+        "documents_available": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "PHOTO", "RESIDENCE_PROOF", "MARKSHEETS"],
+        "preferred_language": "mr"
+      }
+    },
+    {
+      "id": "P39",
+      "label": "Exploring options, Lucknow — admission status not asked yet",
+      "tests": ["ADMISSION_CONFIRMED unevaluable", "INDETERMINATE on the education scheme"],
+      "expect": {
+        "EDU": "INDETERMINATE",
+        "notes": "The realistic state of a student browsing in April. 'We need one more answer' must read differently from P38's 'not yet admitted' and from a rejection."
+      },
+      "applicant": {
+        "name": null,
+        "age": 20,
+        "gender": "FEMALE",
+        "category": "SC",
+        "annual_family_income": 198000,
+        "state": "Uttar Pradesh",
+        "district": "Lucknow",
+        "lat": 26.8467,
+        "lng": 80.9462,
+        "intent": "EDUCATION",
+        "purpose": "PLACEHOLDER_professional_course_india",
+        "project_cost": 450000,
+        "education": {
+          "admission_confirmed": null,
+          "study_location": "INDIA",
+          "course_name": null,
+          "course_duration_months": null
+        },
+        "documents_available": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "PHOTO"],
+        "preferred_language": "hi"
+      }
+    },
+    {
+      "id": "P40",
+      "label": "Nursing diploma, Bhopal — eligible, paperwork incomplete",
+      "tests": ["ELIGIBLE with checklist.ready false", "checklist mandatory_missing greater than zero", "PSB serving education in Madhya Pradesh"],
+      "expect": {
+        "EDU": "ELIGIBLE",
+        "checklist": "ready false",
+        "notes": "The separation that makes Differentiator B work: eligibility and file-completeness are different questions. This applicant qualifies and would still be turned away at the counter, so the packet screen has real work to do. Note this is the same state as P20, where a micro applicant found no partner at all — education is covered there, livelihood is not."
+      },
+      "applicant": {
+        "name": null,
+        "age": 21,
+        "gender": "FEMALE",
+        "category": "SC",
+        "annual_family_income": 155000,
+        "state": "Madhya Pradesh",
+        "district": "Bhopal",
+        "lat": 23.2599,
+        "lng": 77.4126,
+        "intent": "EDUCATION",
+        "purpose": "PLACEHOLDER_professional_course_india",
+        "project_cost": 500000,
+        "education": {
+          "admission_confirmed": true,
+          "study_location": "INDIA",
+          "course_name": "PLACEHOLDER_nursing_diploma",
+          "course_duration_months": 36
+        },
+        "documents_available": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "PHOTO", "ADMISSION_LETTER"],
+        "preferred_language": "hi"
+      }
+    }
+  ]
+}

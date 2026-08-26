@@ -1,0 +1,70 @@
+{
+  "_DO_NOT_CITE": "READ THIS BEFORE YOU USE ANY NUMBER FROM THIS FILE.",
+  "_README": {
+    "what_this_is": "A FIXTURE, not data. schemes.seed.json is almost entirely null because we do not yet have the official guidelines, and a null parameter makes the engine return NOT_COMPUTABLE by design. That is correct behaviour but it means nothing can be exercised — no golden tests, no personas CLI, no UI. This file supplies invented values for exactly those null slots so the machinery can be tested end to end.",
+    "why_it_is_a_separate_file": "So that no invented figure can ever be mistaken for a transcribed one. schemes.seed.json stays pristine: real guideline values drop into it and this file is deleted. If you find yourself copying a value from here into there, stop.",
+    "authority": "NONE. Every value below is arbitrary. Not one of them came from a scheme guideline, a rate card, or any document. They were chosen to be round and boring so that a hand-check on paper is easy.",
+    "how_it_is_enforced": "The loader in src/lib/dataset.ts sets figures_authoritative:false on every result computed with this overlay applied. The UI renders a permanent banner and every figure gets an unverified badge. There is a test (tests/dataset.honesty.test.ts) asserting that applying the overlay can never set figures_authoritative to true.",
+    "when_to_delete_this_file": "The moment data/schemes.seed.json has verified:true on all three schemes. Delete it, run the tests, and every number in the app becomes defensible."
+  },
+
+  "global_eligibility": {
+    "age_min": 18,
+    "age_max": 60
+  },
+
+  "schemes": {
+    "MICRO": {
+      "min_loan": 10000,
+      "min_project_cost": 0,
+      "margin_pct": 0.05,
+      "subsidy_pct": 0.10,
+      "subsidy_cap": 10000,
+      "tenure_months_max": 60,
+      "tenure_includes_moratorium": false,
+      "moratorium_months_default": 6,
+      "interest_rules": [
+        { "applies_when": {}, "annual_rate_pct": 8.0 }
+      ]
+    },
+
+    "TERM": {
+      "min_loan": 100000,
+      "min_project_cost": 140001,
+      "margin_pct": 0.10,
+      "subsidy_pct": 0,
+      "subsidy_cap": 0,
+      "tenure_months_max": 84,
+      "tenure_includes_moratorium": false,
+      "moratorium_months_default": 6,
+      "interest_rules": [
+        { "applies_when": { "loan_band_max": 500000 }, "annual_rate_pct": 8.0 },
+        { "applies_when": { "loan_band_min": 500001, "loan_band_max": 2000000 }, "annual_rate_pct": 10.0 },
+        { "applies_when": { "loan_band_min": 2000001 }, "annual_rate_pct": 12.0 }
+      ]
+    },
+
+    "EDU": {
+      "min_loan": 50000,
+      "min_project_cost": 0,
+      "margin_pct": 0,
+      "subsidy_pct": 0,
+      "subsidy_cap": 0,
+      "max_unit_cost": 1000000,
+      "max_loan": 1000000,
+      "tenure_months_max": 120,
+      "tenure_includes_moratorium": false,
+      "moratorium_months_default": 12,
+      "cost_ceiling_rules": [
+        { "applies_when": { "purpose": "PLACEHOLDER_professional_course_india" }, "max_unit_cost": 1000000, "max_loan": 1000000 },
+        { "applies_when": { "purpose": "PLACEHOLDER_professional_course_abroad" }, "max_unit_cost": 3000000, "max_loan": 3000000 }
+      ],
+      "interest_rules": [
+        { "applies_when": { "purpose": "PLACEHOLDER_professional_course_india" }, "annual_rate_pct": 9.0 },
+        { "applies_when": { "purpose": "PLACEHOLDER_professional_course_abroad" }, "annual_rate_pct": 11.0 }
+      ]
+    }
+  },
+
+  "_note_on_moratorium_treatment": "The overlay deliberately does NOT override moratorium_interest_treatment. That field already has a placeholder value in the seed, and the three schemes happen to carry one of each treatment (MICRO=CAPITALISED, TERM=SERVICED, EDU=WAIVED), which means the personas run exercises all three code paths. That is a happy accident of the placeholder data, not a claim about the real schemes."
+}
