@@ -53,6 +53,22 @@ const eslintConfig = [
       ],
     },
   },
+  {
+    // Every navigation in RinSetu is a plain <a>, on purpose.
+    //
+    // CLAUDE.md hard rule 10: the target user is on a low-end phone. next/link
+    // ships a client runtime and prefetches routes on hover/viewport — on the
+    // persona explorer that is 80 speculative requests for a page whose whole
+    // point is that it needs no JavaScript at all. The intake form submits with
+    // GET for the same reason, so there is no client-side router to preserve.
+    //
+    // The rule this disables catches accidental <a> in a next/link codebase. This
+    // codebase has no next/link, so there is nothing for it to catch.
+    files: ["src/app/**/*.tsx", "src/components/**/*.tsx"],
+    rules: {
+      "@next/next/no-html-link-for-pages": "off",
+    },
+  },
 ];
 
 export default eslintConfig;

@@ -7,12 +7,13 @@
       "seed_plus_demo_overlay": "Scheme master + DEMO OVERLAY"
     },
     "note": {
-      "demo_overlay_applied": "Some figures below come from a demo overlay so the calculator can run. They are placeholders with no official basis and must not be quoted.",
-      "unverified_figures_present": "One or more figures below have not yet been verified against a published guideline."
+      "demo_overlay_applied": "Some figures in this build come from a demo overlay so the calculator can run. They are placeholders with no official basis and must not be quoted.",
+      "unverified_figures_present": "One or more figures in this build have not yet been verified against a published guideline."
     },
     "banner": {
       "not_authoritative": "Illustrative figures — not an offer",
-      "not_authoritative_detail": "This build is running on placeholder scheme parameters. Eligibility logic is real; the rupee amounts are not. Confirm every figure with the sanctioning authority before acting on it."
+      "not_authoritative_detail": "This build is running on placeholder scheme parameters. Eligibility logic is real; the rupee amounts are not. Confirm every figure with the sanctioning authority before acting on it.",
+      "not_authoritative_short": "Eligibility logic is real. The rupee amounts are placeholders, not offers."
     }
   },
 
@@ -190,6 +191,7 @@
     "subsidy_front": "applied upfront, reducing the loan",
     "subsidy_back": "credited against the loan later",
     "own_contribution": "Your contribution (margin)",
+    "own_contribution_help": "{pct} of the cost considered.",
     "gross_loan": "Loan before caps",
     "loan": "Loan amount",
     "annual_rate_pct": "Interest rate",
@@ -205,7 +207,7 @@
       "heading": "What limited the loan",
       "GROSS": "The loan is the project cost less your contribution and any upfront subsidy — no cap was reached.",
       "MAX_LOAN": "Limited by the scheme's maximum loan of {value}.",
-      "LOAN_PCT_CAP": "Limited to {pct}% of the cost considered."
+      "LOAN_PCT_CAP": "Limited to {pct} of the cost considered."
     },
     "below_min": "This works out below the scheme's own minimum loan of {value}, so it may not be sanctionable as it stands.",
     "moratorium": {
@@ -368,5 +370,130 @@
     "print": "Print",
     "show_details": "Show details",
     "hide_details": "Hide details"
+  },
+
+  "ui": {
+    "brand": "RinSetu",
+    "tagline": "Concessional credit, worked out in the open",
+    "meta": {
+      "title": "RinSetu — concessional credit, worked out in the open",
+      "description": "Matches an applicant to concessional credit schemes, computes the loan and instalment under that scheme's own rules, and routes to the nearest channel partner that can actually take the file."
+    },
+    "nav": {
+      "apply": "New application",
+      "personas": "Test cases"
+    },
+    "footer": {
+      "build": "A Smart India Hackathon 2026 prototype for problem statement SIH26092. Eligibility, loan and instalment figures are computed by deterministic code, not by a language model.",
+      "not_an_offer": "Scheme parameters in this build are placeholders and a demo overlay. Nothing on these screens is an offer of credit."
+    },
+    "home": {
+      "lede": "One short form. Every scheme checked, the loan worked out in full, and the branch that can take your file.",
+      "how_heading": "How it works",
+      "step_1_title": "You answer what you can",
+      "step_1_body": "Twelve questions, all skippable. Anything left blank is recorded as not known, never as zero.",
+      "step_2_title": "Every scheme is checked",
+      "step_2_body": "Each condition gets its own verdict — met, not met, or undecidable — with the figure it was checked against.",
+      "step_3_title": "The loan is computed, not estimated",
+      "step_3_body": "Subsidy, margin money, caps, moratorium treatment and the full month-by-month schedule, from the scheme's own parameters.",
+      "step_4_title": "You are routed to a branch",
+      "step_4_body": "Partners that cannot handle the scheme or the loan size are filtered out first, then the rest are ordered by distance and by throughput.",
+      "start": "Start an application",
+      "browse_personas": "Open the test cases",
+      "honesty_heading": "What this build will and will not do",
+      "will_1": "It shows every scheme you fail, and the smallest change that would flip each failure.",
+      "will_2": "It separates \"you do not qualify\" from \"we could not tell\", and never reports the second as the first.",
+      "will_3": "It stamps every figure with where the figure came from.",
+      "wont_1": "It will not quote a rate, ceiling or subsidy as fact until that figure has been transcribed from the published guideline. Until then the calculator runs on an openly-labelled demo overlay.",
+      "wont_2": "It will not use a language model to decide eligibility or produce any number.",
+      "schemes_heading": "Schemes in this build",
+      "detail_heading": "How this works, in detail"
+    },
+    "apply": {
+      "heading": "New application",
+      "lede": "Nothing here is stored. The result is a plain link you can save or share.",
+      "blank_hint": "Leave anything you do not know blank. The result will say which checks it could not decide, and why.",
+      "section_person": "About you",
+      "section_money": "Household income",
+      "section_project": "What the loan is for",
+      "section_education": "Course details",
+      "section_documents": "Documents you already hold",
+      "section_terms": "Repayment preferences",
+      "education_hint": "Only used when the loan is for education.",
+      "documents_hint": "Tick what you already have. Anything left unticked appears on the checklist as still to obtain.",
+      "terms_hint": "Leave blank to let each scheme's own limits decide.",
+      "location_hint": "Used to find channel partners whose jurisdiction covers you.",
+      "purpose_hint": "Grouped by scheme. Every purpose below is a placeholder pending the published guideline.",
+      "name": "Name",
+      "age": "Age",
+      "gender": "Gender",
+      "category": "Social category",
+      "income": "Annual family income",
+      "state": "State",
+      "district": "District",
+      "intent": "This loan is for",
+      "purpose": "Purpose",
+      "project_cost": "Total project cost",
+      "own_funds": "Money you can put in yourself",
+      "edu_admission": "Admission confirmed",
+      "edu_location": "Studying in",
+      "edu_course": "Course",
+      "edu_duration": "Course length in months",
+      "tenure": "Preferred repayment period in months",
+      "moratorium": "Preferred moratorium in months",
+      "submit": "See the result",
+      "unset": "Not answered",
+      "select_purpose": "Any purpose",
+      "select_state": "Not answered",
+      "optional": "optional"
+    },
+    "gender": {
+      "FEMALE": "Female",
+      "MALE": "Male",
+      "OTHER": "Other",
+      "UNDISCLOSED": "Prefer not to say"
+    },
+    "category": {
+      "SC": "Scheduled Caste",
+      "ST": "Scheduled Tribe",
+      "OBC": "Other Backward Class",
+      "GENERAL": "General",
+      "UNKNOWN": "Not answered"
+    },
+    "intent": {
+      "LIVELIHOOD": "A livelihood or business",
+      "EDUCATION": "Education",
+      "UNKNOWN": "Not answered"
+    },
+    "study_location": {
+      "INDIA": "India",
+      "ABROAD": "Abroad"
+    },
+    "result": {
+      "heading": "Result",
+      "for": "Prepared for {name}",
+      "answers_heading": "What you told us",
+      "empty_heading": "Nothing to work from",
+      "empty_detail": "This page needs answers in the link. Start a new application, or open one of the test cases.",
+      "invalid_heading": "That link could not be read",
+      "invalid_detail": "One of the values in the address is outside what the form can produce. Start again rather than trusting a half-read answer.",
+      "edit": "Change an answer",
+      "schemes_heading": "Every scheme, including the ones that do not fit",
+      "schemes_note": "A scheme you fail is shown with its reasons, not hidden. That is the point of the tool.",
+      "persona_heading": "Test case {id}",
+      "persona_detail": "This case exists to pin: {tests}"
+    },
+    "partner": {
+      "ranking_needs_location": "No location was shared, so these partners cannot be ordered by distance. They are ordered by throughput only."
+    },
+    "personas": {
+      "heading": "Test cases",
+      "lede": "Each case is a committed fixture that pins one edge of the engine — an income a rupee over the cap, an unknown age, a loan larger than any partner writes. Open one to see exactly what the engine does with it.",
+      "count": "{count} cases",
+      "pins": "Pins",
+      "open": "Open result",
+      "open_form": "Load into the form",
+      "outcome_heading": "Outcome"
+    }
   }
 }

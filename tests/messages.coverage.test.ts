@@ -249,6 +249,9 @@ describe('backwards — no stale English left behind', () => {
     'recommendation.none',
     'remediation.heading',
     'status.',
+    // Page-level copy: headings, form labels, navigation. Nothing in src/core/
+    // emits these, by construction — the core emits no English at all.
+    'ui.',
   ];
 
   const isPresentational = (key: string) =>

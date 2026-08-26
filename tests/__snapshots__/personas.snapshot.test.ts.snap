@@ -454,8 +454,8 @@ P40  Nursing diploma, Bhopal — eligible, paperwork…no    no    YES   EDU    
   4 eligible with zero capable partners
 
 Dataset: Scheme master + DEMO OVERLAY  figures_authoritative=false
-  ! Some figures below come from a demo overlay so the calculator can run. They are placeholders with no official basis and must not be quoted.
-  ! One or more figures below have not yet been verified against a published guideline.
+  ! Some figures in this build come from a demo overlay so the calculator can run. They are placeholders with no official basis and must not be quoted.
+  ! One or more figures in this build have not yet been verified against a published guideline.
 
 Loan, EMI and rate columns are illustrative. They are computed correctly from
 the parameters in play, and those parameters are placeholders. Do not quote them."
@@ -511,7 +511,7 @@ P40  Nursing diploma, Bhopal — eligible, paperwork…no    no    ?     —    
   0 eligible with zero capable partners
 
 Dataset: Scheme master (seed only)  figures_authoritative=false
-  ! One or more figures below have not yet been verified against a published guideline.
+  ! One or more figures in this build have not yet been verified against a published guideline.
 
 Loan, EMI and rate columns are illustrative. They are computed correctly from
 the parameters in play, and those parameters are placeholders. Do not quote them."

@@ -1,26 +1,173 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+ * RinSetu design system.
+ *
+ * The visual language is a government financial document — a sanction letter, a
+ * ledger, a stamped application form. That is a deliberate choice, not a
+ * decoration: this app's whole claim is that its figures are traceable, and a
+ * paper-document aesthetic makes provenance feel native rather than bolted on.
+ *
+ * Consequences you should keep if you edit this file:
+ *   - Hairline rules, not shadows. Documents have rules.
+ *   - Tabular numerals everywhere a figure appears, so columns of money align.
+ *   - No gradients, no glow, no rounded "card" look.
+ *   - One accent (ink blue) for actions. Verdict colours are muted, like stamps.
+ *   - Light only. Paper is paper; a dark mode would cost the metaphor and double
+ *     the surface area for no prototype benefit.
+ */
+
+@theme {
+  --color-paper: #fbfaf7;
+  --color-paper-sunk: #f3f1ea;
+  --color-paper-edge: #ffffff;
+
+  --color-ink: #17160f;
+  --color-ink-2: #4a4740;
+  --color-ink-3: #7b766a;
+
+  --color-rule: #ded9cb;
+  --color-rule-strong: #b6af9c;
+
+  --color-accent: #1f3a5f;
+  --color-accent-soft: #e8edf4;
+
+  --color-pass: #2f6b4f;
+  --color-pass-soft: #e9f1ec;
+  --color-fail: #9a3324;
+  --color-fail-soft: #f7ebe8;
+  --color-hold: #86671c;
+  --color-hold-soft: #f7f1e0;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-source-serif), Georgia, "Times New Roman", serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    /* Faint horizontal ruling, like a ledger sheet. Very low contrast on
+       purpose — it should register as texture, never as lines to read. */
+    background-image: linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 31px,
+      rgba(23, 22, 15, 0.028) 31px,
+      rgba(23, 22, 15, 0.028) 32px
+    );
+    background-size: 100% 32px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    letter-spacing: -0.011em;
+  }
+
+  /* Any element holding a figure. Applied via .num so it also works on <td>. */
+  .num {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
+  }
+
+  table {
+    border-collapse: collapse;
+  }
+
+  /* Focus ring that survives on paper without a glow. */
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  /*
+   * The rubber stamp. Used for provenance and for the "not an offer" banner.
+   * Rotated a degree and a half so it reads as applied-by-hand rather than as a
+   * UI chip — this is the one piece of visual personality in the system.
+   */
+  .stamp {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    border: 1.5px solid currentColor;
+    border-radius: 2px;
+    padding: 0.125rem 0.375rem;
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    line-height: 1.2;
+    opacity: 0.85;
+  }
+
+  .stamp-tilt {
+    transform: rotate(-1.5deg);
+  }
+
+  /* A labelled field as it appears on a form: label above, value below, rule under. */
+  .field-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--color-rule);
+  }
+
+  .sheet {
+    background-color: var(--color-paper-edge);
+    border: 1px solid var(--color-rule);
+  }
+
+  /* Section heading with a rule that runs to the end of the line. */
+  .rule-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .rule-heading::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background-color: var(--color-rule);
+  }
+
+  /*
+   * Disclosure labels that swap on open. CSS-only, so a <details> still toggles
+   * its own label with JavaScript unavailable — the same reason the intake form
+   * submits with GET.
+   */
+  .when-open {
+    display: none;
+  }
+
+  details[open] > summary .when-open {
+    display: inline;
+  }
+
+  details[open] > summary .when-closed {
+    display: none;
+  }
+}
+
+@media print {
+  body {
+    background-image: none;
+  }
+
+  .no-print {
+    display: none !important;
+  }
 }

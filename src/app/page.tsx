@@ -1,103 +1,150 @@
-import Image from "next/image";
+/**
+ * src/app/page.tsx
+ *
+ * The front page. A landing page, not a README: the claim, the two things you can
+ * do, and the honesty stamp. Everything longer than a line lives in the collapsed
+ * detail block at the foot.
+ *
+ * The layout rule that keeps it from turning back into documentation: each idea
+ * gets ONE horizontal band, not one full-width ruled row per item. Four steps read
+ * as a strip; four stacked rows read as a table of contents. Same for the schemes.
+ * If you add a section here, ask whether it can be a band — and if it needs a
+ * paragraph, it belongs in the detail block instead.
+ *
+ * Two things are load-bearing and should survive any rewording:
+ *
+ *   1. The provenance stamp stays first on the page. It is <DatasetBanner compact>,
+ *      the one-line form, allowed here only because this page shows no rupee amount
+ *      or rate anywhere. The dataset label, the full warning and the per-note
+ *      reasons are not dropped — they move to <DatasetDetail> at the foot. A screen
+ *      that prints a computed figure must use the full banner (see /result).
+ *   2. The scheme list is read from the dataset, not typed here, so this page cannot
+ *      drift out of step with what the engine will actually evaluate.
+ */
 
-export default function Home() {
+import { loadBundle } from '@/lib/dataset';
+import { translate } from '@/messages';
+import { DatasetBanner, DatasetDetail } from '@/components/DatasetBanner';
+import { PrimaryLink, SecondaryLink } from '@/components/ui';
+
+const STEPS = ['1', '2', '3', '4'] as const;
+
+/**
+ * A quiet band label. Deliberately not <Section>: that component's serif heading
+ * and full-width rule carry the weight of a document section, and three of them
+ * stacked on a landing page is the clutter this page is trying not to be.
+ */
+function BandLabel({ children }: { children: React.ReactNode }) {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <h2 className="text-ink-3 text-[0.6875rem] font-semibold tracking-wider uppercase">
+      {children}
+    </h2>
+  );
+}
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+export default function HomePage() {
+  const { dataset } = loadBundle();
+
+  return (
+    <div>
+      <DatasetBanner dataset={dataset} compact />
+
+      <h1 className="text-ink mt-8 font-serif text-2xl leading-tight font-semibold sm:text-4xl">
+        {translate('ui.tagline')}
+      </h1>
+      <p className="text-ink-2 mt-3 max-w-xl text-sm leading-relaxed sm:text-base">
+        {translate('ui.home.lede')}
+      </p>
+
+      <div className="no-print mt-6 flex flex-wrap gap-3">
+        <PrimaryLink href="/apply">{translate('ui.home.start')}</PrimaryLink>
+        <SecondaryLink href="/personas">{translate('ui.home.browse_personas')}</SecondaryLink>
+      </div>
+
+      {/* Titles only, four across. The step bodies are in the detail block below. */}
+      <div className="border-rule mt-12 border-t pt-4">
+        <BandLabel>{translate('ui.home.how_heading')}</BandLabel>
+        <ol className="mt-3 grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-4">
+          {STEPS.map((step) => (
+            <li key={step} className="flex gap-2">
+              <span className="num text-rule-strong shrink-0 text-lg leading-none font-semibold">
+                {step}
+              </span>
+              <span className="text-ink-2 text-xs leading-snug">
+                {translate(`ui.home.step_${step}_title`)}
+              </span>
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      <div className="border-rule mt-8 border-t pt-4">
+        <BandLabel>{translate('ui.home.schemes_heading')}</BandLabel>
+        <ul className="mt-3 grid gap-3 sm:grid-cols-3">
+          {dataset.schemes.map((scheme) => (
+            <li key={scheme.code} className="sheet px-3 py-2.5">
+              <div className="text-ink text-sm font-medium">
+                {scheme.name_i18n.en ?? scheme.code}
+              </div>
+              {/*
+                No provenance stamp here on purpose. A stamp must come from a
+                FieldProvenance that src/lib/dataset.ts derived; synthesising one
+                in a page would be exactly the override that ui.tsx warns against.
+                Per-figure provenance appears on /result, where the figures are.
+              */}
+              <div className="text-ink-3 mt-0.5 text-[0.6875rem]">{scheme.type}</div>
+              <p className="text-ink-2 mt-1.5 text-xs leading-relaxed">
+                {translate(scheme.description_key)}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <details className="border-rule mt-8 border-t pt-4">
+        <summary className="text-accent cursor-pointer text-xs font-medium">
+          {translate('ui.home.detail_heading')}
+        </summary>
+
+        <dl className="mt-4">
+          {STEPS.map((step) => (
+            <div key={step} className="border-rule border-b py-2.5 first:border-t">
+              <dt className="text-ink text-sm font-medium">
+                {translate(`ui.home.step_${step}_title`)}
+              </dt>
+              <dd className="text-ink-2 mt-0.5 text-xs leading-relaxed">
+                {translate(`ui.home.step_${step}_body`)}
+              </dd>
+            </div>
+          ))}
+        </dl>
+
+        <h3 className="text-ink-3 mt-6 text-[0.6875rem] font-semibold tracking-wider uppercase">
+          {translate('ui.home.honesty_heading')}
+        </h3>
+        <ul className="mt-2 space-y-2">
+          {(['will_1', 'will_2', 'will_3'] as const).map((key) => (
+            <li key={key} className="text-ink-2 flex gap-2 text-xs leading-relaxed">
+              <span aria-hidden className="text-pass shrink-0">
+                ✓
+              </span>
+              <span>{translate(`ui.home.${key}`)}</span>
+            </li>
+          ))}
+          {(['wont_1', 'wont_2'] as const).map((key) => (
+            <li key={key} className="text-ink-2 flex gap-2 text-xs leading-relaxed">
+              <span aria-hidden className="text-fail shrink-0">
+                ✗
+              </span>
+              <span>{translate(`ui.home.${key}`)}</span>
+            </li>
+          ))}
+        </ul>
+
+        <div className="mt-6">
+          <DatasetDetail dataset={dataset} />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </details>
     </div>
   );
 }
