@@ -170,4 +170,133 @@
   .no-print {
     display: none !important;
   }
+
+  /* Nothing on paper is mid-animation. Undo every reveal state unconditionally. */
+  .intro > *,
+  [data-reveal] {
+    animation: none !important;
+    filter: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/*
+ * Motion — the front page only.
+ *
+ * The page opens on one idea: the claim, the two buttons, and the provenance
+ * stamp. Everything under it sits blurred and ghosted until you scroll it into
+ * view, then unblurs and rises into place. The point is focus, not decoration:
+ * a landing page that shows six sections at once is the documentation problem
+ * this page already had.
+ *
+ * Four rules of the effect. Please keep all of them.
+ *
+ *   1. The default state is VISIBLE. The blur lives behind
+ *      `html[data-reveal-ready]`, an attribute only src/components/ScrollReveal.tsx
+ *      sets, and only after it has already revealed everything on screen. With
+ *      scripting off, a script error, or an ancient browser, the page is plain,
+ *      sharp and static. The failure mode is "no animation", never "no text" —
+ *      do not invert this by blurring in the base stylesheet.
+ *   2. Never blur the provenance banner. The "NOT AN OFFER" stamp is the one
+ *      thing on this page that must be legible in the first frame, before any
+ *      scrolling; see src/components/DatasetBanner.tsx.
+ *   3. Never put data-reveal on an element that can grow taller than the viewport
+ *      — an open <details>, a long list. Put it on the summary or the heading and
+ *      let the body render sharp, so nothing is ever blurred while it is being
+ *      read.
+ *   4. prefers-reduced-motion turns all of it off, and so does print.
+ *
+ * This was a CSS-only scroll-driven animation (`animation-timeline: view()`) and
+ * it is not any more. That version was invisible in every browser without scroll
+ * timelines, which is still most of them; a transition plus a scroll listener is
+ * duller to read and works everywhere.
+ */
+
+@keyframes intro-rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes cue-nudge {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(3px);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* On load only: the hero settles in. Delays stay under 300ms so the headline
+     is never meaningfully late. */
+  .intro > * {
+    animation: intro-rise 520ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+
+  .intro > *:nth-child(1) {
+    animation-delay: 60ms;
+  }
+
+  .intro > *:nth-child(2) {
+    animation-delay: 160ms;
+  }
+
+  .intro > *:nth-child(3) {
+    animation-delay: 260ms;
+  }
+
+  .scroll-cue {
+    animation: cue-nudge 2400ms ease-in-out infinite;
+  }
+
+  /*
+   * The ghosted state. Reachable only once ScrollReveal.tsx has marked everything
+   * already on screen as revealed, so nothing the reader can see ever flickers.
+   */  html[data-reveal-ready] [data-reveal] {
+    opacity: 0.12;
+    filter: blur(6px);
+    transform: translateY(10px);
+    transition:
+      opacity 620ms ease,
+      filter 620ms ease,
+      transform 620ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  html[data-reveal-ready] [data-reveal][data-revealed="true"] {
+    opacity: 1;
+    filter: blur(0);
+    transform: none;
+  }
+
+  /*
+   * A row of items shares one trigger, so stagger them here. Four steps then read
+   * as one left-to-right gesture instead of a single flash. The band's hairline
+   * rule is deliberately not revealed at all: the rule is drawn and the content
+   * fills in underneath it, which is how a form gets filled.
+   *
+   * The html[data-reveal-ready] prefix is not decorative. Without it these
+   * selectors lose to the `transition` shorthand above — a shorthand resets
+   * transition-delay to 0s — and the stagger silently does nothing. It did exactly
+   * that until it was measured.
+   */
+  html[data-reveal-ready] .reveal-group > *:nth-child(2) {
+    transition-delay: 90ms;
+  }
+
+  html[data-reveal-ready] .reveal-group > *:nth-child(3) {
+    transition-delay: 180ms;
+  }
+
+  html[data-reveal-ready] .reveal-group > *:nth-child(4) {
+    transition-delay: 270ms;
+  }
 }

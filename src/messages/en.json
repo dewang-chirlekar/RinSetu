@@ -407,7 +407,8 @@
       "wont_1": "It will not quote a rate, ceiling or subsidy as fact until that figure has been transcribed from the published guideline. Until then the calculator runs on an openly-labelled demo overlay.",
       "wont_2": "It will not use a language model to decide eligibility or produce any number.",
       "schemes_heading": "Schemes in this build",
-      "detail_heading": "How this works, in detail"
+      "detail_heading": "How this works, in detail",
+      "scroll_hint": "Scroll"
     },
     "apply": {
       "heading": "New application",
