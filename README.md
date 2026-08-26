@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# RinSetu
 
-## Getting Started
+**AI-assisted concessional credit scheme matching and assessment platform**
 
-First, run the development server:
+RinSetu is a web-based prototype for helping applicants understand which concessional-credit schemes they may qualify for, why they qualify or do not qualify, what the financial outcome looks like, which documents are required, and which channel partners may be suitable.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+The project is being developed for **Smart India Hackathon 2026 — SIH26092**.
+
+> **Illustrative figures — not an offer**
+>
+> The current prototype contains unverified/demo scheme figures and simulated partner-health data. These are explicitly marked in the application. Eligibility and financial calculations are performed deterministically from the loaded dataset; official figures must be verified against the relevant authority before real-world use.
+
+---
+
+## What RinSetu Does
+
+RinSetu takes an applicant's information and evaluates it against the available scheme definitions.
+
+It does not simply return a single "recommended" scheme.
+
+Instead, it evaluates the available schemes and shows:
+
+- Which schemes the applicant is eligible for
+- Which schemes they are not eligible for
+- Which schemes cannot yet be determined because information is missing
+- Why a scheme failed
+- What could change the eligibility outcome
+- Loan, subsidy, margin and EMI calculations where computable
+- Required documents
+- Suitable channel partners
+
+The central principle is:
+
+> **The numbers have to be defensible.**
+
+The deterministic engine, rather than an LLM, is responsible for eligibility and financial decisions.
+
+---
+
+## Current Prototype
+
+The current application provides an end-to-end prototype:
+
+```text
+Applicant
+    ↓
+Guided intake
+    ↓
+ApplicantProfile
+    ↓
+Deterministic recommendation engine
+    ↓
+Complete scheme verdict
+    ↓
+Financial results
+    ↓
+Documents + partner recommendations
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
