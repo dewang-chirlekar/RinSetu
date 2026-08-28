@@ -1,11 +1,13 @@
 # HANDOFF.md — notes for the next model working on RinSetu
 
-**Read this before you change anything under `src/core/`.**
+**Read this before you change anything under `src/core/` or `src/app/`/`src/components/`.**
 
-[PROGRESS.md](PROGRESS.md) tells you *where the project stands*. This file tells you *how
-not to break it*. It is written for a model picking this up cold, and it concentrates on
-the three areas where I found and fixed subtle correctness bugs: the **EMI engine**, the
-**eligibility predicates**, and **partner matching**.
+[PROGRESS.md](PROGRESS.md) tells you *where the project stands* (now Phase 3–6
+baseline, `b9f34ba` on `main`, 230/230 green). This file tells you *how not to
+break it*. It is written for a model picking this up cold, and it concentrates
+on the three areas where I found and fixed subtle correctness bugs: the **EMI
+engine**, the **eligibility predicates**, and **partner matching** — plus, since
+`4a8eea7`, the **UI invariants** that keep the ledger honest (§6–7).
 
 The person you are working for does not write code. They cannot catch a wrong number by
 reading a diff. That is why the tests, the provenance machinery and the generated
@@ -496,7 +498,7 @@ temporarily flipping a seed value.
 ## 6. The architecture boundary
 
 `src/core/` must not import from `src/llm/`, `src/app/`, `src/components/`, Next, React, or
-the filesystem. `npm run check:boundaries` enforces it in CI.
+the filesystem. `npm run check:boundaries` enforces it in CI — still passing at `b9f34ba`.
 
 Corollaries that trip people up:
 
@@ -506,6 +508,32 @@ Corollaries that trip people up:
   to the engine, never a participant in it.
 - Data reaches the core as function arguments. If the core needs something it doesn't have,
   pass it in — don't import a loader.
+
+### The UI boundary (new since `4a8eea7`)
+
+`src/app/` and `src/components/` are **consumers** of `src/core/`, never the other
+way around. Concrete rules the baseline follows — keep them:
+
+- **No arithmetic in components.** `LoanFigures.tsx:1` states it explicitly: every rupee
+  comes from `recommend()`/`computeLoan()`; the UI formats and labels only. If a number
+  is not on `LoanComputation` or `SchemeSpec`, add it to the engine with a test — do
+  not derive it in the UI.
+- **GET, not client state.** `/apply` submits with `method="get"` to `/result`; the query
+  string is the `ApplicantProfile` via `src/lib/applicant-params.ts` + Zod. This is
+  why the flow works with JS disabled and why `/result?persona=P01` is shareable.
+  Do not replace it with `useState`/`useEffect` form state.
+- **Blanks mean unknown.** Every input can be left blank; blank → empty string →
+  `null` → Zod default (`UNKNOWN`/`UNDISCLOSED`). Never add `required`.
+- **Provenance is rendered where the figure is.** `FieldRow` takes an optional
+  `provenance: FieldProvenance`; unverified → red stamp via `Provenance` in
+  `src/components/ui.tsx:28`. Do not invent provenance in a page — it is derived
+  in `src/lib/dataset.ts` via `isCitable()`.
+- **All schemes, always.** `result/page.tsx:185` renders the recommended card open
+  and every other `SchemeCard` collapsed with `StatusPill`. Collapsing is density,
+  not filtering. Do not filter `NOT_ELIGIBLE`/`INDETERMINATE`.
+- **Two orderings, never a blend.** `PartnerPanel.tsx:1` keeps `ranked_by_distance`
+  and `ranked_by_health` separate; the baseline hides the distance column when no
+  coordinates exist rather than synthesising a centroid (hard rule 1).
 
 ### The LLM boundary
 
@@ -517,7 +545,8 @@ The model is allowed in exactly two files, neither of which exists yet:
 `explain.ts` must not be given the authority or the data to introduce a fact. If you ever
 find yourself asking a model which scheme applies, or what the EMI is, you have broken the
 project. Everything must also work with the LLM disabled — the guided form is the
-**primary** intake path, not a fallback.
+**primary** intake path, not a fallback. The baseline (`4a8eea7`) preserves this:
+`/apply` → `/result` works with no LLM, no DB, no JS.
 
 ---
 
@@ -539,6 +568,7 @@ The one entry point for the UI, the CLI and the tests. Order:
 project cost, then lower rate, then scheme code for determinism. It is exported and named
 precisely so the UI can render it next to the recommendation. It is deliberately *not*
 "the largest loan": a bigger loan is not automatically a better outcome for a borrower.
+`SchemeCard.tsx:107` renders its `messageKey` beside the recommended card.
 
 `pickRecommended` falls back to the first `ELIGIBLE` scheme when no scheme has computable
 figures — "which scheme applies" is still the honest answer to the question asked.
@@ -547,14 +577,30 @@ Note: no persona today can put two eligible schemes in front of this function (t
 three schemes are mutually exclusive — that is finding F2 in `VERIFY.md`), which is why
 `pickRecommended` is exported and tested directly. Don't inline it.
 
+### How the baseline calls it
+
+- `src/app/result/page.tsx:179` — `recommend({ applicant, ...loadBundle(), generatedAt })`
+  where `applicant` is either `loadPersonas().find(p=>p.id===personaId)` or
+  `parseApplicantParams(query)` (Zod-validated; throws → "unreadable link" notice).
+- `src/app/personas/page.tsx:93` — same call per row at render time, with one shared
+  `generatedAt` so the page has no clock noise. No outcomes are stored.
+
+If the UI needs something `recommend()` does not return, that is a core change with its
+own tests, in its own commit — not a field added in the component.
+
 ---
 
 ## 8. Checklist before you say you're done
 
-- [ ] `npm run check` exits 0, with **≥230 tests passing**.
+- [ ] `npm run check` exits 0, with **≥230 tests passing** (was 230 at `b9f34ba`).
 - [ ] No new number in `src/core/` or in `data/*.json` that you cannot cite. If you added
       one, it is `null` or its provenance source is honest and `VERIFY.md` is regenerated.
-- [ ] No hardcoded user-facing English in `src/core/` or in components — message keys only.
+- [ ] No hardcoded user-facing English in `src/core/` or in components — message keys only
+      (`src/messages/en.json`; `translate()` throws on missing key).
+- [ ] No arithmetic in `src/components/` or `src/app/` — only formatting of engine output.
+- [ ] GET-based intake still works with JS disabled (`/apply` → `/result` query string).
+- [ ] Every figure that has a `provenance` renders it; `DatasetBanner` is on every
+      result/personas page and `figures_authoritative` is false.
 - [ ] Any new core logic has tests **in the same change**, not "later".
 - [ ] `evaluable` is checked before `passed` anywhere you branch on a verdict.
 - [ ] Hard filters still run before soft ranking; nothing blends distance with health.

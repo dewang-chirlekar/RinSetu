@@ -1,8 +1,9 @@
 # PROGRESS.md — where RinSetu stands
 
-Written at the end of the session that built Phases 1–2. Everything below was verified
-by running it, not remembered. If you have no context on this project, read this file
-top to bottom, then read `CLAUDE.md`, then run the one command in
+Written at the end of Phases 1–2, updated after the Phase 3–6 baseline landed
+(commit `b9f34ba`, 2026-08-27). Everything below was verified by running it,
+not remembered. If you have no context on this project, read this file top to
+bottom, then read `CLAUDE.md`, then run the one command in
 [§8](#8-the-exact-command-to-continue).
 
 ---
@@ -25,7 +26,7 @@ number at all. Almost every design decision recorded below follows from that.
 
 ## 2. Current state: green
 
-Verified this session, all from `rinsetu/`:
+Verified 2026-08-27 from `rinsetu/` at `b9f34ba` on `main` (clean working tree):
 
 | check | command | result |
 | --- | --- | --- |
@@ -36,6 +37,7 @@ Verified this session, all from `rinsetu/`:
 | VERIFY.md freshness | `npm run check:verify` | up to date |
 | tests | `npm run test` | **9 files, 230 tests, all passing** |
 | demo CLI | `npm run personas` | prints 40 rows, EMI column populated |
+| dev server | `npm run dev` | renders `/`, `/apply`, `/result`, `/personas` |
 
 Per-file test counts (they should only ever go up):
 
@@ -52,10 +54,10 @@ Per-file test counts (they should only ever go up):
 230  total
 ```
 
-**Nothing is committed.** The only commit in the repo is
-`9f6bffc Initial commit from Create Next App`, on branch `master`. Every file listed in
-this document is either untracked or an uncommitted modification. See
-[§8](#8-the-exact-command-to-continue).
+Git: `main` is 4 commits ahead of `9f6bffc` — `6737439 initialize RinSetu
+project` → `4a8eea7 built frontend` → `5eb1b1e landing page ui changes` →
+`b9f34ba Update README.md`. Working tree clean. Earlier draft of this doc
+claimed "nothing is committed" — that was true at the Phase 1–2 gate, no longer.
 
 ---
 
@@ -173,7 +175,7 @@ Three decisions in the schema you should not undo without reading the header com
 
 ## 4. In progress / rough edges
 
-Nothing is half-finished in the sense of broken code — the gate is green. But three
+Nothing is half-finished in the sense of broken code — the gate is green. But four
 things are worth knowing:
 
 1. **`prisma generate` is not wired into install.** The generated client lives in
@@ -186,29 +188,51 @@ things are worth knowing:
    does not exist yet. `prisma.config.ts` is written so that `prisma generate` still works
    without it — Prisma's own `env()` helper throws while *loading the config*, which would
    take down typecheck on every laptop without credentials. `npm run seed` with no
-   `DATABASE_URL` prints a one-line explanation and exits 1. Verified.
+   `DATABASE_URL` prints a one-line explanation and exits 1. Verified. Unchanged since
+   Phase 2.
 
 3. **Prisma 7 requires a driver adapter.** `new PrismaClient()` with no arguments throws
    at construction. `@prisma/adapter-pg` is installed and wired in `prisma/seed.ts`.
    This was determined by running it against an unreachable database, not assumed — worth
    knowing because the error message is confusing if you meet it cold.
 
-## 5. Not started
+4. **UI is baseline-complete, not feature-complete.** The Phase 3–6 baseline shipped
+   in `4a8eea7` (see §3.6) gives a working end-to-end flow, but deliberately defers
+   maps, PDF, i18n and admin upload. Those are tracked in §5, not missing by accident.
 
-- **`README.md`** — still the 36-line create-next-app boilerplate.
-- **The entire UI.** `src/app/page.tsx` is still the create-next-app default page.
-  `src/components/` does not exist. This is the whole of Phase 3 and is the next session's
-  work — see §7.
+## 5. Not started / deferred after the UI baseline
+
+What shipped in `4a8eea7` (Phase 3–6 baseline):
+
+- Guided intake at `/apply` (GET → `/result`, no JS required, no LLM), verdict table
+  for all schemes, finance panel with amortisation schedule, partner ranking with hard
+  filters + health breakdown, document checklist, dataset/provenance banners, and the
+  `?persona=P01` fixture path. Design language from §6 is applied (ledger/paper,
+  `globals.css` + `src/components/ui.tsx`).
+
+What is still not started (ROADMAP §§4–9, in priority order):
+
 - **`src/llm/`** does not exist. Neither `extract.ts` (free text → profile) nor
   `explain.ts` (computed result → prose). Both are enhancements; the guided form is the
-  primary path and everything must work with the LLM disabled.
-- **Maps** (MapLibre + OSM tiles), **PDF packet** (`@react-pdf/renderer`),
-  **Hindi/Marathi translations**, **the admin health-data upload**, and
-  **`next-intl` proper** (currently the strict stand-in in `src/messages/index.ts`).
+  primary path and everything must work with the LLM disabled. Gemini adapter is in
+  `package.json` (`@google/generative-ai`) but unused.
+- **Map** — MapLibre GL JS + OSM raster tiles. `PartnerPanel` lists and ranks but
+  renders no map. Do not add PostGIS; distance is haversine in `src/core/`.
+- **PDF packet** — `@react-pdf/renderer` not installed; no `/api/packet` route.
+  Checklist renders on screen but does not download.
+- **Multilingual** — `src/messages/en.json` expanded; `next-intl` not installed,
+  no `hi.json`/`mr.json`, `src/messages/index.ts` is still the strict throw-on-missing
+  stand-in.
+- **Admin health-data upload** — no `/admin/*` route; `PartnerHealth.data_origin`
+  is SIMULATED everywhere.
+- **`DEMO_MODE` fixture cache + offline hardening** — no fixture cache for LLM
+  calls, no pre-cached tiles, no local-DB fallback.
+- **`README.md`** — was boilerplate at Phase 2; now a short honest overview at
+  `b9f34ba` (58 lines) but still not a setup guide.
 
 ---
 
-## 6. The design language, decided and not yet applied
+## 6. The design language — decided in Phase 2, applied in the baseline
 
 The user's explicit instruction was: **no generic AI gradient theme.** Keep it minimal,
 or replicate something related to the nature of the project.
@@ -220,38 +244,59 @@ to arrive correct*: the interface is a **ledger / government document**.
 - hairline rules instead of cards and shadows
 - tabular monospace figures, so columns of rupees line up and reconcile
 - rubber-stamp-style provenance badges
-- IBM Plex Sans / Mono / Serif — institutional, and has a real Devanagari cut for the
-  translation phase
+- IBM Plex Sans / Mono / Serif (via `next/font` Geist + Source Serif 4 — institutional, and
+  has a real Devanagari cut for the translation phase)
 - **no gradients, no glassmorphism, no glow**
 - mobile-first, usable at 360px — target users are on low-end phones
 
-None of this is implemented yet. It is recorded here so the next session does not
-re-litigate it.
+Applied in `src/app/globals.css`, `src/app/layout.tsx:19`, and
+`src/components/ui.tsx` / `DatasetBanner.tsx` / `LoanFigures.tsx` etc. in
+`4a8eea7` plus polish in `5eb1b1e` (`ScrollReveal`, hero at 76svh). Do not
+re-litigate; extend.
+
+### 3.6 UI baseline — `src/app/` and `src/components/` (new since Phase 2)
+
+| route | file | what it does |
+| --- | --- | --- |
+| `/` | `src/app/page.tsx` | Landing: provenance stamp (compact), claim, `/apply` + `/personas` CTAs, 4-step band, scheme list from dataset, detail block. |
+| `/apply` | `src/app/apply/page.tsx` | Guided intake, GET → `/result`. All option lists derived from dataset/partners/documents; blank → `undefined` → Zod default; no `required`, no geocoding. |
+| `/result` | `src/app/result/page.tsx` | Runs `recommend()` on query string or `?persona=P01`, renders `DatasetBanner` (full), answer summary, recommended `SchemeCard` + others. |
+| `/personas` | `src/app/personas/page.tsx` | 40 fixtures live through `recommend()` at render time; no stored outcomes. |
+
+Components: `ui.tsx` (Provenance/StatusPill/VerdictMark/FieldRow/DataOriginBadge), `DatasetBanner.tsx` (full + compact), `SchemeCard.tsx`, `VerdictList.tsx`, `LoanFigures.tsx` (incl. `computable: false` branch), `PartnerPanel.tsx` (dual ranking, exclusion reasons, SIMULATED badge), `ChecklistPanel.tsx`, `form.tsx`, `ScrollReveal.tsx`. Lib: `applicant-params.ts` (query ↔ `ApplicantProfile`), `format.ts`, `view.ts`.
+
+Invariants preserved: no `src/core/` import from `src/llm/`/`app/`/`components/`; LLM never decides; every figure carries `FieldProvenance` rendered as a stamp; failures kept with remediations.
 
 ## 7. The exact next step
 
-**Phase 3, the first half: the intake form and the verdict table.**
+Phase 3 first half (intake + verdict table) is done — `4a8eea7` shipped it. What
+remains is the deferred list in §5, in the order ROADMAP says to build it:
 
-1. Hand-write the shadcn-convention primitives into `src/components/ui/` (button, input,
-   label, radio-group, tooltip, accordion — the Radix packages are already installed).
-   Apply the §6 design language here, once, so nothing downstream re-decides it.
-2. Build the guided multi-step intake form. It is the **primary** path, not a fallback:
-   it must work with no LLM and no database. It produces an `ApplicantProfile` — validate
-   with `ApplicantProfileSchema` from `src/core/types.ts`.
-3. Build the verdict table: **every** scheme, passing and failing, each failing verdict
-   showing its reason and its remediation. Provenance badges on every figure;
-   dotted-underline plus tooltip wherever `verified: false`. Render the
-   not-authoritative banner — `dataset.figures_authoritative` is false and must be visible.
-4. Where a figure cannot be computed, render the "why is there no number" panel from
-   `computation.missing`, using the `field.<path>` message keys that already exist.
+1. **Maps (Phase 4 tail):** add MapLibre GL JS + OSM tiles to `PartnerPanel` / a
+   new `PartnerMap` component. Pure display; hard filters and haversine stay in
+   `src/core/`. Never geocode at request time.
+2. **PDF packet (Phase 6 tail):** install `@react-pdf/renderer`, add a packet
+   route that reuses `recommend()` output. This is why the file "arrives correct."
+3. **Multilingual (Phase 7):** install `next-intl`, add `hi.json` (and `mr.json`
+   if a native speaker is available), enforce do-not-translate glossary for scheme
+   names/amounts.
+4. **LLM boundaries (enhancement, Phases 3/7):** `src/llm/extract.ts` (text →
+   `ApplicantProfile` via Gemini structured output + Zod) and `src/llm/explain.ts`
+   (computed `RecommendationResult` → prose). Must work with LLM disabled.
+5. **Admin health upload (Phase 8):** `/admin/health-upload` CSV/XLSX → `PartnerHealth`
+   with `data_origin: "MIS_UPLOAD"`.
+6. **Demo hardening (Phase 9):** `DEMO_MODE=true` fixture cache, pre-cached tiles,
+   offline rehearsal.
 
-**Two constraints on that work.** Do not edit `src/core/` from the UI side — if the UI
+Pick **one** of the above per session and stop at the gate for review.
+
+**Two constraints still apply.** Do not edit `src/core/` from the UI side — if the UI
 needs something the core does not expose, that is a core change with its own tests, in
 its own commit. And every user-facing string is a key in `src/messages/en.json`; a
 hardcoded English sentence in a component is a bug (`tests/messages.coverage.test.ts`
 will not catch it for you, but a reviewer should).
 
-Read `docs-SIH26092-ROADMAP.md` §3 before starting.
+Read `docs/ROADMAP.md` §3 before starting.
 
 ## 8. The exact command to continue
 
@@ -262,21 +307,22 @@ green tree:
 npm install && npx prisma generate && npm run check
 ```
 
-That must end with `230 passed`. If it does not, stop and fix that before writing
-anything new — every claim in this document was true at exit 0.
+That must end with `230 passed` (9 files). If it does not, stop and fix that before
+writing anything new — every claim in this document was true at exit 0 on `b9f34ba`.
 
-Then, because the entire project is currently uncommitted, capture it before starting
-Phase 3:
+Working tree is clean at `b9f34ba`; no commit is needed before starting. The old
+instruction to `git add -A && git commit -m "Phases 1-2: ..."` was for the Phase 1–2
+gate when nothing was committed — that gate is now captured in `6737439`/`4a8eea7`.
 
-```bash
-git add -A && git commit -m "Phases 1-2: deterministic core, data layer, 230 tests, VERIFY.md generator, Prisma schema"
-```
-
-To see the engine work right now, with no database and no API key:
+To see the engine work with no database and no API key:
 
 ```bash
-npm run personas
+npm run personas          # 40 rows, live through recommend()
+npm run dev               # http://localhost:3000 — /, /apply, /result, /personas
 ```
+
+To see a single persona's full result: `npm run personas P19` or open
+`/result?persona=P19` in the browser.
 
 ## 9. Rules that are not negotiable
 
