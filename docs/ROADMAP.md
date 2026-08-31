@@ -2,7 +2,9 @@
 
 **Problem Statement:** SIH26092 — AI-Driven Scheme Matching for Marginalized Entrepreneurs
 **Working name:** RinSetu (*ṛin* = credit, *setu* = bridge). The PS itself says the goal is to "bridge the gap between the beneficiaries and the channelizing agencies," so the name argues your case for you. Rename freely.
-**Document owner:** _________ · **Last updated:** 2026-08-25
+**Document owner:** _________ · **Last updated:** 2026-08-31 · **HEAD:** `bd12a83` on `main`
+
+> **Progress through 2026-08-31:** Phases **0–2 complete, 3–6 baseline shipped** (`4a8eea7` + `5eb1b1e` + `bd12a83`). Deterministic core (eligibility + finance + partners + documents), 40 personas, 230 tests green, `npm run personas` and `/result` work end-to-end. UI baseline renders `/`, `/apply` (GET→`/result`), `/result` (verdict table + finance + partners + checklist), `/personas`. Deferred: MapLibre map, PDF packet, `next-intl` hi/mr, `src/llm/` extract+explain, admin health upload, offline demo hardening. See `docs/PROGRESS.md` §2/§5 for the gate.
 
 ---
 
@@ -353,16 +355,16 @@ Day counts assume a six-person team at student pace. **Logic before UI** — mos
 
 | Phase | Work | Days | Gate to pass before moving on |
 |---|---|---:|---|
-| **0** | **Verification spike.** Identify the sponsoring corporation. Obtain official guidelines. Transcribe the scheme master twice, independently, and diff. Confirm partner-list obtainability. Choose languages. | 2 | Scheme master committed with sources. **If guidelines are unobtainable, stop and reconsider the PS — do not code around it.** |
-| **1** | Skeleton: Next.js, Prisma schema, Supabase, seed scripts, Vercel deploy, CI. | 2 | `npm run seed` populates a live DB; a blank page is deployed |
-| **2** | **The heart.** Calculator + eligibility engine + remediation, headless, with golden and branch tests. No UI at all. | 4 | All 40 personas produce correct results from a CLI script |
-| **3** | Intake (guided form first, LLM free-text second) + recommendation UI incl. the verdict table. | 4 | End-to-end in English; form path works with the LLM disabled |
-| **4** | Partner registry, geocoding, MapLibre map, hard filters, health score, dual ranking. | 3 | Zero capability leakage; simulated chips visible |
-| **5** | **Differentiator A** — path-to-eligibility surfaced properly in the UI. | 2 | Every failure shows a concrete, actionable next step |
-| **6** | **Differentiator B** — document checklist + pre-filled PDF packet + partner notification. | 3 | A real PDF downloads with correct computed figures |
-| **7** | Multilingual: catalogs, LLM explanation in target language, do-not-translate glossary. | 3 | Full flow in every shipped language; no scheme name or amount ever translated |
-| **8** | Admin health upload, provenance badges everywhere, accessibility, mobile-first pass, empty/error states. | 3 | Lighthouse accessibility ≥ 90; works at 360px |
-| **9** | **Demo hardening.** `DEMO_MODE` fixture cache, pre-cached map tiles, local DB fallback, script, three rehearsals. | 3 | **Full demo runs with wifi physically off** |
+| **0** | **Verification spike.** Identify the sponsoring corporation. Obtain official guidelines. Transcribe the scheme master twice, independently, and diff. Confirm partner-list obtainability. Choose languages. | 2 | Scheme master committed with sources. **If guidelines are unobtainable, stop and reconsider the PS — do not code around it.** · **Status: partially done — seed holds placeholders + `ps_text`; 11 open questions recorded, VERIFY.md lists 55 unverified figures.** |
+| **1** | Skeleton: Next.js, Prisma schema, Supabase, seed scripts, Vercel deploy, CI. | 2 | `npm run seed` populates a live DB; a blank page is deployed · **✓ done — `6737439` (Vercel not yet deployed; Supabase project not yet created).** |
+| **2** | **The heart.** Calculator + eligibility engine + remediation, headless, with golden and branch tests. No UI at all. | 4 | All 40 personas produce correct results from a CLI script · **✓ done — 230 tests, `npm run personas` prints 40 rows.** |
+| **3** | Intake (guided form first, LLM free-text second) + recommendation UI incl. the verdict table. | 4 | End-to-end in English; form path works with the LLM disabled · **✓ baseline done — guided form (`/apply` GET→`/result`) + verdict table in `4a8eea7`; LLM extract/explain deferred.** |
+| **4** | Partner registry, geocoding, MapLibre map, hard filters, health score, dual ranking. | 3 | Zero capability leakage; simulated chips visible · **△ half — hard filters + haversine + health scoring + dual ranking done and tested; 15 fabricated partners on real coordinates; MapLibre map not yet rendered.** |
+| **5** | **Differentiator A** — path-to-eligibility surfaced properly in the UI. | 2 | Every failure shows a concrete, actionable next step · **✓ baseline done — `remediation.ts` + `VerdictList` show reason + next step for every failure/INDETERMINATE.** |
+| **6** | **Differentiator B** — document checklist + pre-filled PDF packet + partner notification. | 3 | A real PDF downloads with correct computed figures · **△ half — checklist resolver + `ChecklistPanel` done (mandatory/optional, have/missing); `@react-pdf/renderer` PDF route not yet built.** |
+| **7** | Multilingual: catalogs, LLM explanation in target language, do-not-translate glossary. | 3 | Full flow in every shipped language; no scheme name or amount ever translated · **○ not started — `en.json` 258 keys + strict `translate()` stand-in; `next-intl` + `hi.json`/`mr.json` pending.** |
+| **8** | Admin health upload, provenance badges everywhere, accessibility, mobile-first pass, empty/error states. | 3 | Lighthouse accessibility ≥ 90; works at 360px · **△ half — provenance banners + SIMULATED badges on every surface, mobile-first ledger design at 360 px; `/admin/health-upload` not yet built.** |
+| **9** | **Demo hardening.** `DEMO_MODE` fixture cache, pre-cached map tiles, local DB fallback, script, three rehearsals. | 3 | **Full demo runs with wifi physically off** · **○ not started — `DEMO_MODE` fixture cache + offline path pending.** |
 | | **Total** | **29** | ≈ 5–6 weeks at a student pace |
 
 ### If you only have ~10 days

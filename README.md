@@ -1,58 +1,156 @@
 # RinSetu
 
-**AI-assisted concessional credit scheme matching and assessment platform**
+**AI-assisted concessional credit scheme matching and assessment platform — SIH 2026, SIH26092**
 
-RinSetu is a web-based prototype for helping applicants understand which concessional-credit schemes they may qualify for, why they qualify or do not qualify, what the financial outcome looks like, which documents are required, and which channel partners may be suitable.
-
-The project is being developed for **Smart India Hackathon 2026 — SIH26092**.
+RinSetu helps Scheduled Caste applicants understand which concessional-credit schemes they may qualify for, why they qualify or do not qualify, what the financial outcome looks like under that scheme's own rules, which documents are required, and which Channel Partner can actually take the file.
 
 > **Illustrative figures — not an offer**
 >
-> The current prototype contains unverified/demo scheme figures and simulated partner-health data. These are explicitly marked in the application. Eligibility and financial calculations are performed deterministically from the loaded dataset; official figures must be verified against the relevant authority before real-world use.
+> This build runs on **unverified placeholder scheme parameters** plus a labelled demo overlay. Eligibility logic is real and tested; the rupee amounts are not. Every figure carries `source`/`provenance` and the banner `Illustrative figures — not an offer` is rendered wherever a number appears. See `VERIFY.md` for the list of 55 unverified figures. Nothing on screen is a sanction.
 
 ---
 
-## What RinSetu Does
+## Current state — 2026-08-31 (`bd12a83` on `main`, clean tree)
 
-RinSetu takes an applicant's information and evaluates it against the available scheme definitions.
+| gate | command | result |
+|---|---|---|
+| all | `npm run check` | **exit 0** |
+| typecheck | `npm run typecheck` | exit 0 |
+| lint | `npm run lint` | exit 0 |
+| boundaries | `npm run check:boundaries` | **passed** — `src/core/` imports nothing from `llm/`, `app/`, `components/`, Next, React or `fs` |
+| verify | `npm run check:verify` | **up to date** — `VERIFY.md` is generated from `data/*.json` |
+| tests | `npm run test` | **9 files, 230 tests, all passing** |
+| personas CLI | `npm run personas` | **40 rows** — 23 eligible, EMI populated |
+| dev server | `npm run dev` | `/`, `/apply`, `/result`, `/personas` render |
+| prod build | `npm run build` | compiled, 8 routes, First Load JS 103 kB |
 
-It does not simply return a single "recommended" scheme.
-
-Instead, it evaluates the available schemes and shows:
-
-- Which schemes the applicant is eligible for
-- Which schemes they are not eligible for
-- Which schemes cannot yet be determined because information is missing
-- Why a scheme failed
-- What could change the eligibility outcome
-- Loan, subsidy, margin and EMI calculations where computable
-- Required documents
-- Suitable channel partners
-
-The central principle is:
-
-> **The numbers have to be defensible.**
-
-The deterministic engine, rather than an LLM, is responsible for eligibility and financial decisions.
-
----
-
-## Current Prototype
-
-The current application provides an end-to-end prototype:
-
-```text
-Applicant
-    ↓
-Guided intake
-    ↓
-ApplicantProfile
-    ↓
-Deterministic recommendation engine
-    ↓
-Complete scheme verdict
-    ↓
-Financial results
-    ↓
-Documents + partner recommendations
 ```
+ 45  tests/eligibility.branches.test.ts
+ 44  tests/finance.golden.test.ts
+ 33  tests/loan.test.ts
+ 23  tests/dataset.honesty.test.ts
+ 21  tests/health.test.ts
+ 19  tests/partners.match.test.ts
+ 19  tests/recommend.ranking.test.ts
+ 16  tests/messages.coverage.test.ts
+ 10  tests/personas.snapshot.test.ts
+230  total
+```
+
+Dataset: 3 schemes (MICRO, TERM, EDU — all `verified: false`), 15 fabricated partners on real city coordinates, 15 `SIMULATED` health rows, 258 i18n keys, 40 persona fixtures. Figures authoritative: **false** for two independent reasons (non-citable figures + demo overlay active).
+
+### What's built
+
+**Deterministic core — `src/core/`** (pure, synchronous, no I/O):
+- `eligibility/` — predicates return `{code, passed, evaluable, messageKey}`; engine folds to `ELIGIBLE`/`NOT_ELIGIBLE`/`INDETERMINATE`; every failure keeps a remediation. Status precedence: broken outranks unevaluable.
+- `finance/` — single rounding policy (`rounding.ts`), cost-ceiling & rate rule tables, `terms.ts` (tenure inclusive/exclusive), `loan.ts` pipeline (eligible cost → subsidy → margin → gross loan → caps → rate → EMI), `emi.ts` with all three moratorium treatments (`CAPITALISED`/`SERVICED`/`WAIVED`) and amortisation. Golden tests pin EMIs to the rupee.
+- `partners/` — haversine distance, weighted health composite, hard filters then soft ranking (never blended).
+- `documents/resolve.ts` + `recommend.ts` (single entry point the UI calls, returns verdicts for **all** schemes).
+
+**UI baseline — `src/app/` + `src/components/`** (Phase 3–6 baseline, `4a8eea7`, polished in `5eb1b1e`):
+- `/` — landing: compact provenance stamp, claim, CTAs to `/apply` and `/personas`, 4-step band, scheme list from dataset (cannot drift), detail block. Ledger/paper design: warm paper, ink-navy, hairline rules, tabular monospace figures, stamp badges, no gradients. Mobile-first at 360 px.
+- `/apply` — guided intake, `GET → /result`, no JS required, no LLM. Every option list derived from dataset/partners/documents; blanks → `undefined` → Zod default; no `required`, no geocoding (distance shows "unknown" — never invents a centroid).
+- `/result` — runs `recommend()` on query string or `?persona=Pxx`, shows `DatasetBanner` (full), recommended `SchemeCard` + others collapsed with `StatusPill`, finance panel with schedule, partner ranking (dual: nearest vs fastest), exclusion reasons, checklist. Invariants: no arithmetic in components, every rupee from the engine.
+- `/personas` — 40 fixtures rendered live through `recommend()` at render time; no stored outcomes.
+
+**Data layer — `data/` + `src/lib/dataset.ts`**: 7 JSON files, one loader, `verified` derived via `isCitable()`, `figures_authoritative` false when any non-citable figure exists or overlay is applied, `VERIFY.md` generated with 4 structural findings (F1–F4) each with a live `check()` that refuses to write a false document.
+
+**Database — `prisma/schema.prisma` + `prisma/seed.ts`**: 8 models, validated, idempotent seed through the same loader. `DATABASE_URL` unset — Supabase project not yet created; `prisma generate` works without it; `npm run seed` prints a one-line explanation and exits 1 when missing.
+
+### What is not yet built
+
+- `src/llm/` (`extract.ts` / `explain.ts`) — Gemini adapter in `package.json` but unused. Guided form is primary; LLM is an enhancement that must work with `DEMO_MODE=true`.
+- Map — MapLibre GL JS + OSM raster tiles not yet added (`PartnerPanel` lists/ranks but renders no map).
+- PDF packet — `@react-pdf/renderer` not installed; checklist is on-screen only.
+- Multilingual — `next-intl` not installed; only `en.json` (258 keys); `hi.json`/`mr.json` pending.
+- Admin health upload — no `/admin/*`; all `PartnerHealth.data_origin` is `SIMULATED`.
+- Offline hardening — no fixture cache, no pre-cached tiles.
+
+See `docs/PROGRESS.md` §5 and `docs/ROADMAP.md` for the ordered plan.
+
+---
+
+## Quick start
+
+From `rinsetu/`:
+
+```bash
+npm install && npx prisma generate && npm run check
+# must end with 230 passed, 9 files — if not, stop and fix before writing new code
+
+npm run personas        # 40 rows live through recommend()
+npm run personas P19    # one persona in full detail
+npm run dev             # http://localhost:3000  — /, /apply, /result, /personas
+npm run verify:report   # regenerate VERIFY.md after editing data/*.json
+```
+
+Fresh clone needs `npx prisma generate` (client lives in `node_modules`; add `postinstall: prisma generate` when convenient). `DATABASE_URL` is unset — seed/build/test/dev do not need it.
+
+---
+
+## Architecture
+
+```
+guided form (/apply, GET → /result) ─┐
+                                     ├→ ApplicantProfile (Zod) → src/core/recommend() → RecommendationResult
+free text → LLM extract (planned) ───┘         │  eligibility + finance + partner match + checklist
+                                               └→ LLM explain (planned, narration only)
+                                               └→ UI: verdict table + finance + partners + checklist
+```
+
+Two invariants (`CLAUDE.md`):
+1. **The LLM never decides and never produces a number.** Only in `src/llm/extract.ts` (text → profile) and `src/llm/explain.ts` (computed result → prose).
+2. **Every figure carries provenance** — `source_url`, `source_date`, `verified`, `data_origin: SIMULATED` for health. Unverified stays in `VERIFY.md`.
+
+`src/core/` must not import from `src/llm/`, `src/app/`, `src/components/` — enforced by `scripts/check-boundaries.mjs` in CI.
+
+---
+
+## Project layout
+
+```
+rinsetu/
+├─ CLAUDE.md, VERIFY.md (generated), README.md
+├─ docs/  PROGRESS.md  ROADMAP.md  HANDOFF.md  FRAGILE.md  TEST-RECORD.md
+├─ data/  schemes.seed.json  schemes.demo-overlay.json  partners.seed.json
+│         partner-health.sim.json  health-scoring.json  documents.seed.json  personas.fixtures.json
+├─ prisma/  schema.prisma  seed.ts  prisma.config.ts
+├─ src/
+│  ├─ core/  types.ts  eligibility/  finance/  partners/  documents/  recommend.ts
+│  ├─ app/   layout.tsx  page.tsx  apply/page.tsx  result/page.tsx  personas/page.tsx
+│  ├─ components/  ui.tsx  DatasetBanner.tsx  SchemeCard.tsx  VerdictList.tsx
+│  │              LoanFigures.tsx  PartnerPanel.tsx  ChecklistPanel.tsx  form.tsx  ScrollReveal.tsx
+│  ├─ lib/   dataset.ts  applicant-params.ts  format.ts  view.ts
+│  └─ messages/  en.json  index.ts (strict throw-on-missing)
+└─ tests/  9 files, 230 tests  +  scripts/  check-boundaries.mjs  verify-report.ts  personas.ts
+```
+
+---
+
+## Why the numbers can be defended
+
+- Parameters live in `data/`, never in code. The engine is correct independent of the figures.
+- Predicates return **codes**, not sentences (`src/messages/en.json`; `translate()` throws on missing key).
+- Hard filters before soft ranking — a partner that cannot handle the scheme category never appears.
+- One rounding policy in `src/core/finance/rounding.ts`.
+- `INDETERMINATE` is a real answer — missing guideline data does not become "not eligible".
+- Tests accompany core logic in the same commit; 6 hand-computed EMI golden values pin all three moratorium treatments to the rupee.
+
+---
+
+## Docs
+
+- `docs/PROGRESS.md` — the one file to read cold (current state, what's built, what's deferred, next step).
+- `docs/HANDOFF.md` — how not to break the EMI engine, predicates, or matching.
+- `docs/FRAGILE.md` — what breaks silently vs loudly, and the one weak spot (`scheme.verified` copied not derived).
+- `docs/ROADMAP.md` — phased plan (29 days at student pace, ~10-day cut).
+- `docs/TEST-RECORD.md` — verbatim `npx vitest run --reporter=verbose` output at 230/230.
+- `CLAUDE.md` — constitution; overrides convenience.
+
+---
+
+## Stack (pinned)
+
+Next.js 15 · TypeScript strict · Tailwind + shadcn/ui · PostgreSQL (Supabase) · Prisma 7 · Vitest · MapLibre GL JS + OSM · `@google/generative-ai` (Gemini Flash) behind one adapter · Zod (+ `next-intl`, `@react-pdf/renderer` when those phases land).
+
+Distance is haversine in TypeScript. Do not add PostGIS, Redux, GraphQL, vector DB, Docker orchestration, or auth beyond one admin login.

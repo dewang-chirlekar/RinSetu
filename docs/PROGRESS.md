@@ -1,10 +1,16 @@
 # PROGRESS.md — where RinSetu stands
 
 Written at the end of Phases 1–2, updated after the Phase 3–6 baseline landed
-(commit `b9f34ba`, 2026-08-27). Everything below was verified by running it,
-not remembered. If you have no context on this project, read this file top to
-bottom, then read `CLAUDE.md`, then run the one command in
-[§8](#8-the-exact-command-to-continue).
+(`4a8eea7` + `5eb1b1e`), refreshed 2026-08-31 at `bd12a83` on `main`.
+Everything below was verified by running it, not remembered. If you have no
+context on this project, read this file top to bottom, then read `CLAUDE.md`,
+then run the one command in [§8](#8-the-exact-command-to-continue).
+
+> **2026-08-31 refresh:** `bd12a83 handoff & progress(frontend)` is now HEAD.
+> `npm run check` still exits 0 (230/230), `npm run build` compiles (8 routes),
+> `npm run personas` prints 40 rows. No `src/core/` or `data/` change since
+> `b9f34ba` — frontend and docs only. `README.md` rewritten from 58 lines to a
+> full setup + architecture doc; this file's §2/§8 updated to the new commit.
 
 ---
 
@@ -26,18 +32,19 @@ number at all. Almost every design decision recorded below follows from that.
 
 ## 2. Current state: green
 
-Verified 2026-08-27 from `rinsetu/` at `b9f34ba` on `main` (clean working tree):
+Verified 2026-08-31 from `rinsetu/` at `bd12a83` on `main` (clean working tree, `origin/main` up to date):
 
 | check | command | result |
 | --- | --- | --- |
 | everything | `npm run check` | **exit 0** |
 | typecheck | `npm run typecheck` | exit 0 |
 | lint | `npm run lint` | exit 0 |
-| architecture boundary | `npm run check:boundaries` | passed |
+| architecture boundary | `npm run check:boundaries` | passed — `src/core/` imports nothing from `llm/`, `app/`, `components/` |
 | VERIFY.md freshness | `npm run check:verify` | up to date |
 | tests | `npm run test` | **9 files, 230 tests, all passing** |
-| demo CLI | `npm run personas` | prints 40 rows, EMI column populated |
+| demo CLI | `npm run personas` | prints 40 rows (23 eligible), EMI column populated |
 | dev server | `npm run dev` | renders `/`, `/apply`, `/result`, `/personas` |
+| prod build | `npm run build` | compiled, 8 routes, First Load JS 103 kB |
 
 Per-file test counts (they should only ever go up):
 
@@ -54,10 +61,12 @@ Per-file test counts (they should only ever go up):
 230  total
 ```
 
-Git: `main` is 4 commits ahead of `9f6bffc` — `6737439 initialize RinSetu
+Git: `main` is 5 commits ahead of `9f6bffc` — `6737439 initialize RinSetu
 project` → `4a8eea7 built frontend` → `5eb1b1e landing page ui changes` →
-`b9f34ba Update README.md`. Working tree clean. Earlier draft of this doc
-claimed "nothing is committed" — that was true at the Phase 1–2 gate, no longer.
+`b9f34ba Update README.md` → `bd12a83 handoff & progress(frontend)`. Working
+tree clean. After this refresh: two files modified locally (`README.md` rewritten,
+this file updated) — commit before continuing. Earlier drafts claimed "nothing is
+committed" — that was true at the Phase 1–2 gate, no longer.
 
 ---
 
@@ -227,8 +236,9 @@ What is still not started (ROADMAP §§4–9, in priority order):
   is SIMULATED everywhere.
 - **`DEMO_MODE` fixture cache + offline hardening** — no fixture cache for LLM
   calls, no pre-cached tiles, no local-DB fallback.
-- **`README.md`** — was boilerplate at Phase 2; now a short honest overview at
-  `b9f34ba` (58 lines) but still not a setup guide.
+- **`README.md`** — was boilerplate at Phase 2, 58 lines at `b9f34ba`; rewritten
+  2026-08-31 to a full setup + architecture doc (current state, quick start,
+  layout, provenance model).
 
 ---
 
@@ -308,11 +318,13 @@ npm install && npx prisma generate && npm run check
 ```
 
 That must end with `230 passed` (9 files). If it does not, stop and fix that before
-writing anything new — every claim in this document was true at exit 0 on `b9f34ba`.
+writing anything new — every claim in this document was true at exit 0 on `bd12a83`
+(re-checked 2026-08-31).
 
-Working tree is clean at `b9f34ba`; no commit is needed before starting. The old
-instruction to `git add -A && git commit -m "Phases 1-2: ..."` was for the Phase 1–2
-gate when nothing was committed — that gate is now captured in `6737439`/`4a8eea7`.
+Working tree is clean at `bd12a83` plus the two local doc edits from this refresh;
+commit them before starting new work. The old instruction to
+`git add -A && git commit -m "Phases 1-2: ..."` was for the Phase 1–2 gate when
+nothing was committed — that gate is now captured in `6737439`/`4a8eea7`.
 
 To see the engine work with no database and no API key:
 
@@ -323,6 +335,9 @@ npm run dev               # http://localhost:3000 — /, /apply, /result, /perso
 
 To see a single persona's full result: `npm run personas P19` or open
 `/result?persona=P19` in the browser.
+
+Fresh-clone build also verified 2026-08-31: `npm run build` compiles cleanly —
+`○ /`, `○ /personas` static, `ƒ /apply`, `ƒ /result` dynamic, 103 kB First Load JS.
 
 ## 9. Rules that are not negotiable
 

@@ -3,11 +3,12 @@
 **Read this before you change anything under `src/core/` or `src/app/`/`src/components/`.**
 
 [PROGRESS.md](PROGRESS.md) tells you *where the project stands* (now Phase 3–6
-baseline, `b9f34ba` on `main`, 230/230 green). This file tells you *how not to
-break it*. It is written for a model picking this up cold, and it concentrates
-on the three areas where I found and fixed subtle correctness bugs: the **EMI
-engine**, the **eligibility predicates**, and **partner matching** — plus, since
-`4a8eea7`, the **UI invariants** that keep the ledger honest (§6–7).
+baseline, `bd12a83` on `main`, 230/230 green, `npm run build` compiles, `README.md`
+rewritten 2026-08-31). This file tells you *how not to break it*. It is written
+for a model picking this up cold, and it concentrates on the three areas where I
+found and fixed subtle correctness bugs: the **EMI engine**, the **eligibility
+predicates**, and **partner matching** — plus, since `4a8eea7`, the **UI invariants**
+that keep the ledger honest (§6–7).
 
 The person you are working for does not write code. They cannot catch a wrong number by
 reading a diff. That is why the tests, the provenance machinery and the generated
