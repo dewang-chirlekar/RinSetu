@@ -22,6 +22,7 @@
  * why the boundary check can assert src/core/ imports nothing but TypeScript.
  */
 
+import 'dotenv/config';
 import { defineConfig } from 'prisma/config';
 
 const databaseUrl = process.env.DATABASE_URL;

@@ -26,6 +26,8 @@
  * tables (which have no natural key) are deleted per scheme and rewritten.
  */
 
+import 'dotenv/config';
+import pg from 'pg';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient, type Prisma } from '@prisma/client';
 import {
@@ -42,9 +44,22 @@ import { translate } from '../src/messages';
  * throws at construction. Built inside main(), after the DATABASE_URL check, so
  * that a missing connection string produces the one-line explanation below rather
  * than a Prisma stack trace about adapters.
+ *
+ * Supabase pooler uses a self-signed chain that Node 24 + pg v8 rejects when
+ * sslmode=require is treated as verify-full. Creating the pool with
+ * rejectUnauthorized:false keeps the TLS encryption but skips chain verification,
+ * which is the documented workaround for Supabase + @prisma/adapter-pg.
  */
 function connect(connectionString: string): PrismaClient {
-  return new PrismaClient({ adapter: new PrismaPg({ connectionString }) });
+  // Strip sslmode from the URL — pg's query-string sslmode=require is now treated as
+  // verify-full and would still reject Supabase's chain even though we explicitly
+  // allow it via ssl.rejectUnauthorized. Keep TLS but skip chain verification.
+  const clean = connectionString.replace(/[?&]sslmode=[^&]*/g, '').replace(/[?&]$/, '').replace(/\?$/, '');
+  const pool = new pg.Pool({
+    connectionString: clean,
+    ssl: { rejectUnauthorized: false },
+  });
+  return new PrismaClient({ adapter: new PrismaPg(pool) });
 }
 
 const applyOverlay = process.argv.slice(2).includes('--with-overlay');

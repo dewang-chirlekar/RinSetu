@@ -15,7 +15,8 @@
     "verify:report": "tsx scripts/verify-report.ts",
     "check:verify": "tsx scripts/verify-report.ts --check",
     "seed": "tsx prisma/seed.ts",
-    "check": "npm run typecheck && npm run lint && npm run check:boundaries && npm run check:verify && npm run test"
+    "check": "npm run typecheck && npm run lint && npm run check:boundaries && npm run check:verify && npm run test",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
@@ -29,6 +30,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^1.34.0",
+    "maplibre-gl": "^6.7.0",
     "next": "15.5.24",
     "react": "19.1.0",
     "react-dom": "19.1.0",
@@ -41,6 +43,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv": "^17.4.2",
     "eslint": "^9",
     "eslint-config-next": "15.5.24",
     "prisma": "^7.10.0",
