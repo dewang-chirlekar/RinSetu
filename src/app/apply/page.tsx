@@ -12,6 +12,7 @@ import { getLocale } from 'next-intl/server';
 import { loadBundle } from '@/lib/dataset';
 import { translate, type Locale } from '@/messages';
 import { ApplyForm } from '@/components/ApplyForm';
+import { FreeTextIntake } from '@/components/FreeTextIntake';
 
 type RawParams = Record<string, string | string[] | undefined>;
 
@@ -30,6 +31,7 @@ export default async function ApplyPage({ searchParams }: { searchParams: Promis
       <p className="border-accent bg-accent-soft text-ink-2 mt-3 border-l-[3px] px-3.5 py-2.5 text-xs leading-relaxed">
         {t('ui.apply.blank_hint')}
       </p>
+      <FreeTextIntake />
 
       <ApplyForm
         dataset={dataset}

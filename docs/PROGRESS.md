@@ -1,7 +1,7 @@
 # PROGRESS.md — where RinSetu stands
 
 Written at the end of Phases 1–2, updated after the Phase 3–6 baseline landed
-(`4a8eea7` + `5eb1b1e`), refreshed 2026-08-31 at `bd12a83` on `main`, DB connected 2026-09-05, core hardened 2026-09-05, Maps 2026-09-05, PDF 2026-09-05, i18n 2026-09-05.
+(`4a8eea7` + `5eb1b1e`), refreshed 2026-08-31 at `bd12a83` on `main`, DB connected 2026-09-05, core hardened 2026-09-05, Maps 2026-09-05, PDF 2026-09-05, i18n 2026-09-05, form till tehsil + LLM 3.6-flash 2026-09-06 — **paused for tomorrow, see §2**.
 Everything below was verified by running it, not remembered. If you have no
 context on this project, read this file top to bottom, then read `CLAUDE.md`,
 then run the one command in [§8](#8-the-exact-command-to-continue).
@@ -23,6 +23,8 @@ then run the one command in [§8](#8-the-exact-command-to-continue).
 > **2026-09-05 i18n:** Installed `next-intl`, added `src/messages/hi.json` + `mr.json` (265 keys, UI `hi`/`mr` human-written, scheme names/amounts kept English per glossary do-not-translate), `src/messages/index.ts:1` now `en`/`hi`/`mr` catalogues, `src/i18n.ts:1` (`getRequestConfig`, cookie `locale` + Accept-Language, `next-intl/plugin` in `next.config.ts:1`), `src/lib/locale.ts:1` + `src/components/LocaleSwitcher.tsx:1` (globe `lucide-react` button → dropdown `English/हिन्दी/मराठी`, cookie `locale`, `NextIntlClientProvider` in `src/app/layout.tsx:1`), `src/app/result/page.tsx:1` + `src/app/page.tsx:66` + `src/app/apply/page.tsx:1` + `src/lib/packet.tsx:1` locale-aware (`getLocale()` + `globalThis.__RINSETU_LOCALE__` + `translate(..., locale)` + client `document.cookie` auto-detect `src/messages/index.ts:48`), packet respects `preferred_language`. Brand `RinSetu` hardcoded (`layout.tsx:42`, `hi`/`mr` `ui.brand` locked `RinSetu`), tab title stays English (`layout.tsx:16` `generateMetadata` hardcodes `t(..., 'en')`). `npm run build` now all `ƒ` dynamic (locale via `cookies()`), `npm run check` still 11/237 green.
 >
 > **2026-09-05 i18n fixes (user feedback):** Globe button (was 3 pills → `Globe` + dropdown, `LocaleSwitcher.tsx:1`), brand lock (`RinSetu` not `रिनसेतु`/`रिनसेतू`, `hi/mr` `ui.brand` fixed + layout hardcoded), form fields now correctly switch `mr` (fixed 16 missing `mr` `ui.apply.*` + 23 `ui.*` + full `hi`/`mr` accurate via Gemini-class LLM — `hi` 2 English left `_README`/`currency_symbol` per glossary, `mr` 0), tab title stays English. Verified `mr ui.apply.name != 'Name'` after fix, `npm run check` 11/237 green.
+>
+> **2026-09-06 form + LLM (pause for tomorrow — where we are):** **Form:** `src/core/types.ts:210` `tehsil`/`village` already in schema, `data/india-states-districts.json:41` all 36 MH districts ×7–16 tehsils (was 11 → now 36, `Akola`→`Akot`…`Washim`), villages 364 tehsils (was 5 → now 364, `_default` only for non-MH). `src/components/ApplyForm.tsx:140` cascade now `state → district → tehsil` (village removed per request, till taluka), **all valid choices** per level, `tehsil` auto-detects `district`→`state` (`tehsilToDistrict`/`districtToState`), `village` removed. **LLM:** `src/llm/client.ts:31` `gemini-1.5-flash` 404 → `gemini-3.6-flash` (tested `{"test":1}` ok, `AQ.Ab8…` key valid, `ListModels` 200), `src/llm/extract.ts:18` now `name`/`tehsil`/`village` + `normalizeExtracted` (category/gender/intent `null`→ defaults, `₹, lakh` strings), `FreeTextIntake.tsx:14` now `router.replace('/apply?...')` + `missing[]` nudge (`free_text_missing_prefix`/`free_text_filled`) + `Event` → `Network error` not `[object Event]`, `formKey` remount + `useEffect` sync `intent`. `POST /api/extract` 429 quota (20/min) now 3× retry + `429` `Retry-After:5` + friendly *“Free-tier quota exceeded… use guided form”*, `GEMINI_API_KEY` in `.env` (gitignored). **Pause:** `npm run check` 11/237 green, `npm run build` 11 routes (`ƒ /apply` 12.4kB). Next is **Admin health upload (Phase 8)** or **Demo hardening (Phase 9)** — pick one tomorrow.
 
 ---
 
@@ -42,9 +44,9 @@ The whole project is organised around one idea: **the numbers have to be defensi
 A plausible-looking invented interest rate is the worst possible outcome, worse than no
 number at all. Almost every design decision recorded below follows from that.
 
-## 2. Current state: green
+## 2. Current state: green — paused 2026-09-06 for tomorrow
 
-Verified 2026-09-05 (core-hardened) from `rinsetu/` at `bd12a83` on `main` + DB connected (clean working tree, `origin/main` up to date):
+Verified 2026-09-06 from `rinsetu/` at `bd12a83` on `main` + DB + Maps + PDF + i18n + form till tehsil + LLM 3.6-flash (clean working tree, `origin/main` up to date) — **where we are for tomorrow, see §5/§7**:
 
 | check | command | result |
 | --- | --- | --- |
@@ -55,9 +57,11 @@ Verified 2026-09-05 (core-hardened) from `rinsetu/` at `bd12a83` on `main` + DB 
 | VERIFY.md freshness | `npm run check:verify` | up to date |
 | tests | `npm run test` | **11 files, 237 tests, all passing** (1 skipped without DB) |
 | demo CLI | `npm run personas` | prints 40 rows (23 eligible), EMI column populated |
-| dev server | `npm run dev` | renders `/`, `/apply`, `/result`, `/personas` |
-| prod build | `npm run build` | compiled, 8 routes, First Load JS 103 kB |
+| dev server | `npm run dev` | renders `/`, `/apply` (till tehsil, globe), `/result` (map+PDF+explain), `/personas` + `/api/extract` (3.6-flash) |
+| prod build | `npm run build` | compiled, **11 routes** (`ƒ /api/extract`, `ƒ /api/extract-documents`, `ƒ /api/explain`, `ƒ /api/packet`), First Load JS 103 kB |
 | db | `DATABASE_URL` (pooler 6543) + `npm run seed` + `dataset-db` | **connected + parity verified** — `20260905144514_init` applied, 3/15/15 + `src/lib/dataset-db.ts` JSON↔DB deep-equal |
+| llm | `GEMINI_API_KEY` + `gemini-3.6-flash` + quota 20/min | **3.6-flash** (was 1.5 404, `ListModels` 200), `src/llm/` 3 files + `FreeTextIntake`/`DocumentUpload`/`LoanConfirmation`/`ExplainPanel`, 429 retry |
+| i18n | `next-intl` + `hi`/`mr` 265 keys + `india-states-districts.json` | **accurate** `hi`/`mr` + globe `LocaleSwitcher`, `RinSetu` locked, form till tehsil (36×7–16), tab English |
 
 Per-file test counts (they should only ever go up):
 
@@ -202,7 +206,7 @@ things are worth knowing:
    This was determined by running it against an unreachable database, not assumed — worth
    knowing because the error message is confusing if you meet it cold.
 
- 4. **UI is baseline-complete, Maps + PDF now done.** The Phase 3–6 baseline shipped in `4a8eea7` (see §3.6) gives a working end-to-end flow; **2026-09-05 added `PartnerMap.tsx:1`** (MapLibre + OSM) **and `packet.tsx` + `/api/packet`** (PDF, differentiable B). Still defers i18n and admin upload (tracked in §5).
+  4. **UI is baseline-complete, Maps + PDF + i18n + form till tehsil + LLM 3.6-flash now done.** Phase 3–6 baseline `4a8eea7` + Maps 2026-09-05 (`PartnerMap`) + PDF (`packet`/`ExplainPanel`) + i18n (globe/`RinSetu` lock/accurate `hi`/`mr`/tab `en`) + form cascade `state → district → tehsil` (36 MH×7–16, villages removed per request, auto-detect `tehsil→district→state`, all valid choices, 360px) + LLM `extract` (`name`/`tehsil`/`village`, `normalizeExtracted`, `gemini-3.6-flash`, quota 20/min `429` retry, free-text stays on `/apply` + missing-field nudge, `GEMINI_API_KEY` in `.env`). Still defers **Admin health upload (Phase 8)** and **Demo hardening (Phase 9)** — pick one tomorrow (see §7).
 
 ## 5. Not started / deferred after the UI baseline
 
@@ -214,14 +218,11 @@ What shipped in `4a8eea7` (Phase 3–6 baseline):
   `?persona=P01` fixture path. Design language from §6 is applied (ledger/paper,
   `globals.css` + `src/components/ui.tsx`).
 
-What is still not started (ROADMAP §§5–9, in priority order — Maps + PDF + i18n done 2026-09-05):
+What is still not started — **paused 2026-09-06 for tomorrow** (Maps + PDF + i18n + form till tehsil + LLM extract/3.6-flash done, see §7):
 
-- **`src/llm/`** does not exist. Neither `extract.ts` (free text → profile) nor
-  `explain.ts` (computed result → prose). Both are enhancements; the guided form is the
-  primary path and everything must work with the LLM disabled. Gemini adapter is in
-  `package.json` (`@google/generative-ai`) but unused.
-- **PDF packet** — ~~`@react-pdf/renderer` not installed; no `/api/packet` route. Checklist renders on screen but does not download. **Next slice (chosen).**~~ **✓ done 2026-09-05 — `src/lib/packet.tsx:1` (`@react-pdf/renderer`, `PacketDocument`) + `src/app/api/packet/route.ts:1` (`GET /api/packet?...` → PDF) + `src/app/result/page.tsx:178` download link. Reuses `recommend()` output; no new numbers.**
-- **Multilingual** — ~~`src/messages/en.json` expanded (now +5 `partner.map.*`); `next-intl` not installed, no `hi.json`/`mr.json`, `src/messages/index.ts` is still the strict throw-on-missing stand-in.~~ **✓ done 2026-09-05 — `next-intl` installed, `src/messages/hi.json` + `mr.json` (265 keys, UI `hi`/`mr` human, scheme/amount glossary kept English), `src/i18n.ts:1` + `src/lib/locale.ts:1` + `LocaleSwitcher.tsx:1`, `layout.tsx:1` + `result/page.tsx:1` + `packet.tsx:1` locale-aware, `next-intl/plugin` in `next.config.ts:1`, `partner.map.` allowlisted.**
+- **`src/llm/`** — ~~does not exist. Neither `extract.ts` …~~ **✓ done 2026-09-06 — `src/llm/client.ts` `gemini-3.6-flash` (was 1.5 404, `ListModels` 200, quota 20/min `429` retry `Retry-After:5`), `extract.ts` (`name`/`tehsil`/`village`, `normalizeExtracted`, `extractFromDocuments` multimodal `inlineData` `requiredDocCodes`), `explain.ts` (prose, no numbers), `/api/extract` + `/api/extract-documents` + `/api/explain` + `FreeTextIntake.tsx:1` (fills form, stays on `/apply`, missing-field nudge, no jump) + `LoanConfirmation.tsx:1`/`DocumentUpload.tsx:1`/`ExplainPanel.tsx:1` (required docs only for confirmed loan, `Re-apply`). Guided form still primary, LLM needs `GEMINI_API_KEY` + network (no offline fixture for free-text per request).**
+- **PDF packet** — ~~`@react-pdf/renderer` not installed…~~ **✓ done 2026-09-05 — `packet.tsx` + `/api/packet` + `result` download link. Reuses `recommend()`; no new numbers.**
+- **Multilingual** — ~~`src/messages/en.json` expanded…~~ **✓ done 2026-09-05–06 — `next-intl` + `hi.json`/`mr.json` (265 keys, accurate `hi`/`mr` via Gemini-class LLM, `hi` 2 left `mr` 0, brand `RinSetu` lock, tab stays `en`), `src/i18n.ts:1` + `LocaleSwitcher` (globe), `layout`/`result`/`apply`/`personas`/`packet` locale-aware, form till tehsil (36 MH×7–16, `village` removed, auto-detect `tehsil→district→state`).**
 - **Admin health-data upload** — no `/admin/*` route; `PartnerHealth.data_origin`
   is SIMULATED everywhere.
 - **`DEMO_MODE` fixture cache + offline hardening** — no fixture cache for LLM
@@ -274,12 +275,9 @@ Phase 3 first half (intake + verdict table) is done — `4a8eea7` shipped it. Wh
 remains is the deferred list in §5, in the order ROADMAP says to build it:
 
  1. **Maps (Phase 4 tail):** ~~add MapLibre GL JS + OSM tiles to `PartnerPanel` / a new `PartnerMap` component. Pure display; hard filters and haversine stay in `src/core/`. Never geocode at request time.~~ **✓ done 2026-09-05 — `PartnerMap.tsx:1` (OSM `tile.openstreetmap.org`, eligible-only, `fitBounds`) wired via `PartnerPanel.tsx:222` + `SchemeCard.tsx:66`.**
-2. **PDF packet (Phase 6 tail):** ~~install `@react-pdf/renderer`, add a packet route that reuses `recommend()` output. This is why the file "arrives correct." **← next slice (chosen).**~~ **✓ done 2026-09-05 — `src/lib/packet.tsx:1` + `src/app/api/packet/route.ts:1` (`GET /api/packet?...` → PDF, `renderToBuffer`, ledger styles) + `src/app/result/page.tsx:178` download link. Reuses `recommend()`; no new numbers.**
-3. **Multilingual (Phase 7):** install `next-intl`, add `hi.json` (and `mr.json` if a native speaker is available), enforce do-not-translate glossary for scheme names/amounts. **✓ done 2026-09-05 — `next-intl` + `hi.json`/`mr.json` (265 keys, glossary kept English), `src/i18n.ts:1` + `LocaleSwitcher.tsx:1`, `layout` + `result` + `packet` locale-aware.**
-3. **Multilingual (Phase 7):** install `next-intl`, add `hi.json` (and `mr.json`
-   if a native speaker is available), enforce do-not-translate glossary for scheme
-   names/amounts.
- 4. **LLM boundaries (enhancement, Phases 3/7):** `src/llm/extract.ts` (text → `ApplicantProfile` via Gemini structured output + Zod) and `src/llm/explain.ts` (computed `RecommendationResult` → prose). Must work with LLM disabled.
+2. **PDF packet (Phase 6 tail):** ~~install `@react-pdf/renderer`, add a packet route that reuses `recommend()` output. This is why the file "arrives correct."~~ **✓ done 2026-09-05 — `src/lib/packet.tsx:1` + `src/app/api/packet/route.ts:1` (`GET /api/packet?...` → PDF, `renderToBuffer`, ledger styles) + `src/app/result/page.tsx:178` download link. Reuses `recommend()`; no new numbers.**
+3. **Multilingual (Phase 7):** ~~install `next-intl`, add `hi.json` (and `mr.json` if a native speaker is available), enforce do-not-translate glossary for scheme names/amounts.~~ **✓ done 2026-09-05–06 — `next-intl` + `hi.json`/`mr.json` (265 keys, accurate via Gemini-class LLM, `hi` 2 left `mr` 0, brand `RinSetu` lock, tab stays `en`, `LocaleSwitcher` globe) + `src/i18n.ts:1`/`LocaleSwitcher`/`layout`/`result`/`apply`/`personas`/`packet` locale-aware, form till tehsil (36 MH×7–16).**
+4. **LLM boundaries (enhancement, Phases 3/7):** ~~`src/llm/extract.ts` (text → `ApplicantProfile` via Gemini structured output + Zod) and `src/llm/explain.ts` (computed `RecommendationResult` → prose). Must work with LLM disabled.~~ **✓ done 2026-09-06 — `src/llm/client.ts` `gemini-3.6-flash` (was 1.5 404, `ListModels` 200, quota 20/min `429` retry), `extract.ts` (`name`/`tehsil`/`village`, `normalizeExtracted`, `extractFromDocuments` multimodal `requiredDocCodes`), `explain.ts`, `/api/extract`/`/api/extract-documents`/`/api/explain` + `FreeTextIntake` (fills form, stays on `/apply`, missing nudge) + `LoanConfirmation`/`DocumentUpload` (required only for confirmed loan) + `ExplainPanel`, `GEMINI_API_KEY` in `.env`. Guided form still primary, LLM needs network+key (no offline fixture for free-text per request).**
 5. **Admin health upload (Phase 8):** `/admin/health-upload` CSV/XLSX → `PartnerHealth` with `data_origin: "MIS_UPLOAD"`.
 6. **Demo hardening (Phase 9):** `DEMO_MODE=true` fixture cache, pre-cached tiles, offline rehearsal.
 
@@ -302,11 +300,11 @@ green tree:
 npm install && npm run check   # postinstall runs prisma generate; no manual npx needed
 ```
 
-That must end with `237 passed` (11 files, 1 skipped without DATABASE_URL). If it does not, stop and fix that before writing anything new — every claim in this document was true at `bd12a83` (re-checked 2026-08-31, DB re-checked 2026-09-05, core-hardened 2026-09-05).
+That must end with `237 passed` (11 files, 1 skipped without DATABASE_URL). If it does not, stop and fix that before writing anything new — every claim in this document was true at `bd12a83` (re-checked 2026-08-31, DB re-checked 2026-09-05, core-hardened 2026-09-05, Maps/PDF/i18n/LLM/form till tehsil re-checked 2026-09-06).
 
-Working tree will be dirty with the 2026-09-05 doc refresh (this file + `README.md` + `docs/ROADMAP.md`); commit before starting new work. The old instruction to
-`git add -A && git commit -m "Phases 1-2: ..."` was for the Phase 1–2 gate when
-nothing was committed — that gate is now captured in `6737439`/`4a8eea7`.
+Working tree will be dirty with the 2026-09-06 doc refresh (this file + `README.md` + `docs/ROADMAP.md` + `data/india-states-districts.json` + `src/llm/` + `src/messages/hi.json`/`mr.json`); commit before continuing tomorrow. The old instruction to `git add -A && git commit -m "Phases 1-2: ..."` was for the Phase 1–2 gate when nothing was committed — that gate is now captured in `6737439`/`4a8eea7`.
+
+**Where we are for tomorrow — pause 2026-09-06:** `npm run check` **11/237** green, `npm run build` **11 routes** (`ƒ` all, locale via `cookies()`), DB `3/15/15` + `GEMINI_API_KEY` `gemini-3.6-flash` (20/min, `429` retry), i18n `hi`/`mr` accurate, form `state→district→tehsil` (36×7–16, `village` removed, auto-detect `tehsil→district→state`), free-text fills form and stays on `/apply` + missing nudge. **Next:** **Admin health upload (Phase 8)** *or* **Demo hardening (Phase 9)** — pick one, see `docs/ROADMAP.md` §10.
 
 To see the engine work with no database and no API key:
 

@@ -1,6 +1,5 @@
 {
   "_README": "Every user-facing string in RinSetu. src/core/ emits keys from this file and never an English sentence (CLAUDE.md hard rule 3). Placeholders are {braced} and substituted by t() in src/messages/index.ts. Phase 7 replaces that helper with next-intl and adds hi.json, mr.json and ta.json alongside this file — the keys do not change.",
-
   "dataset": {
     "label": {
       "seed_only": "Scheme master (seed only)",
@@ -16,7 +15,6 @@
       "not_authoritative_short": "Eligibility logic is real. The rupee amounts are placeholders, not offers."
     }
   },
-
   "provenance": {
     "official_guideline": "From the published scheme guideline",
     "ps_text": "Stated in the problem statement — not yet confirmed against a guideline",
@@ -29,7 +27,6 @@
     "unverified_marker": "unverified",
     "unverified_tooltip": "This figure has not been checked against a published guideline. Treat it as illustrative."
   },
-
   "status": {
     "ELIGIBLE": "Eligible",
     "NOT_ELIGIBLE": "Not eligible",
@@ -38,7 +35,6 @@
     "NOT_ELIGIBLE_detail": "At least one condition is not met. The reasons are listed below.",
     "INDETERMINATE_detail": "We could not decide. Something we need is missing — this is not a rejection."
   },
-
   "predicate": {
     "INCOME_WITHIN_CAP": {
       "label": "Annual family income",
@@ -101,7 +97,6 @@
       "unknown": "The course has not been chosen yet."
     }
   },
-
   "remediation": {
     "heading": "What would change this",
     "provide_data": "We need {fields} before we can decide.",
@@ -138,7 +133,6 @@
       "choose": "This scheme covers: {alternatives}."
     }
   },
-
   "field": {
     "global": {
       "annual_family_income_cap": "the income ceiling for these schemes",
@@ -180,7 +174,6 @@
       "repayment_months_below_one": "a repayment period long enough to have at least one instalment"
     }
   },
-
   "loan": {
     "not_computable": "We cannot produce figures for this scheme yet",
     "not_computable_detail": "The following scheme parameters have not been published in our data yet: {fields}. We will not substitute a guess, because a plausible wrong EMI is worse than no EMI.",
@@ -230,7 +223,6 @@
       "final_instalment_note": "The last instalment is adjusted by a few rupees so the balance closes at zero."
     }
   },
-
   "partner": {
     "heading": "Where to apply",
     "straight_line_distance": "{km} km away (straight line, not by road)",
@@ -262,7 +254,6 @@
       "failed": "Map could not be loaded. The list below still shows the ranked partners."
     }
   },
-
   "health": {
     "heading": "Partner throughput",
     "score": "Throughput score",
@@ -298,7 +289,6 @@
       "multiplier_note": "A closed partner scores zero rather than being hidden, so you can see it exists and why it is unavailable."
     }
   },
-
   "checklist": {
     "heading": "Documents to carry",
     "ready": "Your file looks complete for this partner.",
@@ -314,24 +304,71 @@
       "BOTH": "Required by the scheme and this partner"
     }
   },
-
   "doc": {
-    "CASTE_CERT": { "name": "Caste certificate", "where": "Tehsil or Taluka office, or your state's e-district portal." },
-    "INCOME_CERT": { "name": "Income certificate", "where": "Tehsil or Taluka office, or your state's e-district portal." },
-    "AADHAAR": { "name": "Aadhaar", "where": "Aadhaar enrolment centre, or download from the UIDAI portal." },
-    "PAN": { "name": "PAN card", "where": "Apply online through the Income Tax Department's PAN service." },
-    "PHOTO": { "name": "Passport-size photographs", "where": "Any photo studio." },
-    "RESIDENCE_PROOF": { "name": "Proof of residence", "where": "Ration card, electricity bill, voter ID or a domicile certificate." },
-    "QUOTATION": { "name": "Quotation for equipment or stock", "where": "The supplier you intend to buy from, on their letterhead." },
-    "PROJECT_REPORT": { "name": "Project report", "where": "Prepared by you, or with help from the District Industries Centre." },
-    "BANK_STATEMENT": { "name": "Bank statement", "where": "Your bank branch or its net banking service." },
-    "ADMISSION_LETTER": { "name": "Admission letter", "where": "The institution's admissions office." },
-    "FEE_STRUCTURE": { "name": "Official fee structure", "where": "The institution's accounts or admissions office." },
-    "MARKSHEETS": { "name": "Marksheets", "where": "Your school, college or examination board." },
-    "BANK_PASSBOOK": { "name": "Bank passbook", "where": "Your bank branch." },
-    "GUARANTOR_FORM": { "name": "Guarantor form", "where": "The lending partner provides the form." },
-    "GROUP_REFERENCE": { "name": "Self-help group reference", "where": "Your group's office bearers or the sponsoring institution." },
-    "SHOP_LICENCE": { "name": "Shop or trade licence", "where": "Your municipal corporation or panchayat." },
+    "CASTE_CERT": {
+      "name": "Caste certificate",
+      "where": "Tehsil or Taluka office, or your state's e-district portal."
+    },
+    "INCOME_CERT": {
+      "name": "Income certificate",
+      "where": "Tehsil or Taluka office, or your state's e-district portal."
+    },
+    "AADHAAR": {
+      "name": "Aadhaar",
+      "where": "Aadhaar enrolment centre, or download from the UIDAI portal."
+    },
+    "PAN": {
+      "name": "PAN card",
+      "where": "Apply online through the Income Tax Department's PAN service."
+    },
+    "PHOTO": {
+      "name": "Passport-size photographs",
+      "where": "Any photo studio."
+    },
+    "RESIDENCE_PROOF": {
+      "name": "Proof of residence",
+      "where": "Ration card, electricity bill, voter ID or a domicile certificate."
+    },
+    "QUOTATION": {
+      "name": "Quotation for equipment or stock",
+      "where": "The supplier you intend to buy from, on their letterhead."
+    },
+    "PROJECT_REPORT": {
+      "name": "Project report",
+      "where": "Prepared by you, or with help from the District Industries Centre."
+    },
+    "BANK_STATEMENT": {
+      "name": "Bank statement",
+      "where": "Your bank branch or its net banking service."
+    },
+    "ADMISSION_LETTER": {
+      "name": "Admission letter",
+      "where": "The institution's admissions office."
+    },
+    "FEE_STRUCTURE": {
+      "name": "Official fee structure",
+      "where": "The institution's accounts or admissions office."
+    },
+    "MARKSHEETS": {
+      "name": "Marksheets",
+      "where": "Your school, college or examination board."
+    },
+    "BANK_PASSBOOK": {
+      "name": "Bank passbook",
+      "where": "Your bank branch."
+    },
+    "GUARANTOR_FORM": {
+      "name": "Guarantor form",
+      "where": "The lending partner provides the form."
+    },
+    "GROUP_REFERENCE": {
+      "name": "Self-help group reference",
+      "where": "Your group's office bearers or the sponsoring institution."
+    },
+    "SHOP_LICENCE": {
+      "name": "Shop or trade licence",
+      "where": "Your municipal corporation or panchayat."
+    },
     "note": {
       "caste_must_be_state_issued": "Must be issued by the competent authority of your own state.",
       "income_recent": "Usually expected to be recent — confirm the accepted age with the partner.",
@@ -350,13 +387,17 @@
       "guarantor_above_threshold": "Commonly asked for above a certain loan size; the threshold is the partner's policy."
     }
   },
-
   "scheme": {
-    "micro": { "description": "Small loans for petty trade, artisan work and small service units." },
-    "term": { "description": "Larger loans for manufacturing, transport, agriculture-allied and service enterprises." },
-    "edu": { "description": "Loans for professional and technical courses, in India or abroad." }
+    "micro": {
+      "description": "Small loans for petty trade, artisan work and small service units."
+    },
+    "term": {
+      "description": "Larger loans for manufacturing, transport, agriculture-allied and service enterprises."
+    },
+    "edu": {
+      "description": "Loans for professional and technical courses, in India or abroad."
+    }
   },
-
   "recommendation": {
     "heading": "Recommended",
     "policy": {
@@ -365,7 +406,6 @@
     "none": "No scheme comes out eligible on the information given.",
     "generated_at": "Prepared {timestamp}"
   },
-
   "common": {
     "yes": "Yes",
     "no": "No",
@@ -378,7 +418,6 @@
     "show_details": "Show details",
     "hide_details": "Hide details"
   },
-
   "ui": {
     "brand": "RinSetu",
     "tagline": "Concessional credit, worked out in the open",
@@ -470,10 +509,45 @@
       "tenure": "Preferred repayment period in months",
       "moratorium": "Preferred moratorium in months",
       "submit": "See the result",
+      "free_text_heading": "Or describe in your own words",
+      "free_text_hint": "Type a sentence like “I want to start a tailoring unit, it will cost about ninety thousand rupees.” The language model will extract the structured profile and take you to the result — no numbers are invented.",
+      "free_text_placeholder": "e.g. I want to start a tailoring unit in Pune, it will cost about 90000 rupees…",
+      "free_text_submit": "Extract and see result",
+      "free_text_loading": "Extracting…",
+      "free_text_or": "or fill the guided form below",
+      "free_text_demo_note": "Free-text extraction requires internet and a Gemini API key. The guided form is the primary path and works offline.",
+      "free_text_missing_prefix": "We got some fields — please also fill:",
+      "free_text_missing_hint": "Review the form below and complete the missing fields before seeing the result.",
+      "upload_heading": "Upload required documents for this loan",
+      "upload_hint": "Only the mandatory documents for the confirmed loan are listed. Upload a clear photo or PDF for each.",
+      "upload_only_required": "Only required files for this loan — extra files are ignored.",
+      "upload_selected": "selected",
+      "upload_no_file": "Select at least one file to extract.",
+      "upload_extracted": "Extracted — see below. You can now re-apply with the filled fields.",
+      "upload_extract_action": "Extract from documents",
+      "upload_extracting": "Extracting…",
+      "upload_gemini_note": "Gemini Flash reads your documents only to fill the application form — it never decides eligibility or amounts.",
+      "confirm_heading": "Confirm which loan you want",
+      "confirm_hint": "We have a recommendation. Confirm to see only the required files for that loan and upload them for extraction.",
+      "confirm_action": "Confirm {code}",
+      "confirm_no_docs": "No mandatory documents for this loan.",
+      "confirm_confirmed": "Confirmed {code} — upload required files",
+      "confirm_confirmed_hint": "Upload the files listed below. Gemini will extract the fields to auto-fill the form.",
+      "confirm_extracted_heading": "Extracted fields (verify, then re-apply)",
+      "confirm_reapply": "Re-apply with extracted data",
       "unset": "Not answered",
       "select_purpose": "Any purpose",
       "select_state": "Not answered",
-      "optional": "optional"
+      "optional": "optional",
+      "free_text_filled": "Filled — review below and complete any missing fields before seeing the result.",
+      "tehsil": "Tehsil / Taluka",
+      "village": "Village",
+      "select_tehsil": "Select tehsil",
+      "district_need_state": "Select a state first to see its districts.",
+      "tehsil_need_district": "Select a district first to see its tehsils.",
+      "village_need_tehsil": "Select a tehsil first to see its villages.",
+      "village_hint": "Or type your village name.",
+      "village_auto_hint": "Tip: typing your village or tehsil will auto-fill state and district."
     },
     "gender": {
       "FEMALE": "Female",
@@ -508,6 +582,10 @@
       "edit": "Change an answer",
       "download_packet": "Download packet (PDF)",
       "download_packet_detail": "A pre-filled application packet with the figures from this result — ready to print and carry to the partner.",
+      "explain_action": "Explain this result in my language",
+      "explain_loading": "Generating explanation…",
+      "explain_hint": "Uses the language model only to narrate the already-computed result — no new numbers.",
+      "explain_note": "This narration only retells the computed result; it creates no new figure.",
       "schemes_heading": "Every scheme, including the ones that do not fit",
       "schemes_note": "A scheme you fail is shown with its reasons, not hidden. That is the point of the tool.",
       "persona_heading": "Test case {id}",

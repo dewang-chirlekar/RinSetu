@@ -209,6 +209,8 @@ export const ApplicantProfileSchema = z.object({
   annual_family_income: z.number().min(0).nullable(),
   state: z.string().nullable(),
   district: z.string().nullable(),
+  tehsil: z.string().nullable().optional(),
+  village: z.string().nullable().optional(),
   lat: z.number().min(-90).max(90).nullable(),
   lng: z.number().min(-180).max(180).nullable(),
   intent: z.enum(INTENTS).default('UNKNOWN'),

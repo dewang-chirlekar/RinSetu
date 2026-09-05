@@ -37,6 +37,7 @@ import { humanisePurpose } from '@/lib/format';
 import { translate } from '@/messages';
 import { CheckboxGrid, Fieldset, SelectField, TextField, type Option } from '@/components/form';
 import { PrimaryLink } from '@/components/ui';
+import indiaData from '../../data/india-states-districts.json';
 
 type RawParams = Record<string, string | string[] | undefined>;
 
@@ -103,6 +104,7 @@ function StepBadge({ n, active }: { n: string; active?: boolean }) {
 
 export function ApplyForm({
   dataset,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   partners,
   documentDefinitions,
   documentRequirements,
@@ -120,6 +122,13 @@ export function ApplyForm({
   const initialIntent = first(initialParams, 'intent');
   const [intent, setIntent] = useState(initialIntent);
 
+  // When FreeTextIntake extracts and does router.replace('/apply?...'), initialParams changes.
+  // Sync intent so progressive disclosure and purpose filtering update without a full remount.
+  useEffect(() => {
+    const next = first(initialParams, 'intent');
+    if (next !== intent) setIntent(next);
+  }, [initialParams, intent]);
+
   const isLivelihood = intent === 'LIVELIHOOD';
   const isEducation = intent === 'EDUCATION';
   const hasIntent = isLivelihood || isEducation;
@@ -128,8 +137,66 @@ export function ApplyForm({
   // intent-dependent blocks are hidden until hasIntent.
   const reveal = !jsEnabled || hasIntent;
 
-  const states = useMemo(() => [...new Set(partners.map((p) => p.state))].sort(), [partners]);
-  const districts = useMemo(() => [...new Set(partners.map((p) => p.district))].sort(), [partners]);
+  // Location cascade: state → district → tehsil, unlocked one after another, every option shows all valid choices
+  // Reverse lookup: tehsil → district → state, so typing tehsil auto-fills the upper ones
+  const allStates = useMemo(() => (indiaData as { states: { code: string; name: string; districts: string[] }[] }).states, []);
+  const stateNames = useMemo(() => allStates.map((s) => s.name).sort(), [allStates]);
+
+  const tehsilMap = useMemo(() => (indiaData as { tehsils: Record<string, string[]> }).tehsils, []);
+  const districtToState = useMemo(() => {
+    const m = new Map<string, string>();
+    for (const s of allStates) for (const d of s.districts) m.set(d, s.name);
+    return m;
+  }, [allStates]);
+
+  const tehsilToDistrict = useMemo(() => {
+    const m = new Map<string, string>();
+    for (const [district, tehsils] of Object.entries(tehsilMap)) {
+      if (district === '_default') continue;
+      for (const t of tehsils) m.set(t, district);
+    }
+    return m;
+  }, [tehsilMap]);
+
+  const [selectedState, setSelectedState] = useState(first(initialParams, 'state'));
+  const [selectedDistrict, setSelectedDistrict] = useState(first(initialParams, 'district'));
+  const [selectedTehsil, setSelectedTehsil] = useState(first(initialParams, 'tehsil'));
+
+  useEffect(() => {
+    setSelectedState(first(initialParams, 'state'));
+    setSelectedDistrict(first(initialParams, 'district'));
+    setSelectedTehsil(first(initialParams, 'tehsil'));
+  }, [initialParams]);
+
+  const districtsForState = useMemo(() => {
+    if (!selectedState) return allStates.flatMap((s) => s.districts).sort();
+    const found = allStates.find((s) => s.name === selectedState);
+    return found ? [...found.districts].sort() : [];
+  }, [selectedState, allStates]);
+
+  const tehsilsForDistrict = useMemo(() => {
+    if (selectedDistrict) return tehsilMap[selectedDistrict] ?? tehsilMap._default ?? [];
+    if (selectedState) {
+      const districts = allStates.find((s) => s.name === selectedState)?.districts ?? [];
+      const all = districts.flatMap((d) => tehsilMap[d] ?? []);
+      return all.length > 0 ? [...new Set(all)].sort() : (tehsilMap._default ?? []);
+    }
+    const all = Object.entries(tehsilMap)
+      .filter(([k]) => k !== '_default')
+      .flatMap(([, v]) => v);
+    return [...new Set(all)].sort().slice(0, 50);
+  }, [selectedDistrict, selectedState, allStates, tehsilMap]);
+
+  // Auto-detect upper levels when tehsil is typed directly
+  function handleTehsilChange(value: string) {
+    setSelectedTehsil(value);
+    const district = tehsilToDistrict.get(value);
+    if (district) {
+      setSelectedDistrict(district);
+      const state = districtToState.get(district);
+      if (state) setSelectedState(state);
+    }
+  }
 
   const rawDocs = initialParams.doc;
   const checkedDocs = useMemo(
@@ -159,8 +226,11 @@ export function ApplyForm({
     return initialPurpose === '' || all.has(initialPurpose);
   }, [hasIntent, purposeGroups, initialPurpose]);
 
+  // Force remount of inputs when extracted profile arrives via ?age=&... (FreeTextIntake)
+  const formKey = JSON.stringify(initialParams);
+
   return (
-    <form action="/result" method="get" className="pb-8">
+    <form key={formKey} action="/result" method="get" className="pb-8">
       {/* Step progress — visible only when JS is on */}
       {jsEnabled ? (
         <div className="border-rule bg-paper-edge/50 -mx-4 mb-2 flex items-center gap-1.5 border-y px-4 py-2 sm:mx-0 sm:rounded sm:border">
@@ -364,21 +434,37 @@ export function ApplyForm({
           <SelectField
             name="state"
             label={translate('ui.apply.state')}
-            options={[BLANK(translate('ui.apply.select_state')), ...states.map((state) => ({ value: state, label: state }))]}
-            defaultValue={first(initialParams, 'state')}
+            options={[BLANK(translate('ui.apply.select_state')), ...stateNames.map((name) => ({ value: name, label: name }))]}
+            defaultValue={selectedState}
+            onChange={(e) => {
+              const v = (e.target as HTMLSelectElement).value;
+              setSelectedState(v);
+              if (v && selectedDistrict && districtToState.get(selectedDistrict) !== v) {
+                setSelectedDistrict('');
+                setSelectedTehsil('');
+              }
+            }}
           />
-          <TextField
+          <SelectField
             name="district"
             label={translate('ui.apply.district')}
-            list="districts"
-            hint={translate('ui.apply.location_hint')}
-            defaultValue={first(initialParams, 'district')}
+            options={[BLANK(translate('ui.apply.select_state')), ...districtsForState.map((d) => ({ value: d, label: d }))]}
+            defaultValue={selectedDistrict}
+            onChange={(e) => {
+              const v = (e.target as HTMLSelectElement).value;
+              setSelectedDistrict(v);
+              const state = districtToState.get(v);
+              if (state) setSelectedState(state);
+              setSelectedTehsil('');
+            }}
           />
-          <datalist id="districts">
-            {districts.map((district) => (
-              <option key={district} value={district} />
-            ))}
-          </datalist>
+          <SelectField
+            name="tehsil"
+            label={translate('ui.apply.tehsil')}
+            options={[BLANK(translate('ui.apply.select_tehsil')), ...tehsilsForDistrict.map((t) => ({ value: t, label: t }))]}
+            defaultValue={selectedTehsil}
+            onChange={(e) => handleTehsilChange((e.target as HTMLSelectElement).value)}
+          />
         </Fieldset>
 
         {/* Education-only block */}

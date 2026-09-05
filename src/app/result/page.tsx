@@ -28,6 +28,8 @@ import { isEmptyParams, parseApplicantParams, applicantToParams } from '@/lib/ap
 import { humanisePurpose, longDateTime, rupees } from '@/lib/format';
 import { translate, type Locale } from '@/messages';
 import { DatasetBanner } from '@/components/DatasetBanner';
+import { ExplainPanel } from '@/components/ExplainPanel';
+import { LoanConfirmation } from '@/components/LoanConfirmation';
 import { SchemeCard } from '@/components/SchemeCard';
 import { FieldRow, PrimaryLink, SecondaryLink, Section } from '@/components/ui';
 
@@ -252,6 +254,8 @@ export default async function ResultPage({
               </a>
             </div>
           </div>
+          <ExplainPanel result={result} />
+          <LoanConfirmation recommendation={recommended} applicant={applicant} />
         </>
       ) : (
         <p className="border-hold bg-hold-soft text-ink mt-6 border-l-[3px] px-3.5 py-3 text-sm">

@@ -92,6 +92,8 @@ export function parseApplicantParams(params: RawParams): ApplicantProfile {
     annual_family_income: num(params, 'income'),
     state: one(params, 'state'),
     district: one(params, 'district'),
+    tehsil: one(params, 'tehsil'),
+    village: one(params, 'village'),
     lat: num(params, 'lat'),
     lng: num(params, 'lng'),
     intent: one(params, 'intent') ?? undefined,
@@ -131,6 +133,8 @@ export function applicantToParams(applicant: ApplicantProfile): URLSearchParams 
   set('income', applicant.annual_family_income);
   set('state', applicant.state);
   set('district', applicant.district);
+  set('tehsil', (applicant as unknown as { tehsil?: string | null }).tehsil);
+  set('village', (applicant as unknown as { village?: string | null }).village);
   set('lat', applicant.lat);
   set('lng', applicant.lng);
   set('intent', applicant.intent);

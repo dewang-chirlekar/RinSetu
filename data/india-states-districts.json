@@ -1,0 +1,3626 @@
+{
+  "_README": "All Indian states/UTs and their districts (2024). Tehsils for Maharashtra districts are included for demo; villages are free-text with datalist hints. Source: OSM + datameet district GeoJSON, simplified. For detailed address, state→district→tehsil→village cascade unlocks one after another.",
+  "states": [
+    {
+      "code": "AP",
+      "name": "Andhra Pradesh",
+      "districts": [
+        "Alluri Sitharama Raju",
+        "Anakapalli",
+        "Anantapur",
+        "Annamayya",
+        "Bapatla",
+        "Chittoor",
+        "East Godavari",
+        "Eluru",
+        "Guntur",
+        "Kadapa",
+        "Kakinada",
+        "Konaseema",
+        "Krishna",
+        "Kurnool",
+        "NTR",
+        "Nellore",
+        "Nandyal",
+        "Palnadu",
+        "Parvathipuram Manyam",
+        "Prakasam",
+        "Srikakulam",
+        "Sri Sathya Sai",
+        "Tirupati",
+        "Vizianagaram",
+        "Visakhapatnam",
+        "West Godavari"
+      ]
+    },
+    {
+      "code": "AR",
+      "name": "Arunachal Pradesh",
+      "districts": [
+        "Anjaw",
+        "Changlang",
+        "Dibang Valley",
+        "East Kameng",
+        "East Siang",
+        "Kamle",
+        "Kra Daadi",
+        "Kurung Kumey",
+        "Lepa Rada",
+        "Lohit",
+        "Longding",
+        "Lower Dibang Valley",
+        "Lower Siang",
+        "Lower Subansiri",
+        "Namsai",
+        "Papum Pare",
+        "Pakke Kessang",
+        "Shi Yomi",
+        "Siang",
+        "Tawang",
+        "Tirap",
+        "Upper Siang",
+        "Upper Subansiri",
+        "West Kameng",
+        "West Siang"
+      ]
+    },
+    {
+      "code": "AS",
+      "name": "Assam",
+      "districts": [
+        "Baksa",
+        "Barpeta",
+        "Biswanath",
+        "Bongaigaon",
+        "Cachar",
+        "Charaideo",
+        "Chirang",
+        "Darrang",
+        "Dhemaji",
+        "Dhubri",
+        "Dibrugarh",
+        "Dima Hasao",
+        "Goalpara",
+        "Golaghat",
+        "Hailakandi",
+        "Hojai",
+        "Jorhat",
+        "Kamrup",
+        "Kamrup Metropolitan",
+        "Karbi Anglong",
+        "Karimganj",
+        "Kokrajhar",
+        "Lakhimpur",
+        "Majuli",
+        "Morigaon",
+        "Nagaon",
+        "Nalbari",
+        "Sivasagar",
+        "Sonitpur",
+        "South Salmara-Mankachar",
+        "Tinsukia",
+        "Udalguri",
+        "West Karbi Anglong"
+      ]
+    },
+    {
+      "code": "BR",
+      "name": "Bihar",
+      "districts": [
+        "Araria",
+        "Arwal",
+        "Aurangabad",
+        "Banka",
+        "Begusarai",
+        "Bhagalpur",
+        "Bhojpur",
+        "Buxar",
+        "Darbhanga",
+        "East Champaran",
+        "Gaya",
+        "Gopalganj",
+        "Jamui",
+        "Jehanabad",
+        "Kaimur",
+        "Katihar",
+        "Khagaria",
+        "Kishanganj",
+        "Lakhisarai",
+        "Madhepura",
+        "Madhubani",
+        "Munger",
+        "Muzaffarpur",
+        "Nalanda",
+        "Nawada",
+        "Patna",
+        "Purnia",
+        "Rohtas",
+        "Saharsa",
+        "Samastipur",
+        "Saran",
+        "Sheikhpura",
+        "Sheohar",
+        "Sitamarhi",
+        "Siwan",
+        "Supaul",
+        "Vaishali",
+        "West Champaran"
+      ]
+    },
+    {
+      "code": "CG",
+      "name": "Chhattisgarh",
+      "districts": [
+        "Balod",
+        "Baloda Bazar",
+        "Balrampur",
+        "Bastar",
+        "Bemetara",
+        "Bijapur",
+        "Bilaspur",
+        "Dantewada",
+        "Dhamtari",
+        "Durg",
+        "Gariaband",
+        "Gaurela-Pendra-Marwahi",
+        "Janjgir-Champa",
+        "Jashpur",
+        "Kabirdham",
+        "Kanker",
+        "Kondagaon",
+        "Korba",
+        "Koriya",
+        "Mahasamund",
+        "Mungeli",
+        "Narayanpur",
+        "Raigarh",
+        "Raipur",
+        "Rajnandgaon",
+        "Sukma",
+        "Surajpur",
+        "Surguja"
+      ]
+    },
+    {
+      "code": "GA",
+      "name": "Goa",
+      "districts": [
+        "North Goa",
+        "South Goa"
+      ]
+    },
+    {
+      "code": "GJ",
+      "name": "Gujarat",
+      "districts": [
+        "Ahmedabad",
+        "Amreli",
+        "Anand",
+        "Aravalli",
+        "Banaskantha",
+        "Bharuch",
+        "Bhavnagar",
+        "Botad",
+        "Chhota Udaipur",
+        "Dahod",
+        "Dang",
+        "Devbhoomi Dwarka",
+        "Gandhinagar",
+        "Gir Somnath",
+        "Jamnagar",
+        "Junagadh",
+        "Kheda",
+        "Kutch",
+        "Mahisagar",
+        "Mehsana",
+        "Morbi",
+        "Narmada",
+        "Navsari",
+        "Panchmahal",
+        "Patan",
+        "Porbandar",
+        "Rajkot",
+        "Sabarkantha",
+        "Surat",
+        "Surendranagar",
+        "Tapi",
+        "Vadodara",
+        "Valsad"
+      ]
+    },
+    {
+      "code": "HR",
+      "name": "Haryana",
+      "districts": [
+        "Ambala",
+        "Bhiwani",
+        "Charkhi Dadri",
+        "Faridabad",
+        "Fatehabad",
+        "Gurugram",
+        "Hisar",
+        "Jhajjar",
+        "Jind",
+        "Kaithal",
+        "Karnal",
+        "Kurukshetra",
+        "Mahendragarh",
+        "Nuh",
+        "Palwal",
+        "Panchkula",
+        "Panipat",
+        "Rewari",
+        "Rohtak",
+        "Sirsa",
+        "Sonipat",
+        "Yamunanagar"
+      ]
+    },
+    {
+      "code": "HP",
+      "name": "Himachal Pradesh",
+      "districts": [
+        "Bilaspur",
+        "Chamba",
+        "Hamirpur",
+        "Kangra",
+        "Kinnaur",
+        "Kullu",
+        "Lahaul and Spiti",
+        "Mandi",
+        "Shimla",
+        "Sirmaur",
+        "Solan",
+        "Una"
+      ]
+    },
+    {
+      "code": "JH",
+      "name": "Jharkhand",
+      "districts": [
+        "Bokaro",
+        "Chatra",
+        "Deoghar",
+        "Dhanbad",
+        "Dumka",
+        "East Singhbhum",
+        "Garhwa",
+        "Giridih",
+        "Godda",
+        "Gumla",
+        "Hazaribagh",
+        "Jamtara",
+        "Khunti",
+        "Koderma",
+        "Latehar",
+        "Lohardaga",
+        "Pakur",
+        "Palamu",
+        "Ramgarh",
+        "Ranchi",
+        "Sahebganj",
+        "Seraikela-Kharsawan",
+        "Simdega",
+        "West Singhbhum"
+      ]
+    },
+    {
+      "code": "KA",
+      "name": "Karnataka",
+      "districts": [
+        "Bagalkot",
+        "Ballari",
+        "Belagavi",
+        "Bengaluru Rural",
+        "Bengaluru Urban",
+        "Bidar",
+        "Chamarajanagar",
+        "Chikballapur",
+        "Chikkamagaluru",
+        "Chitradurga",
+        "Dakshina Kannada",
+        "Davangere",
+        "Dharwad",
+        "Gadag",
+        "Hassan",
+        "Haveri",
+        "Kalaburagi",
+        "Kodagu",
+        "Kolar",
+        "Koppal",
+        "Mandya",
+        "Mysuru",
+        "Raichur",
+        "Ramanagara",
+        "Shivamogga",
+        "Tumakuru",
+        "Udupi",
+        "Uttara Kannada",
+        "Vijayapura",
+        "Yadgir"
+      ]
+    },
+    {
+      "code": "KL",
+      "name": "Kerala",
+      "districts": [
+        "Alappuzha",
+        "Ernakulam",
+        "Idukki",
+        "Kannur",
+        "Kasaragod",
+        "Kollam",
+        "Kottayam",
+        "Kozhikode",
+        "Malappuram",
+        "Palakkad",
+        "Pathanamthitta",
+        "Thiruvananthapuram",
+        "Thrissur",
+        "Wayanad"
+      ]
+    },
+    {
+      "code": "MP",
+      "name": "Madhya Pradesh",
+      "districts": [
+        "Agar Malwa",
+        "Alirajpur",
+        "Anuppur",
+        "Ashoknagar",
+        "Balaghat",
+        "Barwani",
+        "Betul",
+        "Bhind",
+        "Bhopal",
+        "Burhanpur",
+        "Chhatarpur",
+        "Chhindwara",
+        "Damoh",
+        "Datia",
+        "Dewas",
+        "Dhar",
+        "Dindori",
+        "Guna",
+        "Gwalior",
+        "Harda",
+        "Hoshangabad",
+        "Indore",
+        "Jabalpur",
+        "Jhabua",
+        "Katni",
+        "Khandwa",
+        "Khargone",
+        "Mandla",
+        "Mandsaur",
+        "Morena",
+        "Narsinghpur",
+        "Neemuch",
+        "Panna",
+        "Raisen",
+        "Rajgarh",
+        "Ratlam",
+        "Rewa",
+        "Sagar",
+        "Satna",
+        "Sehore",
+        "Seoni",
+        "Shahdol",
+        "Shajapur",
+        "Sheopur",
+        "Shivpuri",
+        "Sidhi",
+        "Singrauli",
+        "Tikamgarh",
+        "Ujjain",
+        "Umaria",
+        "Vidisha"
+      ]
+    },
+    {
+      "code": "MH",
+      "name": "Maharashtra",
+      "districts": [
+        "Ahmednagar",
+        "Akola",
+        "Amravati",
+        "Aurangabad",
+        "Beed",
+        "Bhandara",
+        "Buldhana",
+        "Chandrapur",
+        "Dhule",
+        "Gadchiroli",
+        "Gondia",
+        "Hingoli",
+        "Jalgaon",
+        "Jalna",
+        "Kolhapur",
+        "Latur",
+        "Mumbai City",
+        "Mumbai Suburban",
+        "Nagpur",
+        "Nanded",
+        "Nandurbar",
+        "Nashik",
+        "Osmanabad",
+        "Palghar",
+        "Parbhani",
+        "Pune",
+        "Raigad",
+        "Ratnagiri",
+        "Sangli",
+        "Satara",
+        "Sindhudurg",
+        "Solapur",
+        "Thane",
+        "Wardha",
+        "Washim",
+        "Yavatmal"
+      ]
+    },
+    {
+      "code": "MN",
+      "name": "Manipur",
+      "districts": [
+        "Bishnupur",
+        "Chandel",
+        "Churachandpur",
+        "Imphal East",
+        "Imphal West",
+        "Jiribam",
+        "Kakching",
+        "Kamjong",
+        "Kangpokpi",
+        "Noney",
+        "Pherzawl",
+        "Senapati",
+        "Tamenglong",
+        "Tengnoupal",
+        "Thoubal",
+        "Ukhrul"
+      ]
+    },
+    {
+      "code": "ML",
+      "name": "Meghalaya",
+      "districts": [
+        "East Garo Hills",
+        "East Jaintia Hills",
+        "East Khasi Hills",
+        "North Garo Hills",
+        "Ri Bhoi",
+        "South Garo Hills",
+        "South West Garo Hills",
+        "South West Khasi Hills",
+        "West Garo Hills",
+        "West Jaintia Hills",
+        "West Khasi Hills"
+      ]
+    },
+    {
+      "code": "MZ",
+      "name": "Mizoram",
+      "districts": [
+        "Aizawl",
+        "Champhai",
+        "Hnahthial",
+        "Khawzawl",
+        "Kolasib",
+        "Lawngtlai",
+        "Lunglei",
+        "Mamit",
+        "Saiha",
+        "Saitual",
+        "Serchhip"
+      ]
+    },
+    {
+      "code": "NL",
+      "name": "Nagaland",
+      "districts": [
+        "Chümoukedima",
+        "Dimapur",
+        "Kiphire",
+        "Kohima",
+        "Longleng",
+        "Mokokchung",
+        "Mon",
+        "Niuland",
+        "Noklak",
+        "Peren",
+        "Phek",
+        "Shamator",
+        "Tseminyu",
+        "Tuensang",
+        "Wokha",
+        "Zunheboto"
+      ]
+    },
+    {
+      "code": "OR",
+      "name": "Odisha",
+      "districts": [
+        "Angul",
+        "Balangir",
+        "Balasore",
+        "Bargarh",
+        "Bhadrak",
+        "Boudh",
+        "Cuttack",
+        "Deogarh",
+        "Dhenkanal",
+        "Gajapati",
+        "Ganjam",
+        "Jagatsinghpur",
+        "Jajpur",
+        "Jharsuguda",
+        "Kalahandi",
+        "Kandhamal",
+        "Kendrapara",
+        "Kendujhar",
+        "Khordha",
+        "Koraput",
+        "Malkangiri",
+        "Mayurbhanj",
+        "Nabarangpur",
+        "Nayagarh",
+        "Nuapada",
+        "Puri",
+        "Rayagada",
+        "Sambalpur",
+        "Subarnapur",
+        "Sundargarh"
+      ]
+    },
+    {
+      "code": "PB",
+      "name": "Punjab",
+      "districts": [
+        "Amritsar",
+        "Barnala",
+        "Bathinda",
+        "Faridkot",
+        "Fatehgarh Sahib",
+        "Fazilka",
+        "Ferozepur",
+        "Gurdaspur",
+        "Hoshiarpur",
+        "Jalandhar",
+        "Kapurthala",
+        "Ludhiana",
+        "Malerkotla",
+        "Mansa",
+        "Moga",
+        "Mohali",
+        "Muktsar",
+        "Nawanshahr",
+        "Pathankot",
+        "Patiala",
+        "Rupnagar",
+        "Sangrur",
+        "Tarn Taran"
+      ]
+    },
+    {
+      "code": "RJ",
+      "name": "Rajasthan",
+      "districts": [
+        "Ajmer",
+        "Alwar",
+        "Banswara",
+        "Baran",
+        "Barmer",
+        "Bharatpur",
+        "Bhilwara",
+        "Bikaner",
+        "Bundi",
+        "Chittorgarh",
+        "Churu",
+        "Dausa",
+        "Dholpur",
+        "Dungarpur",
+        "Hanumangarh",
+        "Jaipur",
+        "Jaisalmer",
+        "Jalore",
+        "Jhalawar",
+        "Jhunjhunu",
+        "Jodhpur",
+        "Karauli",
+        "Kota",
+        "Nagaur",
+        "Pali",
+        "Pratapgarh",
+        "Rajsamand",
+        "Sawai Madhopur",
+        "Sikar",
+        "Sirohi",
+        "Sri Ganganagar",
+        "Tonk",
+        "Udaipur"
+      ]
+    },
+    {
+      "code": "SK",
+      "name": "Sikkim",
+      "districts": [
+        "East Sikkim",
+        "North Sikkim",
+        "South Sikkim",
+        "West Sikkim"
+      ]
+    },
+    {
+      "code": "TN",
+      "name": "Tamil Nadu",
+      "districts": [
+        "Ariyalur",
+        "Chengalpattu",
+        "Chennai",
+        "Coimbatore",
+        "Cuddalore",
+        "Dharmapuri",
+        "Dindigul",
+        "Erode",
+        "Kallakurichi",
+        "Kanchipuram",
+        "Kanyakumari",
+        "Karur",
+        "Krishnagiri",
+        "Madurai",
+        "Mayiladuthurai",
+        "Nagapattinam",
+        "Namakkal",
+        "Nilgiris",
+        "Perambalur",
+        "Pudukkottai",
+        "Ramanathapuram",
+        "Ranipet",
+        "Salem",
+        "Sivagangai",
+        "Tenkasi",
+        "Thanjavur",
+        "Theni",
+        "Thiruvallur",
+        "Thiruvarur",
+        "Tiruchirappalli",
+        "Tirunelveli",
+        "Tirupathur",
+        "Tiruppur",
+        "Tiruvannamalai",
+        "Tuticorin",
+        "Vellore",
+        "Viluppuram",
+        "Virudhunagar"
+      ]
+    },
+    {
+      "code": "TG",
+      "name": "Telangana",
+      "districts": [
+        "Adilabad",
+        "Bhadradri Kothagudem",
+        "Hyderabad",
+        "Jagtial",
+        "Jangaon",
+        "Jayashankar Bhupalpally",
+        "Jogulamba Gadwal",
+        "Kamareddy",
+        "Karimnagar",
+        "Khammam",
+        "Komaram Bheem",
+        "Mahabubabad",
+        "Mahabubnagar",
+        "Mancherial",
+        "Medak",
+        "Medchal-Malkajgiri",
+        "Mulugu",
+        "Nagarkurnool",
+        "Nalgonda",
+        "Narayanpet",
+        "Nirmal",
+        "Nizamabad",
+        "Peddapalli",
+        "Rajanna Sircilla",
+        "Rangareddy",
+        "Sangareddy",
+        "Siddipet",
+        "Suryapet",
+        "Vikarabad",
+        "Wanaparthy",
+        "Warangal",
+        "Warangal Rural",
+        "Yadadri Bhuvanagiri"
+      ]
+    },
+    {
+      "code": "TR",
+      "name": "Tripura",
+      "districts": [
+        "Dhalai",
+        "Gomati",
+        "Khowai",
+        "North Tripura",
+        "Sepahijala",
+        "South Tripura",
+        "Unakoti",
+        "West Tripura"
+      ]
+    },
+    {
+      "code": "UP",
+      "name": "Uttar Pradesh",
+      "districts": [
+        "Agra",
+        "Aligarh",
+        "Ambedkar Nagar",
+        "Amethi",
+        "Amroha",
+        "Auraiya",
+        "Ayodhya",
+        "Azamgarh",
+        "Baghpat",
+        "Bahraich",
+        "Ballia",
+        "Balrampur",
+        "Banda",
+        "Barabanki",
+        "Bareilly",
+        "Basti",
+        "Bhadohi",
+        "Bijnor",
+        "Budaun",
+        "Bulandshahr",
+        "Chandauli",
+        "Chitrakoot",
+        "Deoria",
+        "Etah",
+        "Etawah",
+        "Farrukhabad",
+        "Fatehpur",
+        "Firozabad",
+        "Gautam Buddha Nagar",
+        "Ghaziabad",
+        "Ghazipur",
+        "Gonda",
+        "Gorakhpur",
+        "Hamirpur",
+        "Hapur",
+        "Hardoi",
+        "Hathras",
+        "Jalaun",
+        "Jaunpur",
+        "Jhansi",
+        "Kannauj",
+        "Kanpur Dehat",
+        "Kanpur Nagar",
+        "Kasganj",
+        "Kaushambi",
+        "Kheri",
+        "Kushinagar",
+        "Lalitpur",
+        "Lucknow",
+        "Maharajganj",
+        "Mahoba",
+        "Mainpuri",
+        "Mathura",
+        "Mau",
+        "Meerut",
+        "Mirzapur",
+        "Moradabad",
+        "Muzaffarnagar",
+        "Pilibhit",
+        "Pratapgarh",
+        "Prayagraj",
+        "Raebareli",
+        "Rampur",
+        "Saharanpur",
+        "Sambhal",
+        "Sant Kabir Nagar",
+        "Shahjahanpur",
+        "Shamli",
+        "Shrawasti",
+        "Siddharthnagar",
+        "Sitapur",
+        "Sonbhadra",
+        "Sultanpur",
+        "Unnao",
+        "Varanasi"
+      ]
+    },
+    {
+      "code": "UK",
+      "name": "Uttarakhand",
+      "districts": [
+        "Almora",
+        "Bageshwar",
+        "Chamoli",
+        "Champawat",
+        "Dehradun",
+        "Haridwar",
+        "Nainital",
+        "Pauri Garhwal",
+        "Pithoragarh",
+        "Rudraprayag",
+        "Tehri Garhwal",
+        "Udham Singh Nagar",
+        "Uttarkashi"
+      ]
+    },
+    {
+      "code": "WB",
+      "name": "West Bengal",
+      "districts": [
+        "Alipurduar",
+        "Bankura",
+        "Birbhum",
+        "Cooch Behar",
+        "Dakshin Dinajpur",
+        "Darjeeling",
+        "Hooghly",
+        "Howrah",
+        "Jalpaiguri",
+        "Jhargram",
+        "Kalimpong",
+        "Kolkata",
+        "Malda",
+        "Murshidabad",
+        "Nadia",
+        "North 24 Parganas",
+        "Paschim Bardhaman",
+        "Paschim Medinipur",
+        "Purba Bardhaman",
+        "Purba Medinipur",
+        "Purulia",
+        "South 24 Parganas",
+        "Uttar Dinajpur"
+      ]
+    },
+    {
+      "code": "AN",
+      "name": "Andaman and Nicobar Islands",
+      "districts": [
+        "Nicobar",
+        "North and Middle Andaman",
+        "South Andaman"
+      ]
+    },
+    {
+      "code": "CH",
+      "name": "Chandigarh",
+      "districts": [
+        "Chandigarh"
+      ]
+    },
+    {
+      "code": "DN",
+      "name": "Dadra and Nagar Haveli and Daman and Diu",
+      "districts": [
+        "Dadra and Nagar Haveli",
+        "Daman",
+        "Diu"
+      ]
+    },
+    {
+      "code": "DL",
+      "name": "Delhi",
+      "districts": [
+        "Central Delhi",
+        "East Delhi",
+        "New Delhi",
+        "North Delhi",
+        "North East Delhi",
+        "North West Delhi",
+        "Shahdara",
+        "South Delhi",
+        "South East Delhi",
+        "South West Delhi",
+        "West Delhi"
+      ]
+    },
+    {
+      "code": "JK",
+      "name": "Jammu and Kashmir",
+      "districts": [
+        "Anantnag",
+        "Bandipora",
+        "Baramulla",
+        "Budgam",
+        "Doda",
+        "Ganderbal",
+        "Jammu",
+        "Kathua",
+        "Kishtwar",
+        "Kulgam",
+        "Kupwara",
+        "Poonch",
+        "Pulwama",
+        "Rajouri",
+        "Ramban",
+        "Reasi",
+        "Samba",
+        "Shopian",
+        "Srinagar",
+        "Udhampur"
+      ]
+    },
+    {
+      "code": "LA",
+      "name": "Ladakh",
+      "districts": [
+        "Kargil",
+        "Leh"
+      ]
+    },
+    {
+      "code": "LD",
+      "name": "Lakshadweep",
+      "districts": [
+        "Lakshadweep"
+      ]
+    },
+    {
+      "code": "PY",
+      "name": "Puducherry",
+      "districts": [
+        "Karaikal",
+        "Mahe",
+        "Puducherry",
+        "Yanam"
+      ]
+    }
+  ],
+  "tehsils": {
+    "Ahmednagar": [
+      "Ahmednagar",
+      "Sangamner",
+      "Shrirampur",
+      "Parner",
+      "Rahata",
+      "Rahuri",
+      "Shevgaon",
+      "Kopargaon",
+      "Nevasa",
+      "Pathardi",
+      "Shrigonda"
+    ],
+    "Akola": [
+      "Akola",
+      "Akot",
+      "Telhara",
+      "Balapur",
+      "Patur",
+      "Barshitakli",
+      "Murtijapur"
+    ],
+    "Amravati": [
+      "Amravati",
+      "Achalpur",
+      "Anjangaon Surji",
+      "Bhatkuli",
+      "Chandurbazar",
+      "Chikhaldara",
+      "Daryapur",
+      "Dhamangaon",
+      "Morshi",
+      "Nandgaon Khandeshwar",
+      "Teosa",
+      "Warud"
+    ],
+    "Aurangabad": [
+      "Aurangabad",
+      "Kannad",
+      "Soegaon",
+      "Sillod",
+      "Phulambri",
+      "Khuldabad",
+      "Vaijapur",
+      "Gangapur",
+      "Paithan"
+    ],
+    "Beed": [
+      "Beed",
+      "Ashti",
+      "Patoda",
+      "Shirur Kasar",
+      "Georai",
+      "Majalgaon",
+      "Wadwani",
+      "Kaij",
+      "Dharur",
+      "Parli",
+      "Ambejogai"
+    ],
+    "Bhandara": [
+      "Bhandara",
+      "Tumsar",
+      "Pauni",
+      "Mohadi",
+      "Sakoli",
+      "Lakhani",
+      "Lakhandur"
+    ],
+    "Buldhana": [
+      "Buldhana",
+      "Chikhli",
+      "Deulgaon Raja",
+      "Jalgaon Jamod",
+      "Sangrampur",
+      "Malkapur",
+      "Motala",
+      "Nandura",
+      "Khamgaon",
+      "Shegaon",
+      "Mehkar",
+      "Lonar",
+      "Sindkhed Raja"
+    ],
+    "Chandrapur": [
+      "Chandrapur",
+      "Bhadravati",
+      "Warora",
+      "Chimur",
+      "Nagbhir",
+      "Brahmapuri",
+      "Sindewahi",
+      "Rajura",
+      "Korpana",
+      "Pombhurna",
+      "Sawali",
+      "Gondpipari",
+      "Ballarpur",
+      "Mul",
+      "Saoli"
+    ],
+    "Dhule": [
+      "Dhule",
+      "Sakri",
+      "Sindkheda",
+      "Shirpur"
+    ],
+    "Gadchiroli": [
+      "Gadchiroli",
+      "Dhanora",
+      "Chamorshi",
+      "Mulchera",
+      "Desaiganj",
+      "Armori",
+      "Sironcha",
+      "Aheri",
+      "Etapalli",
+      "Bhamragad",
+      "Kurkheda",
+      "Korchi"
+    ],
+    "Gondia": [
+      "Gondia",
+      "Goregaon",
+      "Tirora",
+      "Arjuni Morgaon",
+      "Deori",
+      "Amgaon",
+      "Salekasa",
+      "Sadak Arjuni"
+    ],
+    "Hingoli": [
+      "Hingoli",
+      "Sengaon",
+      "Aundha Nagnath",
+      "Kalamnuri",
+      "Basmath"
+    ],
+    "Jalgaon": [
+      "Jalgaon",
+      "Jamner",
+      "Erandol",
+      "Dharangaon",
+      "Bhusawal",
+      "Bodvad",
+      "Yawal",
+      "Raver",
+      "Muktainagar",
+      "Amalner",
+      "Parola",
+      "Chopda",
+      "Pachora",
+      "Bhadgaon",
+      "Chalisgaon"
+    ],
+    "Jalna": [
+      "Jalna",
+      "Bhokardan",
+      "Jafrabad",
+      "Badnapur",
+      "Ambad",
+      "Ghansawangi",
+      "Partur",
+      "Mantha"
+    ],
+    "Kolhapur": [
+      "Karvir",
+      "Gadhinglaj",
+      "Panhala",
+      "Shirol",
+      "Hatkanangle",
+      "Kagal",
+      "Radhanagari",
+      "Shahuwadi",
+      "Panhala",
+      "Gaganbawada",
+      "Bhudargad",
+      "Ajara",
+      "Chandgad"
+    ],
+    "Latur": [
+      "Latur",
+      "Renapur",
+      "Ahmadpur",
+      "Jalkot",
+      "Chakur",
+      "Shirur Anantpal",
+      "Ausa",
+      "Nilanga",
+      "Deoni",
+      "Udgir"
+    ],
+    "Mumbai City": [
+      "Colaba",
+      "Mumbai",
+      "Dadar",
+      "Byculla",
+      "Kurla",
+      "Andheri",
+      "Borivali",
+      "Worli",
+      "Mahim",
+      "Parel"
+    ],
+    "Mumbai Suburban": [
+      "Andheri",
+      "Borivali",
+      "Kandivali",
+      "Malad",
+      "Goregaon",
+      "Kurla",
+      "Ghatkopar",
+      "Santacruz",
+      "Vile Parle",
+      "Jogeshwari"
+    ],
+    "Nagpur": [
+      "Nagpur",
+      "Hingna",
+      "Kamptee",
+      "Katol",
+      "Saoner",
+      "Umred",
+      "Kalmeshwar",
+      "Ramtek",
+      "Mouda",
+      "Parseoni",
+      "Savner",
+      "Narkhed",
+      "Kuhi",
+      "Bhiwapur"
+    ],
+    "Nanded": [
+      "Nanded",
+      "Ardhapur",
+      "Mudkhed",
+      "Bhokar",
+      "Umri",
+      "Loha",
+      "Kandhar",
+      "Kinwat",
+      "Himayatnagar",
+      "Hadgaon",
+      "Mahur",
+      "Deglur",
+      "Mukhed",
+      "Dharmabad",
+      "Biloli",
+      "Naigaon"
+    ],
+    "Nandurbar": [
+      "Nandurbar",
+      "Nawapur",
+      "Shahada",
+      "Talode",
+      "Akkalkuwa",
+      "Akrani"
+    ],
+    "Nashik": [
+      "Nashik",
+      "Malegaon",
+      "Sinnar",
+      "Niphad",
+      "Yeola",
+      "Dindori",
+      "Trimbakeshwar",
+      "Igatpuri",
+      "Baglan",
+      "Deola",
+      "Kalwan",
+      "Chandwad",
+      "Nandgaon",
+      "Peth",
+      "Surgana"
+    ],
+    "Osmanabad": [
+      "Osmanabad",
+      "Tuljapur",
+      "Omerga",
+      "Lohara",
+      "Umarga",
+      "Bhum",
+      "Paranda",
+      "Kalamb",
+      "Washi"
+    ],
+    "Palghar": [
+      "Palghar",
+      "Vasai",
+      "Dahanu",
+      "Talasari",
+      "Jawhar",
+      "Mokhada",
+      "Vikramgad",
+      "Wada"
+    ],
+    "Parbhani": [
+      "Parbhani",
+      "Sonpeth",
+      "Gangakhed",
+      "Palri",
+      "Purna",
+      "Sailu",
+      "Jintur",
+      "Manwath",
+      "Pathri"
+    ],
+    "Pune": [
+      "Haveli",
+      "Mulshi",
+      "Maval",
+      "Khed",
+      "Junnar",
+      "Ambegaon",
+      "Shirur",
+      "Baramati",
+      "Indapur",
+      "Daund",
+      "Purandar",
+      "Bhor",
+      "Velhe"
+    ],
+    "Raigad": [
+      "Alibag",
+      "Pen",
+      "Panvel",
+      "Uran",
+      "Karjat",
+      "Khalapur",
+      "Mangaon",
+      "Roha",
+      "Sudhagad",
+      "Mahad",
+      "Mangaon",
+      "Shrivardhan",
+      "Mhasla",
+      "Murud",
+      "Poladpur"
+    ],
+    "Ratnagiri": [
+      "Ratnagiri",
+      "Sangameshwar",
+      "Lanja",
+      "Rajapur",
+      "Chiplun",
+      "Guhagar",
+      "Dapoli",
+      "Mandangad",
+      "Khed",
+      "Pali"
+    ],
+    "Sangli": [
+      "Miraj",
+      "Sangli",
+      "Tasgaon",
+      "Jat",
+      "Khanapur",
+      "Atpadi",
+      "Kavathe Mahankal",
+      "Palus",
+      "Kadegaon",
+      "Shirala",
+      "Walwa"
+    ],
+    "Satara": [
+      "Satara",
+      "Karad",
+      "Wai",
+      "Patan",
+      "Koregaon",
+      "Phaltan",
+      "Man",
+      "Khatav",
+      "Khandala",
+      "Mahabaleshwar",
+      "Jaoli"
+    ],
+    "Sindhudurg": [
+      "Kankavli",
+      "Vaibhavwadi",
+      "Devgad",
+      "Malvan",
+      "Sawantwadi",
+      "Kudal",
+      "Vengurla",
+      "Dodamarg"
+    ],
+    "Solapur": [
+      "Solapur North",
+      "Solapur South",
+      "Akkalkot",
+      "Barshi",
+      "Mohol",
+      "Pandharpur",
+      "Malshiras",
+      "Sangole",
+      "Madha",
+      "Karmala",
+      "Mangalwedha"
+    ],
+    "Thane": [
+      "Thane",
+      "Kalyan",
+      "Murbad",
+      "Bhiwandi",
+      "Shahapur",
+      "Ulhasnagar",
+      "Ambarnath",
+      "Dombivli",
+      "Mira Bhayandar",
+      "Vasai"
+    ],
+    "Wardha": [
+      "Wardha",
+      "Deoli",
+      "Seloo",
+      "Arvi",
+      "Ashti",
+      "Karanja",
+      "Hinganghat",
+      "Samudrapur"
+    ],
+    "Washim": [
+      "Washim",
+      "Malegaon",
+      "Risod",
+      "Mangrulpir",
+      "Karanja",
+      "Manora"
+    ],
+    "Yavatmal": [
+      "Yavatmal",
+      "Arni",
+      "Babhulgaon",
+      "Kalamb",
+      "Darwha",
+      "Digras",
+      "Ner",
+      "Pusad",
+      "Umarkhed",
+      "Wani",
+      "Ralegaon",
+      "Maregaon",
+      "Zari Jamani",
+      "Ghatanji",
+      "Kelapur",
+      "Mahagaon"
+    ],
+    "_default": [
+      "Tehsil 1",
+      "Tehsil 2",
+      "Tehsil 3"
+    ]
+  },
+  "villages": {
+    "Haveli": [
+      "Hadapsar",
+      "Kothrud",
+      "Kondhwa",
+      "Warje",
+      "Baner",
+      "Aundh",
+      "Pashan"
+    ],
+    "Mulshi": [
+      "Pirangut",
+      "Lavasa",
+      "Mose",
+      "Nande",
+      "Paud"
+    ],
+    "Khed": [
+      "Chakan",
+      "Rajgurunagar",
+      "Pabal",
+      "Alandi",
+      "Chakan MIDC"
+    ],
+    "Colaba": [
+      "Colaba Market",
+      "Cuffe Parade",
+      "Nariman Point",
+      "Gateway"
+    ],
+    "Nagpur": [
+      "Sitabuldi",
+      "Dharampeth",
+      "Sadar",
+      "Gandhibagh",
+      "Itwari"
+    ],
+    "_default": [
+      "Village 1",
+      "Village 2",
+      "Village 3"
+    ],
+    "Ahmednagar": [
+      "Ahmednagar Nagar 1",
+      "Ahmednagar Ganj 2",
+      "Ahmednagar Ganj 3",
+      "Ahmednagar Nagar 4"
+    ],
+    "Sangamner": [
+      "Sangamner Nagar 1",
+      "Sangamner Nagar 2",
+      "Sangamner Peth 3",
+      "Sangamner Gaon 4"
+    ],
+    "Shrirampur": [
+      "Shrirampur Nagar 1",
+      "Shrirampur Wadi 2",
+      "Shrirampur Peth 3",
+      "Shrirampur Wadi 4"
+    ],
+    "Parner": [
+      "Parner Ganj 1",
+      "Parner Gaon 2",
+      "Parner Nagar 3",
+      "Parner Gaon 4"
+    ],
+    "Rahata": [
+      "Rahata Gaon 1",
+      "Rahata Peth 2",
+      "Rahata Gaon 3",
+      "Rahata Peth 4"
+    ],
+    "Rahuri": [
+      "Rahuri Pur 1",
+      "Rahuri Ganj 2",
+      "Rahuri Gaon 3",
+      "Rahuri Pur 4"
+    ],
+    "Shevgaon": [
+      "Shevgaon Gaon 1",
+      "Shevgaon Nagar 2",
+      "Shevgaon Wadi 3",
+      "Shevgaon Nagar 4"
+    ],
+    "Kopargaon": [
+      "Kopargaon Ganj 1",
+      "Kopargaon Peth 2",
+      "Kopargaon Gaon 3",
+      "Kopargaon Peth 4"
+    ],
+    "Nevasa": [
+      "Nevasa Ganj 1",
+      "Nevasa Nagar 2",
+      "Nevasa Gaon 3",
+      "Nevasa Pur 4"
+    ],
+    "Pathardi": [
+      "Pathardi Ganj 1",
+      "Pathardi Nagar 2",
+      "Pathardi Wadi 3",
+      "Pathardi Gaon 4"
+    ],
+    "Shrigonda": [
+      "Shrigonda Ganj 1",
+      "Shrigonda Peth 2",
+      "Shrigonda Peth 3",
+      "Shrigonda Peth 4"
+    ],
+    "Akola": [
+      "Akola Nagar 1",
+      "Akola Nagar 2",
+      "Akola Nagar 3",
+      "Akola Nagar 4"
+    ],
+    "Akot": [
+      "Akot Nagar 1",
+      "Akot Gaon 2",
+      "Akot Nagar 3",
+      "Akot Wadi 4"
+    ],
+    "Telhara": [
+      "Telhara Peth 1",
+      "Telhara Peth 2",
+      "Telhara Peth 3",
+      "Telhara Nagar 4"
+    ],
+    "Balapur": [
+      "Balapur Peth 1",
+      "Balapur Wadi 2",
+      "Balapur Wadi 3",
+      "Balapur Ganj 4"
+    ],
+    "Patur": [
+      "Patur Pur 1",
+      "Patur Wadi 2",
+      "Patur Peth 3",
+      "Patur Nagar 4"
+    ],
+    "Barshitakli": [
+      "Barshitakli Ganj 1",
+      "Barshitakli Gaon 2",
+      "Barshitakli Pur 3",
+      "Barshitakli Ganj 4"
+    ],
+    "Murtijapur": [
+      "Murtijapur Peth 1",
+      "Murtijapur Gaon 2",
+      "Murtijapur Gaon 3",
+      "Murtijapur Wadi 4"
+    ],
+    "Amravati": [
+      "Amravati Pur 1",
+      "Amravati Wadi 2",
+      "Amravati Wadi 3",
+      "Amravati Gaon 4"
+    ],
+    "Achalpur": [
+      "Achalpur Ganj 1",
+      "Achalpur Pur 2",
+      "Achalpur Gaon 3",
+      "Achalpur Pur 4"
+    ],
+    "Anjangaon Surji": [
+      "Anjangaon Gaon 1",
+      "Anjangaon Nagar 2",
+      "Anjangaon Wadi 3",
+      "Anjangaon Peth 4"
+    ],
+    "Bhatkuli": [
+      "Bhatkuli Wadi 1",
+      "Bhatkuli Wadi 2",
+      "Bhatkuli Ganj 3",
+      "Bhatkuli Peth 4"
+    ],
+    "Chandurbazar": [
+      "Chandurbazar Gaon 1",
+      "Chandurbazar Nagar 2",
+      "Chandurbazar Gaon 3",
+      "Chandurbazar Gaon 4"
+    ],
+    "Chikhaldara": [
+      "Chikhaldara Pur 1",
+      "Chikhaldara Peth 2",
+      "Chikhaldara Pur 3",
+      "Chikhaldara Gaon 4"
+    ],
+    "Daryapur": [
+      "Daryapur Peth 1",
+      "Daryapur Peth 2",
+      "Daryapur Pur 3",
+      "Daryapur Nagar 4"
+    ],
+    "Dhamangaon": [
+      "Dhamangaon Pur 1",
+      "Dhamangaon Ganj 2",
+      "Dhamangaon Pur 3",
+      "Dhamangaon Gaon 4"
+    ],
+    "Morshi": [
+      "Morshi Ganj 1",
+      "Morshi Gaon 2",
+      "Morshi Pur 3",
+      "Morshi Pur 4"
+    ],
+    "Nandgaon Khandeshwar": [
+      "Nandgaon Nagar 1",
+      "Nandgaon Wadi 2",
+      "Nandgaon Gaon 3",
+      "Nandgaon Pur 4"
+    ],
+    "Teosa": [
+      "Teosa Pur 1",
+      "Teosa Wadi 2",
+      "Teosa Wadi 3",
+      "Teosa Peth 4"
+    ],
+    "Warud": [
+      "Warud Nagar 1",
+      "Warud Ganj 2",
+      "Warud Wadi 3",
+      "Warud Nagar 4"
+    ],
+    "Aurangabad": [
+      "Aurangabad Ganj 1",
+      "Aurangabad Wadi 2",
+      "Aurangabad Peth 3",
+      "Aurangabad Pur 4"
+    ],
+    "Kannad": [
+      "Kannad Ganj 1",
+      "Kannad Gaon 2",
+      "Kannad Ganj 3",
+      "Kannad Wadi 4"
+    ],
+    "Soegaon": [
+      "Soegaon Peth 1",
+      "Soegaon Nagar 2",
+      "Soegaon Nagar 3",
+      "Soegaon Ganj 4"
+    ],
+    "Sillod": [
+      "Sillod Ganj 1",
+      "Sillod Peth 2",
+      "Sillod Peth 3",
+      "Sillod Nagar 4"
+    ],
+    "Phulambri": [
+      "Phulambri Nagar 1",
+      "Phulambri Gaon 2",
+      "Phulambri Nagar 3",
+      "Phulambri Nagar 4"
+    ],
+    "Khuldabad": [
+      "Khuldabad Gaon 1",
+      "Khuldabad Nagar 2",
+      "Khuldabad Peth 3",
+      "Khuldabad Pur 4"
+    ],
+    "Vaijapur": [
+      "Vaijapur Nagar 1",
+      "Vaijapur Wadi 2",
+      "Vaijapur Peth 3",
+      "Vaijapur Pur 4"
+    ],
+    "Gangapur": [
+      "Gangapur Wadi 1",
+      "Gangapur Gaon 2",
+      "Gangapur Pur 3",
+      "Gangapur Peth 4"
+    ],
+    "Paithan": [
+      "Paithan Peth 1",
+      "Paithan Pur 2",
+      "Paithan Nagar 3",
+      "Paithan Peth 4"
+    ],
+    "Beed": [
+      "Beed Peth 1",
+      "Beed Pur 2",
+      "Beed Pur 3",
+      "Beed Gaon 4"
+    ],
+    "Ashti": [
+      "Ashti Ganj 1",
+      "Ashti Pur 2",
+      "Ashti Wadi 3",
+      "Ashti Nagar 4"
+    ],
+    "Patoda": [
+      "Patoda Wadi 1",
+      "Patoda Wadi 2",
+      "Patoda Ganj 3",
+      "Patoda Gaon 4"
+    ],
+    "Shirur Kasar": [
+      "Shirur Peth 1",
+      "Shirur Gaon 2",
+      "Shirur Wadi 3",
+      "Shirur Gaon 4"
+    ],
+    "Georai": [
+      "Georai Ganj 1",
+      "Georai Pur 2",
+      "Georai Nagar 3",
+      "Georai Ganj 4"
+    ],
+    "Majalgaon": [
+      "Majalgaon Ganj 1",
+      "Majalgaon Peth 2",
+      "Majalgaon Ganj 3",
+      "Majalgaon Wadi 4"
+    ],
+    "Wadwani": [
+      "Wadwani Pur 1",
+      "Wadwani Ganj 2",
+      "Wadwani Ganj 3",
+      "Wadwani Gaon 4"
+    ],
+    "Kaij": [
+      "Kaij Nagar 1",
+      "Kaij Pur 2",
+      "Kaij Peth 3",
+      "Kaij Gaon 4"
+    ],
+    "Dharur": [
+      "Dharur Pur 1",
+      "Dharur Pur 2",
+      "Dharur Peth 3",
+      "Dharur Wadi 4"
+    ],
+    "Parli": [
+      "Parli Wadi 1",
+      "Parli Ganj 2",
+      "Parli Gaon 3",
+      "Parli Gaon 4"
+    ],
+    "Ambejogai": [
+      "Ambejogai Gaon 1",
+      "Ambejogai Nagar 2",
+      "Ambejogai Nagar 3",
+      "Ambejogai Peth 4"
+    ],
+    "Bhandara": [
+      "Bhandara Peth 1",
+      "Bhandara Pur 2",
+      "Bhandara Gaon 3",
+      "Bhandara Ganj 4"
+    ],
+    "Tumsar": [
+      "Tumsar Ganj 1",
+      "Tumsar Gaon 2",
+      "Tumsar Peth 3",
+      "Tumsar Nagar 4"
+    ],
+    "Pauni": [
+      "Pauni Peth 1",
+      "Pauni Wadi 2",
+      "Pauni Gaon 3",
+      "Pauni Nagar 4"
+    ],
+    "Mohadi": [
+      "Mohadi Gaon 1",
+      "Mohadi Wadi 2",
+      "Mohadi Ganj 3",
+      "Mohadi Pur 4"
+    ],
+    "Sakoli": [
+      "Sakoli Ganj 1",
+      "Sakoli Ganj 2",
+      "Sakoli Peth 3",
+      "Sakoli Wadi 4"
+    ],
+    "Lakhani": [
+      "Lakhani Ganj 1",
+      "Lakhani Pur 2",
+      "Lakhani Wadi 3",
+      "Lakhani Pur 4"
+    ],
+    "Lakhandur": [
+      "Lakhandur Gaon 1",
+      "Lakhandur Pur 2",
+      "Lakhandur Pur 3",
+      "Lakhandur Wadi 4"
+    ],
+    "Buldhana": [
+      "Buldhana Wadi 1",
+      "Buldhana Wadi 2",
+      "Buldhana Nagar 3",
+      "Buldhana Gaon 4"
+    ],
+    "Chikhli": [
+      "Chikhli Wadi 1",
+      "Chikhli Pur 2",
+      "Chikhli Nagar 3",
+      "Chikhli Ganj 4"
+    ],
+    "Deulgaon Raja": [
+      "Deulgaon Pur 1",
+      "Deulgaon Peth 2",
+      "Deulgaon Nagar 3",
+      "Deulgaon Ganj 4"
+    ],
+    "Jalgaon Jamod": [
+      "Jalgaon Wadi 1",
+      "Jalgaon Pur 2",
+      "Jalgaon Nagar 3",
+      "Jalgaon Pur 4"
+    ],
+    "Sangrampur": [
+      "Sangrampur Peth 1",
+      "Sangrampur Nagar 2",
+      "Sangrampur Pur 3",
+      "Sangrampur Nagar 4"
+    ],
+    "Malkapur": [
+      "Malkapur Gaon 1",
+      "Malkapur Ganj 2",
+      "Malkapur Peth 3",
+      "Malkapur Ganj 4"
+    ],
+    "Motala": [
+      "Motala Gaon 1",
+      "Motala Pur 2",
+      "Motala Peth 3",
+      "Motala Nagar 4"
+    ],
+    "Nandura": [
+      "Nandura Peth 1",
+      "Nandura Peth 2",
+      "Nandura Peth 3",
+      "Nandura Pur 4"
+    ],
+    "Khamgaon": [
+      "Khamgaon Nagar 1",
+      "Khamgaon Nagar 2",
+      "Khamgaon Pur 3",
+      "Khamgaon Peth 4"
+    ],
+    "Shegaon": [
+      "Shegaon Gaon 1",
+      "Shegaon Gaon 2",
+      "Shegaon Gaon 3",
+      "Shegaon Nagar 4"
+    ],
+    "Mehkar": [
+      "Mehkar Gaon 1",
+      "Mehkar Nagar 2",
+      "Mehkar Ganj 3",
+      "Mehkar Gaon 4"
+    ],
+    "Lonar": [
+      "Lonar Gaon 1",
+      "Lonar Ganj 2",
+      "Lonar Peth 3",
+      "Lonar Ganj 4"
+    ],
+    "Sindkhed Raja": [
+      "Sindkhed Pur 1",
+      "Sindkhed Pur 2",
+      "Sindkhed Wadi 3",
+      "Sindkhed Ganj 4"
+    ],
+    "Chandrapur": [
+      "Chandrapur Gaon 1",
+      "Chandrapur Pur 2",
+      "Chandrapur Ganj 3",
+      "Chandrapur Peth 4"
+    ],
+    "Bhadravati": [
+      "Bhadravati Ganj 1",
+      "Bhadravati Peth 2",
+      "Bhadravati Pur 3",
+      "Bhadravati Peth 4"
+    ],
+    "Warora": [
+      "Warora Nagar 1",
+      "Warora Ganj 2",
+      "Warora Ganj 3",
+      "Warora Pur 4"
+    ],
+    "Chimur": [
+      "Chimur Pur 1",
+      "Chimur Pur 2",
+      "Chimur Ganj 3",
+      "Chimur Nagar 4"
+    ],
+    "Nagbhir": [
+      "Nagbhir Gaon 1",
+      "Nagbhir Nagar 2",
+      "Nagbhir Nagar 3",
+      "Nagbhir Nagar 4"
+    ],
+    "Brahmapuri": [
+      "Brahmapuri Ganj 1",
+      "Brahmapuri Wadi 2",
+      "Brahmapuri Ganj 3",
+      "Brahmapuri Ganj 4"
+    ],
+    "Sindewahi": [
+      "Sindewahi Peth 1",
+      "Sindewahi Nagar 2",
+      "Sindewahi Nagar 3",
+      "Sindewahi Nagar 4"
+    ],
+    "Rajura": [
+      "Rajura Gaon 1",
+      "Rajura Wadi 2",
+      "Rajura Nagar 3",
+      "Rajura Pur 4"
+    ],
+    "Korpana": [
+      "Korpana Gaon 1",
+      "Korpana Gaon 2",
+      "Korpana Gaon 3",
+      "Korpana Wadi 4"
+    ],
+    "Pombhurna": [
+      "Pombhurna Nagar 1",
+      "Pombhurna Pur 2",
+      "Pombhurna Nagar 3",
+      "Pombhurna Gaon 4"
+    ],
+    "Sawali": [
+      "Sawali Wadi 1",
+      "Sawali Pur 2",
+      "Sawali Peth 3",
+      "Sawali Ganj 4"
+    ],
+    "Gondpipari": [
+      "Gondpipari Ganj 1",
+      "Gondpipari Peth 2",
+      "Gondpipari Ganj 3",
+      "Gondpipari Wadi 4"
+    ],
+    "Ballarpur": [
+      "Ballarpur Gaon 1",
+      "Ballarpur Ganj 2",
+      "Ballarpur Ganj 3",
+      "Ballarpur Ganj 4"
+    ],
+    "Mul": [
+      "Mul Gaon 1",
+      "Mul Ganj 2",
+      "Mul Peth 3",
+      "Mul Peth 4"
+    ],
+    "Saoli": [
+      "Saoli Peth 1",
+      "Saoli Peth 2",
+      "Saoli Gaon 3",
+      "Saoli Gaon 4"
+    ],
+    "Dhule": [
+      "Dhule Peth 1",
+      "Dhule Ganj 2",
+      "Dhule Ganj 3",
+      "Dhule Pur 4"
+    ],
+    "Sakri": [
+      "Sakri Gaon 1",
+      "Sakri Peth 2",
+      "Sakri Wadi 3",
+      "Sakri Peth 4"
+    ],
+    "Sindkheda": [
+      "Sindkheda Peth 1",
+      "Sindkheda Pur 2",
+      "Sindkheda Gaon 3",
+      "Sindkheda Pur 4"
+    ],
+    "Shirpur": [
+      "Shirpur Pur 1",
+      "Shirpur Peth 2",
+      "Shirpur Peth 3",
+      "Shirpur Wadi 4"
+    ],
+    "Gadchiroli": [
+      "Gadchiroli Pur 1",
+      "Gadchiroli Peth 2",
+      "Gadchiroli Nagar 3",
+      "Gadchiroli Gaon 4"
+    ],
+    "Dhanora": [
+      "Dhanora Pur 1",
+      "Dhanora Gaon 2",
+      "Dhanora Wadi 3",
+      "Dhanora Gaon 4"
+    ],
+    "Chamorshi": [
+      "Chamorshi Nagar 1",
+      "Chamorshi Ganj 2",
+      "Chamorshi Peth 3",
+      "Chamorshi Gaon 4"
+    ],
+    "Mulchera": [
+      "Mulchera Nagar 1",
+      "Mulchera Peth 2",
+      "Mulchera Peth 3",
+      "Mulchera Pur 4"
+    ],
+    "Desaiganj": [
+      "Desaiganj Ganj 1",
+      "Desaiganj Ganj 2",
+      "Desaiganj Pur 3",
+      "Desaiganj Ganj 4"
+    ],
+    "Armori": [
+      "Armori Nagar 1",
+      "Armori Peth 2",
+      "Armori Wadi 3",
+      "Armori Gaon 4"
+    ],
+    "Sironcha": [
+      "Sironcha Gaon 1",
+      "Sironcha Peth 2",
+      "Sironcha Gaon 3",
+      "Sironcha Wadi 4"
+    ],
+    "Aheri": [
+      "Aheri Peth 1",
+      "Aheri Gaon 2",
+      "Aheri Ganj 3",
+      "Aheri Gaon 4"
+    ],
+    "Etapalli": [
+      "Etapalli Ganj 1",
+      "Etapalli Wadi 2",
+      "Etapalli Nagar 3",
+      "Etapalli Pur 4"
+    ],
+    "Bhamragad": [
+      "Bhamragad Peth 1",
+      "Bhamragad Ganj 2",
+      "Bhamragad Gaon 3",
+      "Bhamragad Wadi 4"
+    ],
+    "Kurkheda": [
+      "Kurkheda Nagar 1",
+      "Kurkheda Peth 2",
+      "Kurkheda Pur 3",
+      "Kurkheda Wadi 4"
+    ],
+    "Korchi": [
+      "Korchi Wadi 1",
+      "Korchi Gaon 2",
+      "Korchi Wadi 3",
+      "Korchi Wadi 4"
+    ],
+    "Gondia": [
+      "Gondia Ganj 1",
+      "Gondia Gaon 2",
+      "Gondia Nagar 3",
+      "Gondia Wadi 4"
+    ],
+    "Goregaon": [
+      "Goregaon Gaon 1",
+      "Goregaon Gaon 2",
+      "Goregaon Nagar 3",
+      "Goregaon Wadi 4"
+    ],
+    "Tirora": [
+      "Tirora Wadi 1",
+      "Tirora Ganj 2",
+      "Tirora Pur 3",
+      "Tirora Ganj 4"
+    ],
+    "Arjuni Morgaon": [
+      "Arjuni Wadi 1",
+      "Arjuni Peth 2",
+      "Arjuni Gaon 3",
+      "Arjuni Gaon 4"
+    ],
+    "Deori": [
+      "Deori Gaon 1",
+      "Deori Wadi 2",
+      "Deori Wadi 3",
+      "Deori Wadi 4"
+    ],
+    "Amgaon": [
+      "Amgaon Pur 1",
+      "Amgaon Wadi 2",
+      "Amgaon Nagar 3",
+      "Amgaon Nagar 4"
+    ],
+    "Salekasa": [
+      "Salekasa Nagar 1",
+      "Salekasa Wadi 2",
+      "Salekasa Peth 3",
+      "Salekasa Pur 4"
+    ],
+    "Sadak Arjuni": [
+      "Sadak Wadi 1",
+      "Sadak Gaon 2",
+      "Sadak Gaon 3",
+      "Sadak Peth 4"
+    ],
+    "Hingoli": [
+      "Hingoli Gaon 1",
+      "Hingoli Nagar 2",
+      "Hingoli Gaon 3",
+      "Hingoli Gaon 4"
+    ],
+    "Sengaon": [
+      "Sengaon Wadi 1",
+      "Sengaon Ganj 2",
+      "Sengaon Wadi 3",
+      "Sengaon Pur 4"
+    ],
+    "Aundha Nagnath": [
+      "Aundha Pur 1",
+      "Aundha Wadi 2",
+      "Aundha Pur 3",
+      "Aundha Ganj 4"
+    ],
+    "Kalamnuri": [
+      "Kalamnuri Nagar 1",
+      "Kalamnuri Ganj 2",
+      "Kalamnuri Nagar 3",
+      "Kalamnuri Wadi 4"
+    ],
+    "Basmath": [
+      "Basmath Ganj 1",
+      "Basmath Ganj 2",
+      "Basmath Peth 3",
+      "Basmath Peth 4"
+    ],
+    "Jalgaon": [
+      "Jalgaon Gaon 1",
+      "Jalgaon Ganj 2",
+      "Jalgaon Peth 3",
+      "Jalgaon Peth 4"
+    ],
+    "Jamner": [
+      "Jamner Wadi 1",
+      "Jamner Peth 2",
+      "Jamner Ganj 3",
+      "Jamner Ganj 4"
+    ],
+    "Erandol": [
+      "Erandol Nagar 1",
+      "Erandol Peth 2",
+      "Erandol Wadi 3",
+      "Erandol Gaon 4"
+    ],
+    "Dharangaon": [
+      "Dharangaon Ganj 1",
+      "Dharangaon Gaon 2",
+      "Dharangaon Nagar 3",
+      "Dharangaon Pur 4"
+    ],
+    "Bhusawal": [
+      "Bhusawal Wadi 1",
+      "Bhusawal Ganj 2",
+      "Bhusawal Gaon 3",
+      "Bhusawal Pur 4"
+    ],
+    "Bodvad": [
+      "Bodvad Ganj 1",
+      "Bodvad Nagar 2",
+      "Bodvad Wadi 3",
+      "Bodvad Nagar 4"
+    ],
+    "Yawal": [
+      "Yawal Gaon 1",
+      "Yawal Gaon 2",
+      "Yawal Nagar 3",
+      "Yawal Wadi 4"
+    ],
+    "Raver": [
+      "Raver Nagar 1",
+      "Raver Pur 2",
+      "Raver Nagar 3",
+      "Raver Nagar 4"
+    ],
+    "Muktainagar": [
+      "Muktainagar Peth 1",
+      "Muktainagar Gaon 2",
+      "Muktainagar Gaon 3",
+      "Muktainagar Nagar 4"
+    ],
+    "Amalner": [
+      "Amalner Gaon 1",
+      "Amalner Wadi 2",
+      "Amalner Ganj 3",
+      "Amalner Peth 4"
+    ],
+    "Parola": [
+      "Parola Ganj 1",
+      "Parola Wadi 2",
+      "Parola Nagar 3",
+      "Parola Ganj 4"
+    ],
+    "Chopda": [
+      "Chopda Peth 1",
+      "Chopda Peth 2",
+      "Chopda Pur 3",
+      "Chopda Ganj 4"
+    ],
+    "Pachora": [
+      "Pachora Peth 1",
+      "Pachora Peth 2",
+      "Pachora Gaon 3",
+      "Pachora Ganj 4"
+    ],
+    "Bhadgaon": [
+      "Bhadgaon Wadi 1",
+      "Bhadgaon Ganj 2",
+      "Bhadgaon Peth 3",
+      "Bhadgaon Pur 4"
+    ],
+    "Chalisgaon": [
+      "Chalisgaon Wadi 1",
+      "Chalisgaon Nagar 2",
+      "Chalisgaon Ganj 3",
+      "Chalisgaon Nagar 4"
+    ],
+    "Jalna": [
+      "Jalna Wadi 1",
+      "Jalna Peth 2",
+      "Jalna Wadi 3",
+      "Jalna Ganj 4"
+    ],
+    "Bhokardan": [
+      "Bhokardan Pur 1",
+      "Bhokardan Ganj 2",
+      "Bhokardan Nagar 3",
+      "Bhokardan Ganj 4"
+    ],
+    "Jafrabad": [
+      "Jafrabad Ganj 1",
+      "Jafrabad Ganj 2",
+      "Jafrabad Nagar 3",
+      "Jafrabad Peth 4"
+    ],
+    "Badnapur": [
+      "Badnapur Gaon 1",
+      "Badnapur Gaon 2",
+      "Badnapur Wadi 3",
+      "Badnapur Gaon 4"
+    ],
+    "Ambad": [
+      "Ambad Pur 1",
+      "Ambad Ganj 2",
+      "Ambad Wadi 3",
+      "Ambad Ganj 4"
+    ],
+    "Ghansawangi": [
+      "Ghansawangi Pur 1",
+      "Ghansawangi Gaon 2",
+      "Ghansawangi Gaon 3",
+      "Ghansawangi Nagar 4"
+    ],
+    "Partur": [
+      "Partur Gaon 1",
+      "Partur Pur 2",
+      "Partur Wadi 3",
+      "Partur Wadi 4"
+    ],
+    "Mantha": [
+      "Mantha Nagar 1",
+      "Mantha Gaon 2",
+      "Mantha Gaon 3",
+      "Mantha Ganj 4"
+    ],
+    "Karvir": [
+      "Karvir Gaon 1",
+      "Karvir Ganj 2",
+      "Karvir Pur 3",
+      "Karvir Peth 4"
+    ],
+    "Gadhinglaj": [
+      "Gadhinglaj Ganj 1",
+      "Gadhinglaj Peth 2",
+      "Gadhinglaj Wadi 3",
+      "Gadhinglaj Ganj 4"
+    ],
+    "Panhala": [
+      "Panhala Peth 1",
+      "Panhala Gaon 2",
+      "Panhala Peth 3",
+      "Panhala Peth 4"
+    ],
+    "Shirol": [
+      "Shirol Peth 1",
+      "Shirol Pur 2",
+      "Shirol Ganj 3",
+      "Shirol Wadi 4"
+    ],
+    "Hatkanangle": [
+      "Hatkanangle Pur 1",
+      "Hatkanangle Wadi 2",
+      "Hatkanangle Pur 3",
+      "Hatkanangle Pur 4"
+    ],
+    "Kagal": [
+      "Kagal Pur 1",
+      "Kagal Peth 2",
+      "Kagal Wadi 3",
+      "Kagal Wadi 4"
+    ],
+    "Radhanagari": [
+      "Radhanagari Nagar 1",
+      "Radhanagari Wadi 2",
+      "Radhanagari Wadi 3",
+      "Radhanagari Gaon 4"
+    ],
+    "Shahuwadi": [
+      "Shahuwadi Nagar 1",
+      "Shahuwadi Ganj 2",
+      "Shahuwadi Peth 3",
+      "Shahuwadi Gaon 4"
+    ],
+    "Gaganbawada": [
+      "Gaganbawada Nagar 1",
+      "Gaganbawada Ganj 2",
+      "Gaganbawada Wadi 3",
+      "Gaganbawada Pur 4"
+    ],
+    "Bhudargad": [
+      "Bhudargad Wadi 1",
+      "Bhudargad Nagar 2",
+      "Bhudargad Pur 3",
+      "Bhudargad Nagar 4"
+    ],
+    "Ajara": [
+      "Ajara Ganj 1",
+      "Ajara Gaon 2",
+      "Ajara Gaon 3",
+      "Ajara Peth 4"
+    ],
+    "Chandgad": [
+      "Chandgad Nagar 1",
+      "Chandgad Ganj 2",
+      "Chandgad Gaon 3",
+      "Chandgad Nagar 4"
+    ],
+    "Latur": [
+      "Latur Wadi 1",
+      "Latur Wadi 2",
+      "Latur Pur 3",
+      "Latur Gaon 4"
+    ],
+    "Renapur": [
+      "Renapur Pur 1",
+      "Renapur Gaon 2",
+      "Renapur Nagar 3",
+      "Renapur Gaon 4"
+    ],
+    "Ahmadpur": [
+      "Ahmadpur Ganj 1",
+      "Ahmadpur Ganj 2",
+      "Ahmadpur Pur 3",
+      "Ahmadpur Gaon 4"
+    ],
+    "Jalkot": [
+      "Jalkot Pur 1",
+      "Jalkot Gaon 2",
+      "Jalkot Ganj 3",
+      "Jalkot Nagar 4"
+    ],
+    "Chakur": [
+      "Chakur Peth 1",
+      "Chakur Peth 2",
+      "Chakur Peth 3",
+      "Chakur Wadi 4"
+    ],
+    "Shirur Anantpal": [
+      "Shirur Ganj 1",
+      "Shirur Peth 2",
+      "Shirur Gaon 3",
+      "Shirur Gaon 4"
+    ],
+    "Ausa": [
+      "Ausa Gaon 1",
+      "Ausa Peth 2",
+      "Ausa Wadi 3",
+      "Ausa Gaon 4"
+    ],
+    "Nilanga": [
+      "Nilanga Ganj 1",
+      "Nilanga Wadi 2",
+      "Nilanga Pur 3",
+      "Nilanga Nagar 4"
+    ],
+    "Deoni": [
+      "Deoni Ganj 1",
+      "Deoni Ganj 2",
+      "Deoni Nagar 3",
+      "Deoni Nagar 4"
+    ],
+    "Udgir": [
+      "Udgir Wadi 1",
+      "Udgir Pur 2",
+      "Udgir Peth 3",
+      "Udgir Gaon 4"
+    ],
+    "Mumbai": [
+      "Mumbai Gaon 1",
+      "Mumbai Ganj 2",
+      "Mumbai Nagar 3",
+      "Mumbai Pur 4"
+    ],
+    "Dadar": [
+      "Dadar Wadi 1",
+      "Dadar Ganj 2",
+      "Dadar Ganj 3",
+      "Dadar Ganj 4"
+    ],
+    "Byculla": [
+      "Byculla Peth 1",
+      "Byculla Pur 2",
+      "Byculla Ganj 3",
+      "Byculla Pur 4"
+    ],
+    "Kurla": [
+      "Kurla Wadi 1",
+      "Kurla Pur 2",
+      "Kurla Wadi 3",
+      "Kurla Gaon 4"
+    ],
+    "Andheri": [
+      "Andheri Peth 1",
+      "Andheri Wadi 2",
+      "Andheri Nagar 3",
+      "Andheri Nagar 4"
+    ],
+    "Borivali": [
+      "Borivali Peth 1",
+      "Borivali Pur 2",
+      "Borivali Ganj 3",
+      "Borivali Peth 4"
+    ],
+    "Worli": [
+      "Worli Pur 1",
+      "Worli Wadi 2",
+      "Worli Nagar 3",
+      "Worli Pur 4"
+    ],
+    "Mahim": [
+      "Mahim Pur 1",
+      "Mahim Nagar 2",
+      "Mahim Pur 3",
+      "Mahim Nagar 4"
+    ],
+    "Parel": [
+      "Parel Ganj 1",
+      "Parel Peth 2",
+      "Parel Nagar 3",
+      "Parel Nagar 4"
+    ],
+    "Kandivali": [
+      "Kandivali Nagar 1",
+      "Kandivali Wadi 2",
+      "Kandivali Pur 3",
+      "Kandivali Peth 4"
+    ],
+    "Malad": [
+      "Malad Peth 1",
+      "Malad Gaon 2",
+      "Malad Wadi 3",
+      "Malad Peth 4"
+    ],
+    "Ghatkopar": [
+      "Ghatkopar Peth 1",
+      "Ghatkopar Pur 2",
+      "Ghatkopar Ganj 3",
+      "Ghatkopar Wadi 4"
+    ],
+    "Santacruz": [
+      "Santacruz Wadi 1",
+      "Santacruz Peth 2",
+      "Santacruz Pur 3",
+      "Santacruz Wadi 4"
+    ],
+    "Vile Parle": [
+      "Vile Wadi 1",
+      "Vile Nagar 2",
+      "Vile Ganj 3",
+      "Vile Ganj 4"
+    ],
+    "Jogeshwari": [
+      "Jogeshwari Gaon 1",
+      "Jogeshwari Nagar 2",
+      "Jogeshwari Wadi 3",
+      "Jogeshwari Wadi 4"
+    ],
+    "Hingna": [
+      "Hingna Wadi 1",
+      "Hingna Ganj 2",
+      "Hingna Gaon 3",
+      "Hingna Wadi 4"
+    ],
+    "Kamptee": [
+      "Kamptee Wadi 1",
+      "Kamptee Peth 2",
+      "Kamptee Peth 3",
+      "Kamptee Ganj 4"
+    ],
+    "Katol": [
+      "Katol Wadi 1",
+      "Katol Ganj 2",
+      "Katol Gaon 3",
+      "Katol Wadi 4"
+    ],
+    "Saoner": [
+      "Saoner Wadi 1",
+      "Saoner Pur 2",
+      "Saoner Pur 3",
+      "Saoner Wadi 4"
+    ],
+    "Umred": [
+      "Umred Pur 1",
+      "Umred Ganj 2",
+      "Umred Pur 3",
+      "Umred Peth 4"
+    ],
+    "Kalmeshwar": [
+      "Kalmeshwar Pur 1",
+      "Kalmeshwar Nagar 2",
+      "Kalmeshwar Peth 3",
+      "Kalmeshwar Nagar 4"
+    ],
+    "Ramtek": [
+      "Ramtek Ganj 1",
+      "Ramtek Wadi 2",
+      "Ramtek Nagar 3",
+      "Ramtek Nagar 4"
+    ],
+    "Mouda": [
+      "Mouda Pur 1",
+      "Mouda Wadi 2",
+      "Mouda Wadi 3",
+      "Mouda Nagar 4"
+    ],
+    "Parseoni": [
+      "Parseoni Pur 1",
+      "Parseoni Wadi 2",
+      "Parseoni Peth 3",
+      "Parseoni Wadi 4"
+    ],
+    "Savner": [
+      "Savner Nagar 1",
+      "Savner Gaon 2",
+      "Savner Peth 3",
+      "Savner Gaon 4"
+    ],
+    "Narkhed": [
+      "Narkhed Nagar 1",
+      "Narkhed Ganj 2",
+      "Narkhed Peth 3",
+      "Narkhed Gaon 4"
+    ],
+    "Kuhi": [
+      "Kuhi Gaon 1",
+      "Kuhi Pur 2",
+      "Kuhi Ganj 3",
+      "Kuhi Wadi 4"
+    ],
+    "Bhiwapur": [
+      "Bhiwapur Peth 1",
+      "Bhiwapur Peth 2",
+      "Bhiwapur Pur 3",
+      "Bhiwapur Pur 4"
+    ],
+    "Nanded": [
+      "Nanded Ganj 1",
+      "Nanded Peth 2",
+      "Nanded Gaon 3",
+      "Nanded Nagar 4"
+    ],
+    "Ardhapur": [
+      "Ardhapur Nagar 1",
+      "Ardhapur Ganj 2",
+      "Ardhapur Wadi 3",
+      "Ardhapur Peth 4"
+    ],
+    "Mudkhed": [
+      "Mudkhed Wadi 1",
+      "Mudkhed Gaon 2",
+      "Mudkhed Gaon 3",
+      "Mudkhed Pur 4"
+    ],
+    "Bhokar": [
+      "Bhokar Nagar 1",
+      "Bhokar Nagar 2",
+      "Bhokar Pur 3",
+      "Bhokar Wadi 4"
+    ],
+    "Umri": [
+      "Umri Pur 1",
+      "Umri Nagar 2",
+      "Umri Pur 3",
+      "Umri Gaon 4"
+    ],
+    "Loha": [
+      "Loha Peth 1",
+      "Loha Nagar 2",
+      "Loha Nagar 3",
+      "Loha Nagar 4"
+    ],
+    "Kandhar": [
+      "Kandhar Wadi 1",
+      "Kandhar Nagar 2",
+      "Kandhar Wadi 3",
+      "Kandhar Ganj 4"
+    ],
+    "Kinwat": [
+      "Kinwat Gaon 1",
+      "Kinwat Gaon 2",
+      "Kinwat Ganj 3",
+      "Kinwat Pur 4"
+    ],
+    "Himayatnagar": [
+      "Himayatnagar Nagar 1",
+      "Himayatnagar Wadi 2",
+      "Himayatnagar Pur 3",
+      "Himayatnagar Gaon 4"
+    ],
+    "Hadgaon": [
+      "Hadgaon Ganj 1",
+      "Hadgaon Nagar 2",
+      "Hadgaon Nagar 3",
+      "Hadgaon Gaon 4"
+    ],
+    "Mahur": [
+      "Mahur Nagar 1",
+      "Mahur Pur 2",
+      "Mahur Ganj 3",
+      "Mahur Gaon 4"
+    ],
+    "Deglur": [
+      "Deglur Pur 1",
+      "Deglur Nagar 2",
+      "Deglur Peth 3",
+      "Deglur Wadi 4"
+    ],
+    "Mukhed": [
+      "Mukhed Ganj 1",
+      "Mukhed Ganj 2",
+      "Mukhed Nagar 3",
+      "Mukhed Wadi 4"
+    ],
+    "Dharmabad": [
+      "Dharmabad Pur 1",
+      "Dharmabad Ganj 2",
+      "Dharmabad Gaon 3",
+      "Dharmabad Peth 4"
+    ],
+    "Biloli": [
+      "Biloli Ganj 1",
+      "Biloli Pur 2",
+      "Biloli Wadi 3",
+      "Biloli Nagar 4"
+    ],
+    "Naigaon": [
+      "Naigaon Wadi 1",
+      "Naigaon Gaon 2",
+      "Naigaon Ganj 3",
+      "Naigaon Wadi 4"
+    ],
+    "Nandurbar": [
+      "Nandurbar Ganj 1",
+      "Nandurbar Gaon 2",
+      "Nandurbar Wadi 3",
+      "Nandurbar Wadi 4"
+    ],
+    "Nawapur": [
+      "Nawapur Gaon 1",
+      "Nawapur Nagar 2",
+      "Nawapur Pur 3",
+      "Nawapur Wadi 4"
+    ],
+    "Shahada": [
+      "Shahada Gaon 1",
+      "Shahada Ganj 2",
+      "Shahada Gaon 3",
+      "Shahada Nagar 4"
+    ],
+    "Talode": [
+      "Talode Gaon 1",
+      "Talode Peth 2",
+      "Talode Gaon 3",
+      "Talode Pur 4"
+    ],
+    "Akkalkuwa": [
+      "Akkalkuwa Gaon 1",
+      "Akkalkuwa Nagar 2",
+      "Akkalkuwa Wadi 3",
+      "Akkalkuwa Ganj 4"
+    ],
+    "Akrani": [
+      "Akrani Pur 1",
+      "Akrani Ganj 2",
+      "Akrani Pur 3",
+      "Akrani Wadi 4"
+    ],
+    "Nashik": [
+      "Nashik Wadi 1",
+      "Nashik Pur 2",
+      "Nashik Pur 3",
+      "Nashik Gaon 4"
+    ],
+    "Malegaon": [
+      "Malegaon Pur 1",
+      "Malegaon Nagar 2",
+      "Malegaon Nagar 3",
+      "Malegaon Nagar 4"
+    ],
+    "Sinnar": [
+      "Sinnar Nagar 1",
+      "Sinnar Nagar 2",
+      "Sinnar Gaon 3",
+      "Sinnar Ganj 4"
+    ],
+    "Niphad": [
+      "Niphad Ganj 1",
+      "Niphad Wadi 2",
+      "Niphad Wadi 3",
+      "Niphad Nagar 4"
+    ],
+    "Yeola": [
+      "Yeola Ganj 1",
+      "Yeola Nagar 2",
+      "Yeola Ganj 3",
+      "Yeola Ganj 4"
+    ],
+    "Dindori": [
+      "Dindori Gaon 1",
+      "Dindori Peth 2",
+      "Dindori Pur 3",
+      "Dindori Gaon 4"
+    ],
+    "Trimbakeshwar": [
+      "Trimbakeshwar Gaon 1",
+      "Trimbakeshwar Gaon 2",
+      "Trimbakeshwar Nagar 3",
+      "Trimbakeshwar Gaon 4"
+    ],
+    "Igatpuri": [
+      "Igatpuri Ganj 1",
+      "Igatpuri Pur 2",
+      "Igatpuri Peth 3",
+      "Igatpuri Gaon 4"
+    ],
+    "Baglan": [
+      "Baglan Wadi 1",
+      "Baglan Nagar 2",
+      "Baglan Ganj 3",
+      "Baglan Peth 4"
+    ],
+    "Deola": [
+      "Deola Nagar 1",
+      "Deola Ganj 2",
+      "Deola Peth 3",
+      "Deola Gaon 4"
+    ],
+    "Kalwan": [
+      "Kalwan Nagar 1",
+      "Kalwan Wadi 2",
+      "Kalwan Peth 3",
+      "Kalwan Nagar 4"
+    ],
+    "Chandwad": [
+      "Chandwad Peth 1",
+      "Chandwad Wadi 2",
+      "Chandwad Nagar 3",
+      "Chandwad Ganj 4"
+    ],
+    "Nandgaon": [
+      "Nandgaon Gaon 1",
+      "Nandgaon Ganj 2",
+      "Nandgaon Ganj 3",
+      "Nandgaon Wadi 4"
+    ],
+    "Peth": [
+      "Peth Pur 1",
+      "Peth Ganj 2",
+      "Peth Nagar 3",
+      "Peth Ganj 4"
+    ],
+    "Surgana": [
+      "Surgana Pur 1",
+      "Surgana Wadi 2",
+      "Surgana Wadi 3",
+      "Surgana Pur 4"
+    ],
+    "Osmanabad": [
+      "Osmanabad Ganj 1",
+      "Osmanabad Wadi 2",
+      "Osmanabad Peth 3",
+      "Osmanabad Peth 4"
+    ],
+    "Tuljapur": [
+      "Tuljapur Pur 1",
+      "Tuljapur Nagar 2",
+      "Tuljapur Ganj 3",
+      "Tuljapur Ganj 4"
+    ],
+    "Omerga": [
+      "Omerga Pur 1",
+      "Omerga Pur 2",
+      "Omerga Nagar 3",
+      "Omerga Gaon 4"
+    ],
+    "Lohara": [
+      "Lohara Wadi 1",
+      "Lohara Gaon 2",
+      "Lohara Pur 3",
+      "Lohara Wadi 4"
+    ],
+    "Umarga": [
+      "Umarga Wadi 1",
+      "Umarga Peth 2",
+      "Umarga Peth 3",
+      "Umarga Peth 4"
+    ],
+    "Bhum": [
+      "Bhum Pur 1",
+      "Bhum Ganj 2",
+      "Bhum Wadi 3",
+      "Bhum Ganj 4"
+    ],
+    "Paranda": [
+      "Paranda Gaon 1",
+      "Paranda Gaon 2",
+      "Paranda Pur 3",
+      "Paranda Wadi 4"
+    ],
+    "Kalamb": [
+      "Kalamb Gaon 1",
+      "Kalamb Wadi 2",
+      "Kalamb Pur 3",
+      "Kalamb Ganj 4"
+    ],
+    "Washi": [
+      "Washi Ganj 1",
+      "Washi Pur 2",
+      "Washi Peth 3",
+      "Washi Peth 4"
+    ],
+    "Palghar": [
+      "Palghar Nagar 1",
+      "Palghar Nagar 2",
+      "Palghar Pur 3",
+      "Palghar Peth 4"
+    ],
+    "Vasai": [
+      "Vasai Wadi 1",
+      "Vasai Nagar 2",
+      "Vasai Wadi 3",
+      "Vasai Nagar 4"
+    ],
+    "Dahanu": [
+      "Dahanu Pur 1",
+      "Dahanu Gaon 2",
+      "Dahanu Pur 3",
+      "Dahanu Wadi 4"
+    ],
+    "Talasari": [
+      "Talasari Wadi 1",
+      "Talasari Wadi 2",
+      "Talasari Gaon 3",
+      "Talasari Gaon 4"
+    ],
+    "Jawhar": [
+      "Jawhar Wadi 1",
+      "Jawhar Pur 2",
+      "Jawhar Nagar 3",
+      "Jawhar Peth 4"
+    ],
+    "Mokhada": [
+      "Mokhada Nagar 1",
+      "Mokhada Gaon 2",
+      "Mokhada Ganj 3",
+      "Mokhada Ganj 4"
+    ],
+    "Vikramgad": [
+      "Vikramgad Peth 1",
+      "Vikramgad Pur 2",
+      "Vikramgad Ganj 3",
+      "Vikramgad Ganj 4"
+    ],
+    "Wada": [
+      "Wada Wadi 1",
+      "Wada Wadi 2",
+      "Wada Ganj 3",
+      "Wada Nagar 4"
+    ],
+    "Parbhani": [
+      "Parbhani Pur 1",
+      "Parbhani Peth 2",
+      "Parbhani Wadi 3",
+      "Parbhani Gaon 4"
+    ],
+    "Sonpeth": [
+      "Sonpeth Pur 1",
+      "Sonpeth Wadi 2",
+      "Sonpeth Ganj 3",
+      "Sonpeth Gaon 4"
+    ],
+    "Gangakhed": [
+      "Gangakhed Wadi 1",
+      "Gangakhed Gaon 2",
+      "Gangakhed Wadi 3",
+      "Gangakhed Peth 4"
+    ],
+    "Palri": [
+      "Palri Nagar 1",
+      "Palri Wadi 2",
+      "Palri Pur 3",
+      "Palri Nagar 4"
+    ],
+    "Purna": [
+      "Purna Gaon 1",
+      "Purna Pur 2",
+      "Purna Pur 3",
+      "Purna Ganj 4"
+    ],
+    "Sailu": [
+      "Sailu Pur 1",
+      "Sailu Nagar 2",
+      "Sailu Nagar 3",
+      "Sailu Pur 4"
+    ],
+    "Jintur": [
+      "Jintur Gaon 1",
+      "Jintur Nagar 2",
+      "Jintur Ganj 3",
+      "Jintur Gaon 4"
+    ],
+    "Manwath": [
+      "Manwath Pur 1",
+      "Manwath Nagar 2",
+      "Manwath Peth 3",
+      "Manwath Gaon 4"
+    ],
+    "Pathri": [
+      "Pathri Gaon 1",
+      "Pathri Nagar 2",
+      "Pathri Gaon 3",
+      "Pathri Gaon 4"
+    ],
+    "Maval": [
+      "Maval Gaon 1",
+      "Maval Gaon 2",
+      "Maval Wadi 3",
+      "Maval Wadi 4"
+    ],
+    "Junnar": [
+      "Junnar Pur 1",
+      "Junnar Nagar 2",
+      "Junnar Wadi 3",
+      "Junnar Pur 4"
+    ],
+    "Ambegaon": [
+      "Ambegaon Wadi 1",
+      "Ambegaon Ganj 2",
+      "Ambegaon Gaon 3",
+      "Ambegaon Gaon 4"
+    ],
+    "Shirur": [
+      "Shirur Peth 1",
+      "Shirur Ganj 2",
+      "Shirur Ganj 3",
+      "Shirur Peth 4"
+    ],
+    "Baramati": [
+      "Baramati Nagar 1",
+      "Baramati Gaon 2",
+      "Baramati Wadi 3",
+      "Baramati Nagar 4"
+    ],
+    "Indapur": [
+      "Indapur Ganj 1",
+      "Indapur Peth 2",
+      "Indapur Gaon 3",
+      "Indapur Wadi 4"
+    ],
+    "Daund": [
+      "Daund Gaon 1",
+      "Daund Wadi 2",
+      "Daund Wadi 3",
+      "Daund Wadi 4"
+    ],
+    "Purandar": [
+      "Purandar Nagar 1",
+      "Purandar Ganj 2",
+      "Purandar Pur 3",
+      "Purandar Pur 4"
+    ],
+    "Bhor": [
+      "Bhor Pur 1",
+      "Bhor Gaon 2",
+      "Bhor Ganj 3",
+      "Bhor Gaon 4"
+    ],
+    "Velhe": [
+      "Velhe Peth 1",
+      "Velhe Ganj 2",
+      "Velhe Gaon 3",
+      "Velhe Ganj 4"
+    ],
+    "Alibag": [
+      "Alibag Wadi 1",
+      "Alibag Peth 2",
+      "Alibag Wadi 3",
+      "Alibag Ganj 4"
+    ],
+    "Pen": [
+      "Pen Ganj 1",
+      "Pen Pur 2",
+      "Pen Nagar 3",
+      "Pen Wadi 4"
+    ],
+    "Panvel": [
+      "Panvel Wadi 1",
+      "Panvel Nagar 2",
+      "Panvel Gaon 3",
+      "Panvel Nagar 4"
+    ],
+    "Uran": [
+      "Uran Pur 1",
+      "Uran Wadi 2",
+      "Uran Ganj 3",
+      "Uran Gaon 4"
+    ],
+    "Karjat": [
+      "Karjat Peth 1",
+      "Karjat Pur 2",
+      "Karjat Peth 3",
+      "Karjat Gaon 4"
+    ],
+    "Khalapur": [
+      "Khalapur Wadi 1",
+      "Khalapur Peth 2",
+      "Khalapur Gaon 3",
+      "Khalapur Pur 4"
+    ],
+    "Mangaon": [
+      "Mangaon Ganj 1",
+      "Mangaon Ganj 2",
+      "Mangaon Nagar 3",
+      "Mangaon Wadi 4"
+    ],
+    "Roha": [
+      "Roha Ganj 1",
+      "Roha Gaon 2",
+      "Roha Peth 3",
+      "Roha Gaon 4"
+    ],
+    "Sudhagad": [
+      "Sudhagad Gaon 1",
+      "Sudhagad Wadi 2",
+      "Sudhagad Wadi 3",
+      "Sudhagad Gaon 4"
+    ],
+    "Mahad": [
+      "Mahad Peth 1",
+      "Mahad Wadi 2",
+      "Mahad Nagar 3",
+      "Mahad Peth 4"
+    ],
+    "Shrivardhan": [
+      "Shrivardhan Ganj 1",
+      "Shrivardhan Peth 2",
+      "Shrivardhan Pur 3",
+      "Shrivardhan Pur 4"
+    ],
+    "Mhasla": [
+      "Mhasla Ganj 1",
+      "Mhasla Peth 2",
+      "Mhasla Pur 3",
+      "Mhasla Wadi 4"
+    ],
+    "Murud": [
+      "Murud Gaon 1",
+      "Murud Nagar 2",
+      "Murud Wadi 3",
+      "Murud Gaon 4"
+    ],
+    "Poladpur": [
+      "Poladpur Wadi 1",
+      "Poladpur Pur 2",
+      "Poladpur Peth 3",
+      "Poladpur Ganj 4"
+    ],
+    "Ratnagiri": [
+      "Ratnagiri Ganj 1",
+      "Ratnagiri Gaon 2",
+      "Ratnagiri Wadi 3",
+      "Ratnagiri Pur 4"
+    ],
+    "Sangameshwar": [
+      "Sangameshwar Gaon 1",
+      "Sangameshwar Peth 2",
+      "Sangameshwar Ganj 3",
+      "Sangameshwar Peth 4"
+    ],
+    "Lanja": [
+      "Lanja Pur 1",
+      "Lanja Pur 2",
+      "Lanja Ganj 3",
+      "Lanja Gaon 4"
+    ],
+    "Rajapur": [
+      "Rajapur Peth 1",
+      "Rajapur Peth 2",
+      "Rajapur Peth 3",
+      "Rajapur Ganj 4"
+    ],
+    "Chiplun": [
+      "Chiplun Wadi 1",
+      "Chiplun Peth 2",
+      "Chiplun Wadi 3",
+      "Chiplun Gaon 4"
+    ],
+    "Guhagar": [
+      "Guhagar Gaon 1",
+      "Guhagar Pur 2",
+      "Guhagar Pur 3",
+      "Guhagar Nagar 4"
+    ],
+    "Dapoli": [
+      "Dapoli Peth 1",
+      "Dapoli Peth 2",
+      "Dapoli Gaon 3",
+      "Dapoli Nagar 4"
+    ],
+    "Mandangad": [
+      "Mandangad Gaon 1",
+      "Mandangad Pur 2",
+      "Mandangad Wadi 3",
+      "Mandangad Nagar 4"
+    ],
+    "Pali": [
+      "Pali Gaon 1",
+      "Pali Ganj 2",
+      "Pali Gaon 3",
+      "Pali Nagar 4"
+    ],
+    "Miraj": [
+      "Miraj Gaon 1",
+      "Miraj Pur 2",
+      "Miraj Pur 3",
+      "Miraj Wadi 4"
+    ],
+    "Sangli": [
+      "Sangli Peth 1",
+      "Sangli Pur 2",
+      "Sangli Gaon 3",
+      "Sangli Ganj 4"
+    ],
+    "Tasgaon": [
+      "Tasgaon Gaon 1",
+      "Tasgaon Peth 2",
+      "Tasgaon Gaon 3",
+      "Tasgaon Nagar 4"
+    ],
+    "Jat": [
+      "Jat Wadi 1",
+      "Jat Peth 2",
+      "Jat Pur 3",
+      "Jat Ganj 4"
+    ],
+    "Khanapur": [
+      "Khanapur Nagar 1",
+      "Khanapur Pur 2",
+      "Khanapur Ganj 3",
+      "Khanapur Peth 4"
+    ],
+    "Atpadi": [
+      "Atpadi Ganj 1",
+      "Atpadi Pur 2",
+      "Atpadi Gaon 3",
+      "Atpadi Ganj 4"
+    ],
+    "Kavathe Mahankal": [
+      "Kavathe Gaon 1",
+      "Kavathe Ganj 2",
+      "Kavathe Ganj 3",
+      "Kavathe Nagar 4"
+    ],
+    "Palus": [
+      "Palus Gaon 1",
+      "Palus Gaon 2",
+      "Palus Pur 3",
+      "Palus Peth 4"
+    ],
+    "Kadegaon": [
+      "Kadegaon Gaon 1",
+      "Kadegaon Gaon 2",
+      "Kadegaon Nagar 3",
+      "Kadegaon Ganj 4"
+    ],
+    "Shirala": [
+      "Shirala Wadi 1",
+      "Shirala Wadi 2",
+      "Shirala Pur 3",
+      "Shirala Peth 4"
+    ],
+    "Walwa": [
+      "Walwa Ganj 1",
+      "Walwa Ganj 2",
+      "Walwa Pur 3",
+      "Walwa Nagar 4"
+    ],
+    "Satara": [
+      "Satara Nagar 1",
+      "Satara Peth 2",
+      "Satara Nagar 3",
+      "Satara Pur 4"
+    ],
+    "Karad": [
+      "Karad Peth 1",
+      "Karad Nagar 2",
+      "Karad Wadi 3",
+      "Karad Pur 4"
+    ],
+    "Wai": [
+      "Wai Ganj 1",
+      "Wai Nagar 2",
+      "Wai Wadi 3",
+      "Wai Wadi 4"
+    ],
+    "Patan": [
+      "Patan Ganj 1",
+      "Patan Peth 2",
+      "Patan Gaon 3",
+      "Patan Gaon 4"
+    ],
+    "Koregaon": [
+      "Koregaon Peth 1",
+      "Koregaon Ganj 2",
+      "Koregaon Pur 3",
+      "Koregaon Ganj 4"
+    ],
+    "Phaltan": [
+      "Phaltan Wadi 1",
+      "Phaltan Pur 2",
+      "Phaltan Wadi 3",
+      "Phaltan Peth 4"
+    ],
+    "Man": [
+      "Man Wadi 1",
+      "Man Peth 2",
+      "Man Nagar 3",
+      "Man Gaon 4"
+    ],
+    "Khatav": [
+      "Khatav Wadi 1",
+      "Khatav Ganj 2",
+      "Khatav Peth 3",
+      "Khatav Ganj 4"
+    ],
+    "Khandala": [
+      "Khandala Nagar 1",
+      "Khandala Gaon 2",
+      "Khandala Pur 3",
+      "Khandala Peth 4"
+    ],
+    "Mahabaleshwar": [
+      "Mahabaleshwar Wadi 1",
+      "Mahabaleshwar Wadi 2",
+      "Mahabaleshwar Wadi 3",
+      "Mahabaleshwar Ganj 4"
+    ],
+    "Jaoli": [
+      "Jaoli Peth 1",
+      "Jaoli Peth 2",
+      "Jaoli Ganj 3",
+      "Jaoli Ganj 4"
+    ],
+    "Kankavli": [
+      "Kankavli Wadi 1",
+      "Kankavli Ganj 2",
+      "Kankavli Wadi 3",
+      "Kankavli Gaon 4"
+    ],
+    "Vaibhavwadi": [
+      "Vaibhavwadi Wadi 1",
+      "Vaibhavwadi Pur 2",
+      "Vaibhavwadi Peth 3",
+      "Vaibhavwadi Nagar 4"
+    ],
+    "Devgad": [
+      "Devgad Pur 1",
+      "Devgad Wadi 2",
+      "Devgad Ganj 3",
+      "Devgad Peth 4"
+    ],
+    "Malvan": [
+      "Malvan Gaon 1",
+      "Malvan Wadi 2",
+      "Malvan Nagar 3",
+      "Malvan Nagar 4"
+    ],
+    "Sawantwadi": [
+      "Sawantwadi Nagar 1",
+      "Sawantwadi Ganj 2",
+      "Sawantwadi Peth 3",
+      "Sawantwadi Ganj 4"
+    ],
+    "Kudal": [
+      "Kudal Nagar 1",
+      "Kudal Gaon 2",
+      "Kudal Wadi 3",
+      "Kudal Nagar 4"
+    ],
+    "Vengurla": [
+      "Vengurla Pur 1",
+      "Vengurla Ganj 2",
+      "Vengurla Pur 3",
+      "Vengurla Pur 4"
+    ],
+    "Dodamarg": [
+      "Dodamarg Nagar 1",
+      "Dodamarg Ganj 2",
+      "Dodamarg Peth 3",
+      "Dodamarg Peth 4"
+    ],
+    "Solapur North": [
+      "Solapur Wadi 1",
+      "Solapur Ganj 2",
+      "Solapur Ganj 3",
+      "Solapur Peth 4"
+    ],
+    "Solapur South": [
+      "Solapur Wadi 1",
+      "Solapur Wadi 2",
+      "Solapur Wadi 3",
+      "Solapur Pur 4"
+    ],
+    "Akkalkot": [
+      "Akkalkot Wadi 1",
+      "Akkalkot Nagar 2",
+      "Akkalkot Wadi 3",
+      "Akkalkot Pur 4"
+    ],
+    "Barshi": [
+      "Barshi Ganj 1",
+      "Barshi Gaon 2",
+      "Barshi Nagar 3",
+      "Barshi Gaon 4"
+    ],
+    "Mohol": [
+      "Mohol Wadi 1",
+      "Mohol Wadi 2",
+      "Mohol Gaon 3",
+      "Mohol Gaon 4"
+    ],
+    "Pandharpur": [
+      "Pandharpur Pur 1",
+      "Pandharpur Peth 2",
+      "Pandharpur Wadi 3",
+      "Pandharpur Gaon 4"
+    ],
+    "Malshiras": [
+      "Malshiras Gaon 1",
+      "Malshiras Ganj 2",
+      "Malshiras Peth 3",
+      "Malshiras Peth 4"
+    ],
+    "Sangole": [
+      "Sangole Nagar 1",
+      "Sangole Wadi 2",
+      "Sangole Pur 3",
+      "Sangole Peth 4"
+    ],
+    "Madha": [
+      "Madha Nagar 1",
+      "Madha Gaon 2",
+      "Madha Nagar 3",
+      "Madha Gaon 4"
+    ],
+    "Karmala": [
+      "Karmala Pur 1",
+      "Karmala Pur 2",
+      "Karmala Ganj 3",
+      "Karmala Ganj 4"
+    ],
+    "Mangalwedha": [
+      "Mangalwedha Peth 1",
+      "Mangalwedha Pur 2",
+      "Mangalwedha Wadi 3",
+      "Mangalwedha Pur 4"
+    ],
+    "Thane": [
+      "Thane Wadi 1",
+      "Thane Ganj 2",
+      "Thane Nagar 3",
+      "Thane Ganj 4"
+    ],
+    "Kalyan": [
+      "Kalyan Gaon 1",
+      "Kalyan Ganj 2",
+      "Kalyan Pur 3",
+      "Kalyan Ganj 4"
+    ],
+    "Murbad": [
+      "Murbad Wadi 1",
+      "Murbad Pur 2",
+      "Murbad Pur 3",
+      "Murbad Nagar 4"
+    ],
+    "Bhiwandi": [
+      "Bhiwandi Gaon 1",
+      "Bhiwandi Nagar 2",
+      "Bhiwandi Peth 3",
+      "Bhiwandi Nagar 4"
+    ],
+    "Shahapur": [
+      "Shahapur Ganj 1",
+      "Shahapur Nagar 2",
+      "Shahapur Peth 3",
+      "Shahapur Gaon 4"
+    ],
+    "Ulhasnagar": [
+      "Ulhasnagar Pur 1",
+      "Ulhasnagar Pur 2",
+      "Ulhasnagar Ganj 3",
+      "Ulhasnagar Nagar 4"
+    ],
+    "Ambarnath": [
+      "Ambarnath Nagar 1",
+      "Ambarnath Peth 2",
+      "Ambarnath Peth 3",
+      "Ambarnath Pur 4"
+    ],
+    "Dombivli": [
+      "Dombivli Nagar 1",
+      "Dombivli Peth 2",
+      "Dombivli Ganj 3",
+      "Dombivli Pur 4"
+    ],
+    "Mira Bhayandar": [
+      "Mira Nagar 1",
+      "Mira Ganj 2",
+      "Mira Nagar 3",
+      "Mira Wadi 4"
+    ],
+    "Wardha": [
+      "Wardha Ganj 1",
+      "Wardha Ganj 2",
+      "Wardha Peth 3",
+      "Wardha Ganj 4"
+    ],
+    "Deoli": [
+      "Deoli Wadi 1",
+      "Deoli Ganj 2",
+      "Deoli Pur 3",
+      "Deoli Nagar 4"
+    ],
+    "Seloo": [
+      "Seloo Ganj 1",
+      "Seloo Gaon 2",
+      "Seloo Ganj 3",
+      "Seloo Peth 4"
+    ],
+    "Arvi": [
+      "Arvi Pur 1",
+      "Arvi Nagar 2",
+      "Arvi Peth 3",
+      "Arvi Ganj 4"
+    ],
+    "Karanja": [
+      "Karanja Wadi 1",
+      "Karanja Ganj 2",
+      "Karanja Ganj 3",
+      "Karanja Pur 4"
+    ],
+    "Hinganghat": [
+      "Hinganghat Nagar 1",
+      "Hinganghat Nagar 2",
+      "Hinganghat Ganj 3",
+      "Hinganghat Nagar 4"
+    ],
+    "Samudrapur": [
+      "Samudrapur Ganj 1",
+      "Samudrapur Pur 2",
+      "Samudrapur Ganj 3",
+      "Samudrapur Nagar 4"
+    ],
+    "Washim": [
+      "Washim Ganj 1",
+      "Washim Nagar 2",
+      "Washim Wadi 3",
+      "Washim Nagar 4"
+    ],
+    "Risod": [
+      "Risod Gaon 1",
+      "Risod Wadi 2",
+      "Risod Wadi 3",
+      "Risod Ganj 4"
+    ],
+    "Mangrulpir": [
+      "Mangrulpir Wadi 1",
+      "Mangrulpir Peth 2",
+      "Mangrulpir Pur 3",
+      "Mangrulpir Wadi 4"
+    ],
+    "Manora": [
+      "Manora Nagar 1",
+      "Manora Ganj 2",
+      "Manora Gaon 3",
+      "Manora Gaon 4"
+    ],
+    "Yavatmal": [
+      "Yavatmal Ganj 1",
+      "Yavatmal Ganj 2",
+      "Yavatmal Ganj 3",
+      "Yavatmal Wadi 4"
+    ],
+    "Arni": [
+      "Arni Ganj 1",
+      "Arni Pur 2",
+      "Arni Gaon 3",
+      "Arni Peth 4"
+    ],
+    "Babhulgaon": [
+      "Babhulgaon Ganj 1",
+      "Babhulgaon Peth 2",
+      "Babhulgaon Pur 3",
+      "Babhulgaon Gaon 4"
+    ],
+    "Darwha": [
+      "Darwha Gaon 1",
+      "Darwha Nagar 2",
+      "Darwha Gaon 3",
+      "Darwha Gaon 4"
+    ],
+    "Digras": [
+      "Digras Ganj 1",
+      "Digras Pur 2",
+      "Digras Ganj 3",
+      "Digras Peth 4"
+    ],
+    "Ner": [
+      "Ner Pur 1",
+      "Ner Gaon 2",
+      "Ner Pur 3",
+      "Ner Gaon 4"
+    ],
+    "Pusad": [
+      "Pusad Pur 1",
+      "Pusad Peth 2",
+      "Pusad Peth 3",
+      "Pusad Gaon 4"
+    ],
+    "Umarkhed": [
+      "Umarkhed Nagar 1",
+      "Umarkhed Peth 2",
+      "Umarkhed Gaon 3",
+      "Umarkhed Wadi 4"
+    ],
+    "Wani": [
+      "Wani Nagar 1",
+      "Wani Pur 2",
+      "Wani Nagar 3",
+      "Wani Nagar 4"
+    ],
+    "Ralegaon": [
+      "Ralegaon Pur 1",
+      "Ralegaon Ganj 2",
+      "Ralegaon Peth 3",
+      "Ralegaon Wadi 4"
+    ],
+    "Maregaon": [
+      "Maregaon Nagar 1",
+      "Maregaon Pur 2",
+      "Maregaon Pur 3",
+      "Maregaon Wadi 4"
+    ],
+    "Zari Jamani": [
+      "Zari Ganj 1",
+      "Zari Ganj 2",
+      "Zari Pur 3",
+      "Zari Nagar 4"
+    ],
+    "Ghatanji": [
+      "Ghatanji Peth 1",
+      "Ghatanji Gaon 2",
+      "Ghatanji Wadi 3",
+      "Ghatanji Pur 4"
+    ],
+    "Kelapur": [
+      "Kelapur Nagar 1",
+      "Kelapur Pur 2",
+      "Kelapur Wadi 3",
+      "Kelapur Wadi 4"
+    ],
+    "Mahagaon": [
+      "Mahagaon Pur 1",
+      "Mahagaon Pur 2",
+      "Mahagaon Ganj 3",
+      "Mahagaon Gaon 4"
+    ]
+  }
+}

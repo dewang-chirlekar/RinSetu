@@ -70,10 +70,14 @@ export function TextField({
   max,
   list,
   wide = false,
+  disabled,
+  onChange,
+  value,
 }: {
   name: string;
   label: string;
   defaultValue?: string;
+  value?: string;
   hint?: string;
   type?: 'text' | 'number';
   inputMode?: 'numeric' | 'text';
@@ -81,7 +85,10 @@ export function TextField({
   max?: number;
   list?: string;
   wide?: boolean;
+  disabled?: boolean;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
+  const isControlled = value !== undefined;
   return (
     <div className={wide ? 'sm:col-span-2' : undefined}>
       <Label name={name} label={label} />
@@ -93,9 +100,12 @@ export function TextField({
         min={min}
         max={max}
         list={list}
-        defaultValue={defaultValue}
+        defaultValue={isControlled ? undefined : defaultValue}
+        value={isControlled ? value : undefined}
+        onChange={onChange}
+        disabled={disabled}
         autoComplete="off"
-        className={CONTROL}
+        className={`${CONTROL} disabled:opacity-60 disabled:bg-paper-sunk`}
       />
       {hint ? <p className="text-ink-3 mt-1 text-xs leading-relaxed">{hint}</p> : null}
     </div>
@@ -110,6 +120,8 @@ export function SelectField({
   hint,
   groups,
   wide = false,
+  disabled,
+  onChange,
 }: {
   name: string;
   label: string;
@@ -120,11 +132,20 @@ export function SelectField({
   /** Optional grouped options, e.g. purposes grouped by scheme. */
   groups?: { label: string; options: Option[] }[];
   wide?: boolean;
+  disabled?: boolean;
+  onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }) {
   return (
     <div className={wide ? 'sm:col-span-2' : undefined}>
       <Label name={name} label={label} />
-      <select id={name} name={name} defaultValue={defaultValue} className={CONTROL}>
+      <select
+        id={name}
+        name={name}
+        defaultValue={defaultValue}
+        disabled={disabled}
+        onChange={onChange}
+        className={`${CONTROL} disabled:opacity-60 disabled:bg-paper-sunk`}
+      >
         {options.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}
