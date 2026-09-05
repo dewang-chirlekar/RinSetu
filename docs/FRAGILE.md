@@ -52,7 +52,7 @@ codes are still registered, still evaluated, still pass and fail across the pers
 The seam simply vanishes, and resurfaces months later as a baffling bug when somebody
 tries to add course rules.
 
-### A3. The age band's invisible format coupling
+### A3. The age band's invisible format coupling — fixed 2026-09-05
 
 **Where:** [src/core/eligibility/predicates.ts](src/core/eligibility/predicates.ts) writes
 the age window as a text string like `"18-60"`;
@@ -63,7 +63,7 @@ Two files agreeing on a text format, with **nothing pinning the format down.** C
 the band is written and the "here is what you could do about it" message silently
 degrades. No crash, no failing test.
 
-If you touch either side, add a test that fixes the format. Right now there isn't one.
+Fixed: `tests/eligibility.age-format.test.ts:1` (6 tests) pins `required` as `^\d+-\d+$` (no spaces), checks `too_young`/`too_old` deltas via `remediation.ts:94` parse, and different bounds. If either side changes format, this fails loudly (`Part C` now covers it). See `docs/PROGRESS.md` 2026-09-05 core hardening.
 
 ### A4. Deleting the "unreachable" lines that look like dead code
 
@@ -179,17 +179,9 @@ which ones do not need worrying about. In each case a test fails by name.
 | Reading the clock inside the engine | *"takes its timestamp from the caller and never reads the clock"* |
 | Making a missing text key render silently instead of erroring | *"throws on a key that does not exist, rather than rendering the key"* |
 
-### One important exception in that table
+### Former exception — now fixed 2026-09-05
 
-The mark saying whether a **scheme as a whole** is verified is the one honesty value that
-is *copied from the data file* rather than worked out fresh from its source — see
-[src/lib/dataset.ts:356](src/lib/dataset.ts:356) and
-[src/lib/dataset.ts:387](src/lib/dataset.ts:387). It is guarded by a test, not by the
-machinery itself.
-
-Every other provenance mark is structurally impossible to forge. That one is not.
-Deriving it in the loader instead would be a genuine improvement — worth doing
-deliberately, with a test.
+The mark saying whether a **scheme as a whole** is verified *was* copied from the data file — see `src/lib/dataset.ts:356` and `dataset.ts:387`. It was guarded by a test, not by the machinery itself. Every other provenance mark was structurally impossible to forge; that one was not. Fixed: `src/lib/dataset.ts:356`/`387` and `src/lib/dataset-db.ts:33` now derive `verified: Object.values(provenance).every(isCitable)` like field-level `prov()` (`src/core/types.ts:94`). `tests/dataset.honesty.test.ts:110` still guards the JSON claim.
 
 ---
 
@@ -259,7 +251,7 @@ thing an editor or an auto-formatter does without being asked.
 - **`VERIFY.md`** is produced by a command and checked for freshness. Hand-editing it
   makes the check fail.
 - **`TEST-RECORD.md`** is a snapshot of one moment, not a live readout. It will keep
-  saying "230 passing" long after something has broken. Do not treat it as current, and
+  saying "237 passing" long after something has broken (updated 2026-09-05). Do not treat it as current, and
   never edit it to look green.
 
 ---
@@ -272,11 +264,11 @@ npm run check
 
 Green means: the code compiles, the style rules pass, the engine has not reached into
 parts of the app it is forbidden to touch, the unverified-figures list is current, and all
-230 tests pass.
+237 tests pass (11 files, 1 skipped without `DATABASE_URL`).
 
 Three things it does **not** mean:
 
-1. **It cannot catch Part A.** Those failures pass every check by construction.
+1. **It cannot catch Part A.** Those failures pass every check by construction — now reduced by A3 pin (`tests/eligibility.age-format.test.ts`) and former verified-copy exception (fixed 2026-09-05).
 2. **A regenerated snapshot looks identical to a genuine pass.** If somebody reports "I
    fixed the failing test", the right question is *"what changed in the output, and why was
    that correct?"*

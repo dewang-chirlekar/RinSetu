@@ -24,6 +24,7 @@
  */
 
 import type {
+  ApplicantProfile,
   HealthScore,
   PartnerExclusion,
   PartnerFilterCode,
@@ -33,6 +34,7 @@ import type {
 import { translate } from '@/messages';
 import { joinList, km, longDate, plain, rupees } from '@/lib/format';
 import { CapacityLabel, DataOriginBadge, ToggleLabel } from './ui';
+import { PartnerMap } from './PartnerMap';
 
 const MONEY_FILTERS: ReadonlySet<PartnerFilterCode> = new Set([
   'LOAN_BELOW_MIN_TICKET',
@@ -219,7 +221,13 @@ function ExclusionList({ excluded }: { excluded: PartnerExclusion[] }) {
   );
 }
 
-export function PartnerPanel({ result }: { result: PartnerMatchResult }) {
+export function PartnerPanel({
+  result,
+  applicant,
+}: {
+  result: PartnerMatchResult;
+  applicant?: ApplicantProfile | null;
+}) {
   if (result.eligible.length === 0) {
     return (
       <div>
@@ -247,8 +255,11 @@ export function PartnerPanel({ result }: { result: PartnerMatchResult }) {
 
   return (
     <div>
+      {/* Map — eligible partners only, straight-line. Progressive enhancement: list stays when JS/maps fail. */}
+      {applicant ? <PartnerMap result={result} applicant={applicant} /> : null}
+
       {anyDistanceKnown ? (
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="mt-3 grid gap-3 sm:grid-cols-2">
           <RankedColumn
             title={translate('partner.rank_by_distance')}
             matches={result.ranked_by_distance}
@@ -262,7 +273,7 @@ export function PartnerPanel({ result }: { result: PartnerMatchResult }) {
         </div>
       ) : (
         <>
-          <p className="text-ink-3 mb-2 text-xs leading-relaxed">
+          <p className="text-ink-3 mt-3 mb-2 text-xs leading-relaxed">
             {translate('ui.partner.ranking_needs_location')}
           </p>
           <RankedColumn

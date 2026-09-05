@@ -10,7 +10,7 @@ RinSetu helps Scheduled Caste applicants understand which concessional-credit sc
 
 ---
 
-## Current state — 2026-08-31 (`bd12a83` on `main`, clean tree)
+## Current state — 2026-09-05 (`bd12a83` on `main`, DB connected, clean tree)
 
 | gate | command | result |
 |---|---|---|
@@ -19,10 +19,11 @@ RinSetu helps Scheduled Caste applicants understand which concessional-credit sc
 | lint | `npm run lint` | exit 0 |
 | boundaries | `npm run check:boundaries` | **passed** — `src/core/` imports nothing from `llm/`, `app/`, `components/`, Next, React or `fs` |
 | verify | `npm run check:verify` | **up to date** — `VERIFY.md` is generated from `data/*.json` |
-| tests | `npm run test` | **9 files, 230 tests, all passing** |
+| tests | `npm run test` | **11 files, 237 tests, all passing** (1 skipped without DB) |
 | personas CLI | `npm run personas` | **40 rows** — 23 eligible, EMI populated |
 | dev server | `npm run dev` | `/`, `/apply`, `/result`, `/personas` render |
 | prod build | `npm run build` | compiled, 8 routes, First Load JS 103 kB |
+| db | `DATABASE_URL` (pooler 6543) + `npm run seed` | **connected** — `20260905144514_init` applied, 3 schemes / 15 partners / 15 health rows · DB parity loader `src/lib/dataset-db.ts` verified |
 
 ```
  45  tests/eligibility.branches.test.ts
@@ -34,7 +35,9 @@ RinSetu helps Scheduled Caste applicants understand which concessional-credit sc
  19  tests/recommend.ranking.test.ts
  16  tests/messages.coverage.test.ts
  10  tests/personas.snapshot.test.ts
-230  total
+  6  tests/eligibility.age-format.test.ts   (A3 format coupling, new 2026-09-05)
+  1  tests/dataset-db.parity.test.ts        (JSON↔DB parity, skipped without DATABASE_URL)
+237  total
 ```
 
 Dataset: 3 schemes (MICRO, TERM, EDU — all `verified: false`), 15 fabricated partners on real city coordinates, 15 `SIMULATED` health rows, 258 i18n keys, 40 persona fixtures. Figures authoritative: **false** for two independent reasons (non-citable figures + demo overlay active).
@@ -47,21 +50,20 @@ Dataset: 3 schemes (MICRO, TERM, EDU — all `verified: false`), 15 fabricated p
 - `partners/` — haversine distance, weighted health composite, hard filters then soft ranking (never blended).
 - `documents/resolve.ts` + `recommend.ts` (single entry point the UI calls, returns verdicts for **all** schemes).
 
-**UI baseline — `src/app/` + `src/components/`** (Phase 3–6 baseline, `4a8eea7`, polished in `5eb1b1e`):
+**UI baseline — `src/app/` + `src/components/`** (Phase 3–6 baseline `4a8eea7`+`5eb1b1e`, Map 2026-09-05, PDF 2026-09-05):
 - `/` — landing: compact provenance stamp, claim, CTAs to `/apply` and `/personas`, 4-step band, scheme list from dataset (cannot drift), detail block. Ledger/paper design: warm paper, ink-navy, hairline rules, tabular monospace figures, stamp badges, no gradients. Mobile-first at 360 px.
 - `/apply` — guided intake, `GET → /result`, no JS required, no LLM. Every option list derived from dataset/partners/documents; blanks → `undefined` → Zod default; no `required`, no geocoding (distance shows "unknown" — never invents a centroid).
-- `/result` — runs `recommend()` on query string or `?persona=Pxx`, shows `DatasetBanner` (full), recommended `SchemeCard` + others collapsed with `StatusPill`, finance panel with schedule, partner ranking (dual: nearest vs fastest), exclusion reasons, checklist. Invariants: no arithmetic in components, every rupee from the engine.
+- `/result` — runs `recommend()` on query string or `?persona=Pxx`, shows `DatasetBanner` (full), recommended `SchemeCard` + others collapsed with `StatusPill`, finance panel with schedule, partner map (MapLibre GL JS + OSM raster, `src/components/PartnerMap.tsx:1`, eligible only, straight-line) + dual ranking (nearest vs fastest), exclusion reasons, checklist, **PDF packet** (`src/lib/packet.tsx:1` + `src/app/api/packet/route.ts:1` via `@react-pdf/renderer`, `Download packet` link reusing `recommend()` output). Invariants: no arithmetic in components, every rupee from the engine.
 - `/personas` — 40 fixtures rendered live through `recommend()` at render time; no stored outcomes.
 
-**Data layer — `data/` + `src/lib/dataset.ts`**: 7 JSON files, one loader, `verified` derived via `isCitable()`, `figures_authoritative` false when any non-citable figure exists or overlay is applied, `VERIFY.md` generated with 4 structural findings (F1–F4) each with a live `check()` that refuses to write a false document.
+**Data layer — `data/` + `src/lib/dataset.ts` + `src/lib/dataset-db.ts`**: 7 JSON files, one JSON loader + one DB loader (both derive `verified` via `isCitable()` `src/core/types.ts:94`, never copied — fixed 2026-09-05 `src/lib/dataset.ts:356`/`387`), `figures_authoritative` false when any non-citable figure exists or overlay is applied, `VERIFY.md` generated with 4 structural findings (F1–F4) each with a live `check()` that refuses to write a false document.
 
-**Database — `prisma/schema.prisma` + `prisma/seed.ts`**: 8 models, validated, idempotent seed through the same loader. `DATABASE_URL` unset — Supabase project not yet created; `prisma generate` works without it; `npm run seed` prints a one-line explanation and exits 1 when missing.
+**Database — `prisma/schema.prisma` + `prisma/seed.ts` + `src/lib/dataset-db.ts`**: 10 tables via `20260905144514_init` (8 models + `_prisma_migrations`), validated, idempotent seed through the same loader. `DATABASE_URL` connected to Supabase pooler (`aws-0-ap-south-1.pooler.supabase.com:6543`, `sslmode=require`, `rejectUnauthorized:false` in `prisma/seed.ts:57`); `prisma generate` works without it (`prisma.config.ts` conditional datasource); `npm run seed` writes 3 schemes / 15 partners / 15 health rows. Verified 2026-09-05: `schemes 3`, `partners 15`, `partner_health 15`, `global_eligibility 1`. DB loader `src/lib/dataset-db.ts:1` is exact reverse of seed — `tests/dataset-db.parity.test.ts:1` proves JSON↔DB parity (237th test, skipped without `DATABASE_URL`).
 
 ### What is not yet built
 
 - `src/llm/` (`extract.ts` / `explain.ts`) — Gemini adapter in `package.json` but unused. Guided form is primary; LLM is an enhancement that must work with `DEMO_MODE=true`.
-- Map — MapLibre GL JS + OSM raster tiles not yet added (`PartnerPanel` lists/ranks but renders no map).
-- PDF packet — `@react-pdf/renderer` not installed; checklist is on-screen only.
+- Multilingual — `next-intl` not installed; only `en.json` (+5 `partner.map.*`, +2 `ui.result.download_packet` for PDF); `hi.json`/`mr.json` pending.
 - Multilingual — `next-intl` not installed; only `en.json` (258 keys); `hi.json`/`mr.json` pending.
 - Admin health upload — no `/admin/*`; all `PartnerHealth.data_origin` is `SIMULATED`.
 - Offline hardening — no fixture cache, no pre-cached tiles.
@@ -75,8 +77,8 @@ See `docs/PROGRESS.md` §5 and `docs/ROADMAP.md` for the ordered plan.
 From `rinsetu/`:
 
 ```bash
-npm install && npx prisma generate && npm run check
-# must end with 230 passed, 9 files — if not, stop and fix before writing new code
+npm install && npm run check   # postinstall runs prisma generate
+# must end with 237 passed, 11 files (1 skipped without DATABASE_URL) — if not, stop and fix
 
 npm run personas        # 40 rows live through recommend()
 npm run personas P19    # one persona in full detail
@@ -84,7 +86,7 @@ npm run dev             # http://localhost:3000  — /, /apply, /result, /person
 npm run verify:report   # regenerate VERIFY.md after editing data/*.json
 ```
 
-Fresh clone needs `npx prisma generate` (client lives in `node_modules`; add `postinstall: prisma generate` when convenient). `DATABASE_URL` is unset — seed/build/test/dev do not need it.
+Fresh clone: `npm install` runs `prisma generate` via `postinstall` (`package.json:19`); no manual step needed. `DATABASE_URL` is set in `.env` (gitignored, pooled `6543` for runtime — see `.env.example:7`; use direct `5432` for `prisma migrate dev`). Tests/build/dev do not need a live DB (they run against `data/*.json` via `src/lib/dataset.ts`), but `npm run seed` does.
 
 ---
 
@@ -117,12 +119,12 @@ rinsetu/
 ├─ prisma/  schema.prisma  seed.ts  prisma.config.ts
 ├─ src/
 │  ├─ core/  types.ts  eligibility/  finance/  partners/  documents/  recommend.ts
-│  ├─ app/   layout.tsx  page.tsx  apply/page.tsx  result/page.tsx  personas/page.tsx
+│  ├─ app/   layout.tsx  page.tsx  apply/page.tsx  result/page.tsx  personas/page.tsx  api/packet/route.ts
 │  ├─ components/  ui.tsx  DatasetBanner.tsx  SchemeCard.tsx  VerdictList.tsx
-│  │              LoanFigures.tsx  PartnerPanel.tsx  ChecklistPanel.tsx  form.tsx  ScrollReveal.tsx
-│  ├─ lib/   dataset.ts  applicant-params.ts  format.ts  view.ts
+│  │              LoanFigures.tsx  PartnerPanel.tsx  PartnerMap.tsx  ChecklistPanel.tsx  form.tsx  ScrollReveal.tsx
+│  ├─ lib/   dataset.ts  dataset-db.ts  packet.tsx  applicant-params.ts  format.ts  view.ts
 │  └─ messages/  en.json  index.ts (strict throw-on-missing)
-└─ tests/  9 files, 230 tests  +  scripts/  check-boundaries.mjs  verify-report.ts  personas.ts
+└─ tests/  11 files, 237 tests  +  scripts/  check-boundaries.mjs  verify-report.ts  personas.ts
 ```
 
 ---
@@ -142,15 +144,15 @@ rinsetu/
 
 - `docs/PROGRESS.md` — the one file to read cold (current state, what's built, what's deferred, next step).
 - `docs/HANDOFF.md` — how not to break the EMI engine, predicates, or matching.
-- `docs/FRAGILE.md` — what breaks silently vs loudly, and the one weak spot (`scheme.verified` copied not derived).
+- `docs/FRAGILE.md` — what breaks silently vs loudly (weak spot `scheme.verified` fixed 2026-09-05, derived not copied).
 - `docs/ROADMAP.md` — phased plan (29 days at student pace, ~10-day cut).
-- `docs/TEST-RECORD.md` — verbatim `npx vitest run --reporter=verbose` output at 230/230.
+- `docs/TEST-RECORD.md` — verbatim `npx vitest run --reporter=verbose` output at 237/237.
 - `CLAUDE.md` — constitution; overrides convenience.
 
 ---
 
 ## Stack (pinned)
 
-Next.js 15 · TypeScript strict · Tailwind + shadcn/ui · PostgreSQL (Supabase) · Prisma 7 · Vitest · MapLibre GL JS + OSM · `@google/generative-ai` (Gemini Flash) behind one adapter · Zod (+ `next-intl`, `@react-pdf/renderer` when those phases land).
+Next.js 15 · TypeScript strict · Tailwind + shadcn/ui · PostgreSQL (Supabase) · Prisma 7 · Vitest · MapLibre GL JS + OSM · `@react-pdf/renderer` · `@google/generative-ai` (Gemini Flash) behind one adapter · Zod (+ `next-intl` when that phase lands).
 
 Distance is haversine in TypeScript. Do not add PostGIS, Redux, GraphQL, vector DB, Docker orchestration, or auth beyond one admin login.

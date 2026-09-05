@@ -235,6 +235,7 @@ describe('backwards — no stale English left behind', () => {
     'partner.distance_unknown',
     'partner.heading',
     'partner.loan_exceeds_all_tickets',
+    'partner.map.',
     'partner.none_eligible',
     'partner.none_eligible_detail',
     'partner.rank_by_distance',

@@ -63,7 +63,7 @@ function CardBody({
 
       {recommendation.partners ? (
         <Section title={translate('partner.heading')}>
-          <PartnerPanel result={recommendation.partners} />
+          <PartnerPanel result={recommendation.partners} applicant={applicant} />
         </Section>
       ) : null}
 

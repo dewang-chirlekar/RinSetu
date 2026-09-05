@@ -3,12 +3,9 @@
 **Read this before you change anything under `src/core/` or `src/app/`/`src/components/`.**
 
 [PROGRESS.md](PROGRESS.md) tells you *where the project stands* (now Phase 3–6
-baseline, `bd12a83` on `main`, 230/230 green, `npm run build` compiles, `README.md`
-rewritten 2026-08-31). This file tells you *how not to break it*. It is written
-for a model picking this up cold, and it concentrates on the three areas where I
-found and fixed subtle correctness bugs: the **EMI engine**, the **eligibility
-predicates**, and **partner matching** — plus, since `4a8eea7`, the **UI invariants**
-that keep the ledger honest (§6–7).
+baseline, `bd12a83` on `main`, 237/237 green (11 files), DB parity `src/lib/dataset-db.ts:1`,
+core hardened 2026-09-05, `npm run build` compiles, `README.md` rewritten 2026-08-31).
+This file tells you *how not to break it*. It is written for a model picking this up cold, and it concentrates on the three areas where I found and fixed subtle correctness bugs: the **EMI engine**, the **eligibility predicates**, and **partner matching** — plus, since `4a8eea7`, the **UI invariants** that keep the ledger honest (§6–7), and since 2026-09-05 the **DB parity** and **format pinning** (§5–6).
 
 The person you are working for does not write code. They cannot catch a wrong number by
 reading a diff. That is why the tests, the provenance machinery and the generated
@@ -55,12 +52,10 @@ npm run check
 ```
 
 It runs typecheck → lint → the architecture boundary check → the `VERIFY.md` freshness
-check → the tests. When I stopped, it exited 0 with **9 test files and 230 tests
-passing**. If your change drops that number, you deleted a test. If it raises the number,
-good.
+check → the tests. When I stopped, it exited 0 with **11 files and 237 tests
+passing** (1 skipped without `DATABASE_URL`). If your change drops that number, you deleted a test. If it raises the number, good. Previous gate was 9 files/230 tests; 2026-09-05 added `tests/eligibility.age-format.test.ts` (6, A3) + `tests/dataset-db.parity.test.ts` (1, DB parity).
 
-If `npm run typecheck` fails on missing Prisma types, run `npx prisma generate` once — the
-generated client is not committed.
+If `npm run typecheck` fails on missing Prisma types, `npm install` now runs `prisma generate` via `postinstall` (`package.json:19`) — or run `npx prisma generate` once manually. The generated client is not committed. `.env` is gitignored and holds the Supabase pooler URL (connected 2026-09-05, parity verified `src/lib/dataset-db.ts:1`); `prisma.config.ts` keeps `generate` offline-capable.
 
 ### The self-check that catches EMI mistakes fastest
 
@@ -466,18 +461,9 @@ Three guarantees, all of which you can break with an innocent-looking edit:
    purpose: reason (2) means a future change to `isCitable()` still cannot make an overlay
    dataset claim authority.
 
-**The weak spot, stated plainly.** Field-level provenance is derived, but the
-*scheme-level* and *global-level* `verified` booleans are **copied straight from the JSON**
-at [dataset.ts:356](src/lib/dataset.ts:356) and [dataset.ts:387](src/lib/dataset.ts:387).
-They are all `false` in the seed today, and a test in
-[tests/dataset.honesty.test.ts:110](tests/dataset.honesty.test.ts:110) fails if the JSON
-ever claims `verified: true` on a non-citable source — so the guard is a *test*, not the
-loader.
+**The weak spot, fixed 2026-09-05.** Field-level provenance was derived, but the *scheme-level* and *global-level* `verified` booleans were **copied straight from the JSON** at `dataset.ts:356` and `dataset.ts:387`. Fixed to `verified: Object.values(provenance).every(e=>e.verified)` (`src/lib/dataset.ts:356`/`387` + `src/lib/dataset-db.ts:33`) — now derived via `isCitable()` like field-level. `tests/dataset.honesty.test.ts:110` still guards the JSON claim. `recommend()` exposes `scheme_verified` — now trustworthy, but still prefer `dataset.figures_authoritative` + per-field `provenance` map for UI decisions.
 
-`recommend()` exposes this copied flag as `scheme_verified`. **Prefer
-`dataset.figures_authoritative` plus the per-field `provenance` map when deciding what the
-UI may present as fact.** If you want to harden this, deriving the scheme-level flag in the
-loader would be a genuine improvement — do it deliberately, with a test, and tell the user.
+**New provenance surface:** `src/lib/dataset-db.ts:1` mirrors `src/lib/dataset.ts:1` for Prisma rows (reverse of `prisma/seed.ts:1`). `tests/dataset-db.parity.test.ts:1` proves JSON↔DB deep-equal; the two loaders must stay in lockstep.
 
 ### `VERIFY.md` is generated. Don't hand-edit it.
 
@@ -593,7 +579,7 @@ own tests, in its own commit — not a field added in the component.
 
 ## 8. Checklist before you say you're done
 
-- [ ] `npm run check` exits 0, with **≥230 tests passing** (was 230 at `b9f34ba`).
+- [ ] `npm run check` exits 0, with **≥237 tests passing** (was 230 at `b9f34ba`, 237 at 2026-09-05 core-hardened).
 - [ ] No new number in `src/core/` or in `data/*.json` that you cannot cite. If you added
       one, it is `null` or its provenance source is honest and `VERIFY.md` is regenerated.
 - [ ] No hardcoded user-facing English in `src/core/` or in components — message keys only

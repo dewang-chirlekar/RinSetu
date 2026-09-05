@@ -253,6 +253,13 @@
       "LOAN_BELOW_MIN_TICKET": "Does not write loans below {required}; this one is {actual}.",
       "LOAN_ABOVE_MAX_TICKET": "Does not write loans above {required}; this one is {actual}.",
       "OUTSIDE_JURISDICTION": "Does not cover {actual}."
+    },
+    "map": {
+      "heading": "Map",
+      "eligible_only": "Eligible partners only — straight line, not by road",
+      "note": "Markers show straight-line distance. Road distance and travel time are not calculated.",
+      "applicant_marker": "You",
+      "failed": "Map could not be loaded. The list below still shows the ranked partners."
     }
   },
 
@@ -499,6 +506,8 @@
       "invalid_heading": "That link could not be read",
       "invalid_detail": "One of the values in the address is outside what the form can produce. Start again rather than trusting a half-read answer.",
       "edit": "Change an answer",
+      "download_packet": "Download packet (PDF)",
+      "download_packet_detail": "A pre-filled application packet with the figures from this result — ready to print and carry to the partner.",
       "schemes_heading": "Every scheme, including the ones that do not fit",
       "schemes_note": "A scheme you fail is shown with its reasons, not hidden. That is the point of the tool.",
       "persona_heading": "Test case {id}",

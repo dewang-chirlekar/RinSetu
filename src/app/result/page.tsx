@@ -188,6 +188,7 @@ export default async function ResultPage({
   const others = result.schemes.filter((entry) => entry !== recommended);
   const schemeByCode = new Map(bundle.dataset.schemes.map((scheme) => [scheme.code, scheme]));
   const editHref = `/apply?${applicantToParams(applicant).toString()}`;
+  const packetHref = persona ? `/api/packet?persona=${persona.id}` : `/api/packet?${applicantToParams(applicant).toString()}`;
 
   return (
     <div>
@@ -229,12 +230,32 @@ export default async function ResultPage({
       </Section>
 
       {recommended ? (
-        <SchemeCard
-          recommendation={recommended}
-          scheme={schemeFor(schemeByCode, recommended.scheme_code)}
-          applicant={applicant}
-          isRecommended
-        />
+        <>
+          <SchemeCard
+            recommendation={recommended}
+            scheme={schemeFor(schemeByCode, recommended.scheme_code)}
+            applicant={applicant}
+            isRecommended
+          />
+          <div className="sheet mt-4 px-4 py-4">
+            <h3 className="text-ink font-serif text-sm font-semibold">
+              {translate('ui.result.download_packet')}
+            </h3>
+            <p className="text-ink-2 mt-1 text-xs leading-relaxed">
+              {translate('ui.result.download_packet_detail')}
+            </p>
+            <div className="mt-3">
+              <a
+                href={packetHref}
+                className="bg-accent text-paper inline-flex items-center px-4 py-2 text-sm font-medium"
+                target="_blank"
+                rel="noopener"
+              >
+                {translate('ui.result.download_packet')}
+              </a>
+            </div>
+          </div>
+        </>
       ) : (
         <p className="border-hold bg-hold-soft text-ink mt-6 border-l-[3px] px-3.5 py-3 text-sm">
           {translate('recommendation.none')}

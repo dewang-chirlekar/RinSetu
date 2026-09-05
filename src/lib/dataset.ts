@@ -353,7 +353,7 @@ export function loadSchemeDataset(options: LoadSchemeOptions = {}): SchemeDatase
       provenance,
       source_url: raw.source_url,
       source_date: raw.source_date,
-      verified: raw.verified,
+      verified: Object.values(provenance).every((entry) => entry.verified),
     };
   });
 
@@ -384,7 +384,7 @@ export function loadSchemeDataset(options: LoadSchemeOptions = {}): SchemeDatase
     age_min: globalField('age_min', rawGlobal.age_min as RawValue<number>, overlayGlobal.age_min),
     age_max: globalField('age_max', rawGlobal.age_max as RawValue<number>, overlayGlobal.age_max),
     provenance: globalProvenance,
-    verified: rawGlobal.verified,
+    verified: Object.values(globalProvenance).every((entry) => entry.verified),
   };
 
   // Authoritative only if EVERY figure in play is citable. Derived, so it cannot
