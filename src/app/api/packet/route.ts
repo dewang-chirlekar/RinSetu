@@ -9,6 +9,7 @@
  */
 
 import { ZodError } from 'zod';
+import { getLocale } from 'next-intl/server';
 import { renderToBuffer } from '@react-pdf/renderer';
 import { recommend } from '@/core/recommend';
 import { loadBundle, loadPersonas } from '@/lib/dataset';
@@ -66,10 +67,16 @@ export async function GET(request: Request): Promise<Response> {
     generatedAt: new Date().toISOString(),
   });
   const schemeByCode = new Map(bundle.dataset.schemes.map((s) => [s.code, s]));
+  // Packet respects applicant's preferred language if set, else UI locale
+  const uiLocale = (await getLocale()) as 'en' | 'hi' | 'mr';
+  const packetLocale =
+    applicant.preferred_language && ['en', 'hi', 'mr'].includes(applicant.preferred_language)
+      ? (applicant.preferred_language as 'en' | 'hi' | 'mr')
+      : uiLocale;
 
   const pdfBuffer = await renderToBuffer(
     // PacketDocument returns a <Document>, but TS sees unknown props — cast is safe: no new numbers, just reuses recommend() output
-    React.createElement(PacketDocument as unknown as React.ComponentType<never>, { applicant, result, schemeByCode } as never) as never,
+    React.createElement(PacketDocument as unknown as React.ComponentType<never>, { applicant, result, schemeByCode, locale: packetLocale } as never) as never,
   );
 
   const filename = `RinSetu-${applicant.id ?? result.recommended_scheme_code ?? 'packet'}.pdf`;

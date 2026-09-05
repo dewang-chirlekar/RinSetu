@@ -15,15 +15,18 @@
  */
 
 import en from './en.json';
+import hi from './hi.json';
+import mr from './mr.json';
 
 export type MessageValues = Record<string, string | number | null | undefined>;
 
-const CATALOGUES = { en } as const;
+const CATALOGUES = { en, hi, mr } as const;
 export type Locale = keyof typeof CATALOGUES;
 export const DEFAULT_LOCALE: Locale = 'en';
 
-/** Locales the UI offers. Only 'en' is populated until Phase 7. */
-export const PLANNED_LOCALES = ['en', 'hi', 'mr', 'ta'] as const;
+/** Locales the UI offers. hi/mr populated 2026-09-05 (human-written UI keys, scheme names/amounts kept English per glossary). */
+export const PLANNED_LOCALES = ['en', 'hi', 'mr'] as const;
+export const LOCALES = PLANNED_LOCALES;
 
 function lookup(catalogue: unknown, key: string): unknown {
   return key.split('.').reduce<unknown>((node, segment) => {
@@ -42,8 +45,34 @@ function interpolate(template: string, values?: MessageValues): string {
   });
 }
 
+declare global {
+  // Set per-request by server components (layout, result, apply) after `await getLocale()`.
+  // Lets `translate` stay sync while still being request-locale-aware on the server.
+  var __RINSETU_LOCALE__: Locale | undefined;
+}
+
 export function translate(key: string, values?: MessageValues, locale: Locale = DEFAULT_LOCALE): string {
-  const found = lookup(CATALOGUES[locale], key) ?? lookup(CATALOGUES[DEFAULT_LOCALE], key);
+  // Effective locale: explicit param wins, else per-request global (server), else
+  // client `locale` cookie (client components like ApplyForm), else default.
+  let effective: Locale = locale;
+  if (locale === DEFAULT_LOCALE) {
+    const fromGlobal =
+      typeof globalThis !== 'undefined' ? (globalThis as unknown as { __RINSETU_LOCALE__?: Locale }).__RINSETU_LOCALE__ : undefined;
+    if (fromGlobal && (LOCALES as readonly string[]).includes(fromGlobal)) {
+      effective = fromGlobal;
+    } else if (typeof document !== 'undefined') {
+      try {
+        const m = document.cookie.match(/(?:^|; )locale=([^;]+)/);
+        const fromCookie = m?.[1];
+        if (fromCookie && (LOCALES as readonly string[]).includes(fromCookie)) {
+          effective = fromCookie as Locale;
+        }
+      } catch {
+        // ignore
+      }
+    }
+  }
+  const found = lookup(CATALOGUES[effective], key) ?? lookup(CATALOGUES[DEFAULT_LOCALE], key);
   if (typeof found !== 'string') {
     throw new Error(`Missing message key '${key}'. Add it to src/messages/en.json.`);
   }

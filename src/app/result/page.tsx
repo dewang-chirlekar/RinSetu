@@ -20,12 +20,13 @@
  */
 
 import { ZodError } from 'zod';
+import { getLocale } from 'next-intl/server';
 import { recommend } from '@/core/recommend';
 import type { ApplicantProfile, SchemeSpec } from '@/core/types';
 import { loadBundle, loadPersonas } from '@/lib/dataset';
 import { isEmptyParams, parseApplicantParams, applicantToParams } from '@/lib/applicant-params';
 import { humanisePurpose, longDateTime, rupees } from '@/lib/format';
-import { translate } from '@/messages';
+import { translate, type Locale } from '@/messages';
 import { DatasetBanner } from '@/components/DatasetBanner';
 import { SchemeCard } from '@/components/SchemeCard';
 import { FieldRow, PrimaryLink, SecondaryLink, Section } from '@/components/ui';
@@ -74,35 +75,36 @@ function Notice({
  * surprising answer needs to be able to check whether the input was misread — so
  * this list shows unanswered questions as "Not known" rather than omitting them.
  */
-function AnswerSummary({ applicant }: { applicant: ApplicantProfile }) {
-  const unknown = translate('common.unknown');
+function AnswerSummary({ applicant, locale }: { applicant: ApplicantProfile; locale: Locale }) {
+  const t = (key: string, values?: Record<string, string | number | null | undefined>) =>
+    translate(key, values, locale);
+  const unknown = t('common.unknown');
   const rows: { label: string; value: string }[] = [
-    { label: translate('ui.apply.age'), value: applicant.age === null ? unknown : String(applicant.age) },
-    { label: translate('ui.apply.category'), value: translate(`ui.category.${applicant.category}`) },
+    { label: t('ui.apply.age'), value: applicant.age === null ? unknown : String(applicant.age) },
+    { label: t('ui.apply.category'), value: t(`ui.category.${applicant.category}`) },
     {
-      label: translate('ui.apply.income'),
-      value:
-        applicant.annual_family_income === null ? unknown : rupees(applicant.annual_family_income),
+      label: t('ui.apply.income'),
+      value: applicant.annual_family_income === null ? unknown : rupees(applicant.annual_family_income),
     },
     {
-      label: translate('ui.apply.state'),
+      label: t('ui.apply.state'),
       value: applicant.state ?? unknown,
     },
     {
-      label: translate('ui.apply.district'),
+      label: t('ui.apply.district'),
       value: applicant.district ?? unknown,
     },
-    { label: translate('ui.apply.intent'), value: translate(`ui.intent.${applicant.intent}`) },
+    { label: t('ui.apply.intent'), value: t(`ui.intent.${applicant.intent}`) },
     {
-      label: translate('ui.apply.purpose'),
+      label: t('ui.apply.purpose'),
       value: applicant.purpose === null ? unknown : humanisePurpose(applicant.purpose),
     },
     {
-      label: translate('ui.apply.project_cost'),
+      label: t('ui.apply.project_cost'),
       value: applicant.project_cost === null ? unknown : rupees(applicant.project_cost),
     },
     {
-      label: translate('ui.apply.own_funds'),
+      label: t('ui.apply.own_funds'),
       value:
         applicant.own_funds_available === null || applicant.own_funds_available === undefined
           ? unknown
@@ -113,14 +115,13 @@ function AnswerSummary({ applicant }: { applicant: ApplicantProfile }) {
   if (applicant.education) {
     const admission = applicant.education.admission_confirmed;
     rows.push({
-      label: translate('ui.apply.edu_admission'),
-      value:
-        admission === null ? unknown : admission ? translate('common.yes') : translate('common.no'),
+      label: t('ui.apply.edu_admission'),
+      value: admission === null ? unknown : admission ? t('common.yes') : t('common.no'),
     });
     if (applicant.education.study_location) {
       rows.push({
-        label: translate('ui.apply.edu_location'),
-        value: translate(`ui.study_location.${applicant.education.study_location}`),
+        label: t('ui.apply.edu_location'),
+        value: t(`ui.study_location.${applicant.education.study_location}`),
       });
     }
   }
@@ -140,15 +141,16 @@ export default async function ResultPage({
   searchParams: Promise<RawParams>;
 }) {
   const params = await searchParams;
+  const locale = (await getLocale()) as Locale;
+  (globalThis as unknown as { __RINSETU_LOCALE__?: string }).__RINSETU_LOCALE__ = locale;
+  const t = (key: string, values?: Record<string, string | number | null | undefined>) =>
+    translate(key, values, locale);
 
   if (isEmptyParams(params)) {
     return (
-      <Notice
-        heading={translate('ui.result.empty_heading')}
-        detail={translate('ui.result.empty_detail')}
-      >
-        <PrimaryLink href="/apply">{translate('ui.nav.apply')}</PrimaryLink>
-        <SecondaryLink href="/personas">{translate('ui.nav.personas')}</SecondaryLink>
+      <Notice heading={t('ui.result.empty_heading')} detail={t('ui.result.empty_detail')}>
+        <PrimaryLink href="/apply">{t('ui.nav.apply')}</PrimaryLink>
+        <SecondaryLink href="/personas">{t('ui.nav.personas')}</SecondaryLink>
       </Notice>
     );
   }
@@ -165,11 +167,8 @@ export default async function ResultPage({
     } catch (error) {
       if (!(error instanceof ZodError)) throw error;
       return (
-        <Notice
-          heading={translate('ui.result.invalid_heading')}
-          detail={translate('ui.result.invalid_detail')}
-        >
-          <PrimaryLink href="/apply">{translate('ui.nav.apply')}</PrimaryLink>
+        <Notice heading={t('ui.result.invalid_heading')} detail={t('ui.result.invalid_detail')}>
+          <PrimaryLink href="/apply">{t('ui.nav.apply')}</PrimaryLink>
         </Notice>
       );
     }
@@ -198,35 +197,33 @@ export default async function ResultPage({
         <div className="border-rule-strong bg-paper-sunk mt-4 border-l-[3px] px-3.5 py-3">
           <div className="flex flex-wrap items-center gap-2">
             <span className="stamp stamp-tilt text-ink-2">
-              {translate('ui.result.persona_heading', { id: persona.id })}
+              {t('ui.result.persona_heading', { id: persona.id })}
             </span>
             <span className="text-ink text-xs font-medium">{persona.label}</span>
           </div>
           <p className="text-ink-3 mt-1.5 text-xs leading-relaxed">
-            {translate('ui.result.persona_detail', { tests: persona.tests.join(' · ') })}
+            {t('ui.result.persona_detail', { tests: persona.tests.join(' · ') })}
           </p>
         </div>
       ) : null}
 
       <div className="mt-6 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
         <h1 className="text-ink font-serif text-2xl leading-tight font-semibold">
-          {applicant.name
-            ? translate('ui.result.for', { name: applicant.name })
-            : translate('ui.result.heading')}
+          {applicant.name ? t('ui.result.for', { name: applicant.name }) : t('ui.result.heading')}
         </h1>
         <span className="text-ink-3 text-xs">
-          {translate('recommendation.generated_at', {
+          {t('recommendation.generated_at', {
             timestamp: longDateTime(result.generated_at),
           })}
         </span>
       </div>
 
       <div className="no-print mt-3">
-        <SecondaryLink href={editHref}>{translate('ui.result.edit')}</SecondaryLink>
+        <SecondaryLink href={editHref}>{t('ui.result.edit')}</SecondaryLink>
       </div>
 
-      <Section title={translate('ui.result.answers_heading')}>
-        <AnswerSummary applicant={applicant} />
+      <Section title={t('ui.result.answers_heading')}>
+        <AnswerSummary applicant={applicant} locale={locale} />
       </Section>
 
       {recommended ? (
@@ -239,10 +236,10 @@ export default async function ResultPage({
           />
           <div className="sheet mt-4 px-4 py-4">
             <h3 className="text-ink font-serif text-sm font-semibold">
-              {translate('ui.result.download_packet')}
+              {t('ui.result.download_packet')}
             </h3>
             <p className="text-ink-2 mt-1 text-xs leading-relaxed">
-              {translate('ui.result.download_packet_detail')}
+              {t('ui.result.download_packet_detail')}
             </p>
             <div className="mt-3">
               <a
@@ -251,19 +248,19 @@ export default async function ResultPage({
                 target="_blank"
                 rel="noopener"
               >
-                {translate('ui.result.download_packet')}
+                {t('ui.result.download_packet')}
               </a>
             </div>
           </div>
         </>
       ) : (
         <p className="border-hold bg-hold-soft text-ink mt-6 border-l-[3px] px-3.5 py-3 text-sm">
-          {translate('recommendation.none')}
+          {t('recommendation.none')}
         </p>
       )}
 
-      <Section title={translate('ui.result.schemes_heading')}>
-        <p className="text-ink-2 text-xs leading-relaxed">{translate('ui.result.schemes_note')}</p>
+      <Section title={t('ui.result.schemes_heading')}>
+        <p className="text-ink-2 text-xs leading-relaxed">{t('ui.result.schemes_note')}</p>
         {others.map((entry) => (
           <SchemeCard
             key={entry.scheme_code}

@@ -11,12 +11,13 @@
  * undecidable cases, which are the ones worth looking at.
  */
 
+import { getLocale } from 'next-intl/server';
 import { recommend } from '@/core/recommend';
 import type { SchemeRecommendation } from '@/core/types';
 import { applicantToParams } from '@/lib/applicant-params';
 import { loadBundle, loadPersonas, type Persona } from '@/lib/dataset';
 import { rupees } from '@/lib/format';
-import { translate } from '@/messages';
+import { translate, type Locale } from '@/messages';
 import { DatasetBanner } from '@/components/DatasetBanner';
 import { StatusPill } from '@/components/ui';
 
@@ -80,7 +81,9 @@ function PersonaRow({
   );
 }
 
-export default function PersonasPage() {
+export default async function PersonasPage() {
+  const locale = (await getLocale()) as Locale;
+  (globalThis as unknown as { __RINSETU_LOCALE__?: string }).__RINSETU_LOCALE__ = locale;
   const bundle = loadBundle();
   const personas = loadPersonas();
 

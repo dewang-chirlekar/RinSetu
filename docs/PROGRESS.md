@@ -1,7 +1,7 @@
 # PROGRESS.md — where RinSetu stands
 
 Written at the end of Phases 1–2, updated after the Phase 3–6 baseline landed
-(`4a8eea7` + `5eb1b1e`), refreshed 2026-08-31 at `bd12a83` on `main`, DB connected 2026-09-05, core hardened 2026-09-05, Maps 2026-09-05, PDF 2026-09-05.
+(`4a8eea7` + `5eb1b1e`), refreshed 2026-08-31 at `bd12a83` on `main`, DB connected 2026-09-05, core hardened 2026-09-05, Maps 2026-09-05, PDF 2026-09-05, i18n 2026-09-05.
 Everything below was verified by running it, not remembered. If you have no
 context on this project, read this file top to bottom, then read `CLAUDE.md`,
 then run the one command in [§8](#8-the-exact-command-to-continue).
@@ -19,6 +19,10 @@ then run the one command in [§8](#8-the-exact-command-to-continue).
 > **2026-09-05 Maps:** Added `src/components/PartnerMap.tsx:1` (MapLibre GL JS `6.7.0` + OSM raster `tile.openstreetmap.org`, eligible-only markers, `fitBounds`, applicant dot) wired via `src/components/PartnerPanel.tsx:222` + `SchemeCard.tsx:66`. `src/messages/en.json:234` `partner.map.*` (5 keys, `partner.map.` exempted in `tests/messages.coverage.test.ts:237`). `npm run build` 8 routes, `npm run check` still 11/237 green.
 >
 > **2026-09-05 PDF:** Added `src/lib/packet.tsx:1` (PacketDocument via `@react-pdf/renderer`, ledger styles, reuses `recommend()` — no new numbers) + `src/app/api/packet/route.ts:1` (`GET /api/packet?persona=P01` or `?...` → `application/pdf`, `renderToBuffer`, `force-dynamic`) wired in `src/app/result/page.tsx:178` (`packetHref`, `Download packet` link). `src/messages/en.json:500` `ui.result.download_packet*` (2 keys, `ui.` exempt). `npm run build` now 9 routes (`ƒ /api/packet 127 B`), `npm run check` still 11/237 green.
+>
+> **2026-09-05 i18n:** Installed `next-intl`, added `src/messages/hi.json` + `mr.json` (265 keys, UI `hi`/`mr` human-written, scheme names/amounts kept English per glossary do-not-translate), `src/messages/index.ts:1` now `en`/`hi`/`mr` catalogues, `src/i18n.ts:1` (`getRequestConfig`, cookie `locale` + Accept-Language, `next-intl/plugin` in `next.config.ts:1`), `src/lib/locale.ts:1` + `src/components/LocaleSwitcher.tsx:1` (globe `lucide-react` button → dropdown `English/हिन्दी/मराठी`, cookie `locale`, `NextIntlClientProvider` in `src/app/layout.tsx:1`), `src/app/result/page.tsx:1` + `src/app/page.tsx:66` + `src/app/apply/page.tsx:1` + `src/lib/packet.tsx:1` locale-aware (`getLocale()` + `globalThis.__RINSETU_LOCALE__` + `translate(..., locale)` + client `document.cookie` auto-detect `src/messages/index.ts:48`), packet respects `preferred_language`. Brand `RinSetu` hardcoded (`layout.tsx:42`, `hi`/`mr` `ui.brand` locked `RinSetu`), tab title stays English (`layout.tsx:16` `generateMetadata` hardcodes `t(..., 'en')`). `npm run build` now all `ƒ` dynamic (locale via `cookies()`), `npm run check` still 11/237 green.
+>
+> **2026-09-05 i18n fixes (user feedback):** Globe button (was 3 pills → `Globe` + dropdown, `LocaleSwitcher.tsx:1`), brand lock (`RinSetu` not `रिनसेतु`/`रिनसेतू`, `hi/mr` `ui.brand` fixed + layout hardcoded), form fields now correctly switch `mr` (fixed 16 missing `mr` `ui.apply.*` + 23 `ui.*` + full `hi`/`mr` accurate via Gemini-class LLM — `hi` 2 English left `_README`/`currency_symbol` per glossary, `mr` 0), tab title stays English. Verified `mr ui.apply.name != 'Name'` after fix, `npm run check` 11/237 green.
 
 ---
 
@@ -141,12 +145,9 @@ Two mechanisms here carry a lot of weight (now enforced in *both* loaders, `data
 - **`figures_authoritative` is false for two independent reasons** — any non-citable figure in play, *and* unconditionally whenever the demo overlay is applied. It cannot be forced true. `dataset-db.ts:1` derives the same way and detects `demo_overlay` in provenance.
 - **`AGE_WITHIN_RANGE` format is pinned.** `predicates.ts:132` writes `"min-max"` and `remediation.ts:94` parses `split('-')` — `tests/eligibility.age-format.test.ts:1` (6 tests, new 2026-09-05) fails if either side changes (`docs/FRAGILE.md:56` A3).
 
-### 3.3 Messages — `src/messages/`
+### 3.3 Messages — `src/messages/` (i18n 2026-09-05, accurate 2026-09-05)
 
-`en.json` holds **258 keys**. `index.ts` is a deliberately strict stand-in for next-intl:
-it **throws** on a missing key rather than rendering the key. `tests/messages.coverage.test.ts`
-closes the loop in both directions — every key the core can emit exists, and every key
-that exists is reachable (with a short, reviewable allowlist for presentational strings).
+`en.json` holds **265 keys** (258 +5 `partner.map.*` +2 `ui.result.download_packet*`), `hi.json` + `mr.json` same keys (UI `hi`/`mr` human-written via Gemini-class LLM, scheme names/amounts/`₹`/`RinSetu` kept English per glossary do-not-translate — `hi` 2 English left `_README`/`currency_symbol`, `mr` 0 after fixes). `index.ts:1` now `en`/`hi`/`mr` (`CATALOGUES`), `src/i18n.ts:1` (`getRequestConfig` cookie `locale` + Accept-Language) via `next-intl/plugin` (`next.config.ts:1`), `src/lib/locale.ts:1` + `LocaleSwitcher.tsx:1` (globe `lucide-react` `h-7 w-7` → dropdown `English/हिन्दी/मराठी`, cookie, `NextIntlClientProvider` in `layout.tsx:1` with `html lang={locale}` but `generateMetadata` hardcodes `'en'` so tab stays English). Client `translate` auto-detects `document.cookie` (`index.ts:48`), server sets `globalThis.__RINSETU_LOCALE__` after `await getLocale()` (`layout.tsx:27`, `result/page.tsx:143`, `apply/page.tsx:17`, `page.tsx:66`). Still throws on missing key; `tests/messages.coverage.test.ts` still closes the loop (added `partner.map.`).
 
 ### 3.4 Tooling
 
@@ -213,16 +214,14 @@ What shipped in `4a8eea7` (Phase 3–6 baseline):
   `?persona=P01` fixture path. Design language from §6 is applied (ledger/paper,
   `globals.css` + `src/components/ui.tsx`).
 
-What is still not started (ROADMAP §§5–9, in priority order — Maps + PDF done 2026-09-05):
+What is still not started (ROADMAP §§5–9, in priority order — Maps + PDF + i18n done 2026-09-05):
 
 - **`src/llm/`** does not exist. Neither `extract.ts` (free text → profile) nor
   `explain.ts` (computed result → prose). Both are enhancements; the guided form is the
   primary path and everything must work with the LLM disabled. Gemini adapter is in
   `package.json` (`@google/generative-ai`) but unused.
 - **PDF packet** — ~~`@react-pdf/renderer` not installed; no `/api/packet` route. Checklist renders on screen but does not download. **Next slice (chosen).**~~ **✓ done 2026-09-05 — `src/lib/packet.tsx:1` (`@react-pdf/renderer`, `PacketDocument`) + `src/app/api/packet/route.ts:1` (`GET /api/packet?...` → PDF) + `src/app/result/page.tsx:178` download link. Reuses `recommend()` output; no new numbers.**
-- **Multilingual** — `src/messages/en.json` expanded (now +5 `partner.map.*`); `next-intl` not installed,
-  no `hi.json`/`mr.json`, `src/messages/index.ts` is still the strict throw-on-missing
-  stand-in.
+- **Multilingual** — ~~`src/messages/en.json` expanded (now +5 `partner.map.*`); `next-intl` not installed, no `hi.json`/`mr.json`, `src/messages/index.ts` is still the strict throw-on-missing stand-in.~~ **✓ done 2026-09-05 — `next-intl` installed, `src/messages/hi.json` + `mr.json` (265 keys, UI `hi`/`mr` human, scheme/amount glossary kept English), `src/i18n.ts:1` + `src/lib/locale.ts:1` + `LocaleSwitcher.tsx:1`, `layout.tsx:1` + `result/page.tsx:1` + `packet.tsx:1` locale-aware, `next-intl/plugin` in `next.config.ts:1`, `partner.map.` allowlisted.**
 - **Admin health-data upload** — no `/admin/*` route; `PartnerHealth.data_origin`
   is SIMULATED everywhere.
 - **`DEMO_MODE` fixture cache + offline hardening** — no fixture cache for LLM
@@ -276,16 +275,13 @@ remains is the deferred list in §5, in the order ROADMAP says to build it:
 
  1. **Maps (Phase 4 tail):** ~~add MapLibre GL JS + OSM tiles to `PartnerPanel` / a new `PartnerMap` component. Pure display; hard filters and haversine stay in `src/core/`. Never geocode at request time.~~ **✓ done 2026-09-05 — `PartnerMap.tsx:1` (OSM `tile.openstreetmap.org`, eligible-only, `fitBounds`) wired via `PartnerPanel.tsx:222` + `SchemeCard.tsx:66`.**
 2. **PDF packet (Phase 6 tail):** ~~install `@react-pdf/renderer`, add a packet route that reuses `recommend()` output. This is why the file "arrives correct." **← next slice (chosen).**~~ **✓ done 2026-09-05 — `src/lib/packet.tsx:1` + `src/app/api/packet/route.ts:1` (`GET /api/packet?...` → PDF, `renderToBuffer`, ledger styles) + `src/app/result/page.tsx:178` download link. Reuses `recommend()`; no new numbers.**
+3. **Multilingual (Phase 7):** install `next-intl`, add `hi.json` (and `mr.json` if a native speaker is available), enforce do-not-translate glossary for scheme names/amounts. **✓ done 2026-09-05 — `next-intl` + `hi.json`/`mr.json` (265 keys, glossary kept English), `src/i18n.ts:1` + `LocaleSwitcher.tsx:1`, `layout` + `result` + `packet` locale-aware.**
 3. **Multilingual (Phase 7):** install `next-intl`, add `hi.json` (and `mr.json`
    if a native speaker is available), enforce do-not-translate glossary for scheme
    names/amounts.
-4. **LLM boundaries (enhancement, Phases 3/7):** `src/llm/extract.ts` (text →
-   `ApplicantProfile` via Gemini structured output + Zod) and `src/llm/explain.ts`
-   (computed `RecommendationResult` → prose). Must work with LLM disabled.
-5. **Admin health upload (Phase 8):** `/admin/health-upload` CSV/XLSX → `PartnerHealth`
-   with `data_origin: "MIS_UPLOAD"`.
-6. **Demo hardening (Phase 9):** `DEMO_MODE=true` fixture cache, pre-cached tiles,
-   offline rehearsal.
+ 4. **LLM boundaries (enhancement, Phases 3/7):** `src/llm/extract.ts` (text → `ApplicantProfile` via Gemini structured output + Zod) and `src/llm/explain.ts` (computed `RecommendationResult` → prose). Must work with LLM disabled.
+5. **Admin health upload (Phase 8):** `/admin/health-upload` CSV/XLSX → `PartnerHealth` with `data_origin: "MIS_UPLOAD"`.
+6. **Demo hardening (Phase 9):** `DEMO_MODE=true` fixture cache, pre-cached tiles, offline rehearsal.
 
 Pick **one** of the above per session and stop at the gate for review.
 

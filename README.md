@@ -40,7 +40,7 @@ RinSetu helps Scheduled Caste applicants understand which concessional-credit sc
 237  total
 ```
 
-Dataset: 3 schemes (MICRO, TERM, EDU — all `verified: false`), 15 fabricated partners on real city coordinates, 15 `SIMULATED` health rows, 258 i18n keys, 40 persona fixtures. Figures authoritative: **false** for two independent reasons (non-citable figures + demo overlay active).
+Dataset: 3 schemes (MICRO, TERM, EDU — all `verified: false`), 15 fabricated partners on real city coordinates, 15 `SIMULATED` health rows, 265 i18n keys (`en`/`hi`/`mr`, +7 for map+packet), 40 persona fixtures. Figures authoritative: **false** for two independent reasons (non-citable figures + demo overlay active).
 
 ### What's built
 
@@ -50,11 +50,11 @@ Dataset: 3 schemes (MICRO, TERM, EDU — all `verified: false`), 15 fabricated p
 - `partners/` — haversine distance, weighted health composite, hard filters then soft ranking (never blended).
 - `documents/resolve.ts` + `recommend.ts` (single entry point the UI calls, returns verdicts for **all** schemes).
 
-**UI baseline — `src/app/` + `src/components/`** (Phase 3–6 baseline `4a8eea7`+`5eb1b1e`, Map 2026-09-05, PDF 2026-09-05):
-- `/` — landing: compact provenance stamp, claim, CTAs to `/apply` and `/personas`, 4-step band, scheme list from dataset (cannot drift), detail block. Ledger/paper design: warm paper, ink-navy, hairline rules, tabular monospace figures, stamp badges, no gradients. Mobile-first at 360 px.
-- `/apply` — guided intake, `GET → /result`, no JS required, no LLM. Every option list derived from dataset/partners/documents; blanks → `undefined` → Zod default; no `required`, no geocoding (distance shows "unknown" — never invents a centroid).
-- `/result` — runs `recommend()` on query string or `?persona=Pxx`, shows `DatasetBanner` (full), recommended `SchemeCard` + others collapsed with `StatusPill`, finance panel with schedule, partner map (MapLibre GL JS + OSM raster, `src/components/PartnerMap.tsx:1`, eligible only, straight-line) + dual ranking (nearest vs fastest), exclusion reasons, checklist, **PDF packet** (`src/lib/packet.tsx:1` + `src/app/api/packet/route.ts:1` via `@react-pdf/renderer`, `Download packet` link reusing `recommend()` output). Invariants: no arithmetic in components, every rupee from the engine.
-- `/personas` — 40 fixtures rendered live through `recommend()` at render time; no stored outcomes.
+**UI baseline — `src/app/` + `src/components/`** (Phase 3–6 baseline `4a8eea7`+`5eb1b1e`, Map 2026-09-05, PDF 2026-09-05, i18n 2026-09-05 — globe + brand lock + accurate hi/mr):
+- `/` — landing: compact provenance stamp, claim, CTAs to `/apply` and `/personas` + language switcher (`LocaleSwitcher.tsx:1` globe `lucide-react` button → dropdown `English/हिन्दी/मराठी`, cookie `locale`, `NextIntlClientProvider`), 4-step band, scheme list from dataset (cannot drift), detail block. Ledger/paper design: warm paper, ink-navy, hairline rules, tabular monospace figures, stamp badges, no gradients. Mobile-first at 360 px. Brand **`RinSetu`** hardcoded (`src/app/layout.tsx:42`, `hi.json`/`mr.json` `ui.brand` locked `RinSetu` per glossary do-not-translate).
+- `/apply` — guided intake, `GET → /result`, locale-aware (`getLocale()` + `globalThis.__RINSETU_LOCALE__` + `translate(..., locale)` + client `document.cookie` auto-detect `src/messages/index.ts:48`, `src/lib/locale.ts:1`), no JS required, no LLM. Every option list derived from dataset/partners/documents; blanks → `undefined` → Zod default; no `required`, no geocoding (distance shows "unknown" — never invents a centroid). All field labels/options/hints now correctly switch `en`/`hi`/`mr` (fixed 2026-09-05: `mr` `ui.apply.*` 16 missing keys translated, `hi`/`mr` 265 keys accurate via Gemini-class LLM, verified `hi loan.emi != English`).
+- `/result` — runs `recommend()` on query string or `?persona=Pxx`, locale-aware (`getLocale()` + `translate(..., locale)`, `src/i18n.ts:1`, `globalThis.__RINSETU_LOCALE__`), shows `DatasetBanner` (full), recommended `SchemeCard` + others collapsed with `StatusPill`, finance panel with schedule, partner map (MapLibre GL JS + OSM raster, `src/components/PartnerMap.tsx:1`, eligible only, straight-line) + dual ranking (nearest vs fastest), exclusion reasons, checklist, **PDF packet** (`src/lib/packet.tsx:1` + `src/app/api/packet/route.ts:1` via `@react-pdf/renderer`, `Download packet` link reusing `recommend()` output, respects `preferred_language`/UI locale). Browser tab title stays **English** (`src/app/layout.tsx:16` `generateMetadata` hardcodes `t(..., 'en')`, `RinSetu — concessional credit...`). Invariants: no arithmetic in components, every rupee from the engine, scheme names/amounts never translated.
+- `/personas` — 40 fixtures rendered live through `recommend()` at render time; no stored outcomes. Locale-aware (`getLocale()` + global).
 
 **Data layer — `data/` + `src/lib/dataset.ts` + `src/lib/dataset-db.ts`**: 7 JSON files, one JSON loader + one DB loader (both derive `verified` via `isCitable()` `src/core/types.ts:94`, never copied — fixed 2026-09-05 `src/lib/dataset.ts:356`/`387`), `figures_authoritative` false when any non-citable figure exists or overlay is applied, `VERIFY.md` generated with 4 structural findings (F1–F4) each with a live `check()` that refuses to write a false document.
 
@@ -63,8 +63,6 @@ Dataset: 3 schemes (MICRO, TERM, EDU — all `verified: false`), 15 fabricated p
 ### What is not yet built
 
 - `src/llm/` (`extract.ts` / `explain.ts`) — Gemini adapter in `package.json` but unused. Guided form is primary; LLM is an enhancement that must work with `DEMO_MODE=true`.
-- Multilingual — `next-intl` not installed; only `en.json` (+5 `partner.map.*`, +2 `ui.result.download_packet` for PDF); `hi.json`/`mr.json` pending.
-- Multilingual — `next-intl` not installed; only `en.json` (258 keys); `hi.json`/`mr.json` pending.
 - Admin health upload — no `/admin/*`; all `PartnerHealth.data_origin` is `SIMULATED`.
 - Offline hardening — no fixture cache, no pre-cached tiles.
 
@@ -121,9 +119,10 @@ rinsetu/
 │  ├─ core/  types.ts  eligibility/  finance/  partners/  documents/  recommend.ts
 │  ├─ app/   layout.tsx  page.tsx  apply/page.tsx  result/page.tsx  personas/page.tsx  api/packet/route.ts
 │  ├─ components/  ui.tsx  DatasetBanner.tsx  SchemeCard.tsx  VerdictList.tsx
-│  │              LoanFigures.tsx  PartnerPanel.tsx  PartnerMap.tsx  ChecklistPanel.tsx  form.tsx  ScrollReveal.tsx
-│  ├─ lib/   dataset.ts  dataset-db.ts  packet.tsx  applicant-params.ts  format.ts  view.ts
-│  └─ messages/  en.json  index.ts (strict throw-on-missing)
+│  │              LoanFigures.tsx  PartnerPanel.tsx  PartnerMap.tsx  ChecklistPanel.tsx  LocaleSwitcher.tsx  form.tsx  ScrollReveal.tsx
+│  ├─ lib/   dataset.ts  dataset-db.ts  packet.tsx  locale.ts  applicant-params.ts  format.ts  view.ts
+│  ├─ i18n.ts  (next-intl getRequestConfig, en/hi/mr, cookie + Accept-Language)
+│  └─ messages/  en.json  hi.json  mr.json  index.ts (strict throw-on-missing, + next-intl)
 └─ tests/  11 files, 237 tests  +  scripts/  check-boundaries.mjs  verify-report.ts  personas.ts
 ```
 
@@ -153,6 +152,6 @@ rinsetu/
 
 ## Stack (pinned)
 
-Next.js 15 · TypeScript strict · Tailwind + shadcn/ui · PostgreSQL (Supabase) · Prisma 7 · Vitest · MapLibre GL JS + OSM · `@react-pdf/renderer` · `@google/generative-ai` (Gemini Flash) behind one adapter · Zod (+ `next-intl` when that phase lands).
+Next.js 15 · TypeScript strict · Tailwind + shadcn/ui · PostgreSQL (Supabase) · Prisma 7 · Vitest · MapLibre GL JS + OSM · `@react-pdf/renderer` · `next-intl` · `@google/generative-ai` (Gemini Flash) behind one adapter · Zod.
 
 Distance is haversine in TypeScript. Do not add PostGIS, Redux, GraphQL, vector DB, Docker orchestration, or auth beyond one admin login.

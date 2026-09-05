@@ -8,24 +8,27 @@
  * the no-JS fallback.
  */
 
+import { getLocale } from 'next-intl/server';
 import { loadBundle } from '@/lib/dataset';
-import { translate } from '@/messages';
+import { translate, type Locale } from '@/messages';
 import { ApplyForm } from '@/components/ApplyForm';
 
 type RawParams = Record<string, string | string[] | undefined>;
 
 export default async function ApplyPage({ searchParams }: { searchParams: Promise<RawParams> }) {
   const params = await searchParams;
+  const locale = (await getLocale()) as Locale;
+  (globalThis as unknown as { __RINSETU_LOCALE__?: string }).__RINSETU_LOCALE__ = locale;
+  const t = (key: string, values?: Record<string, string | number | null | undefined>) =>
+    translate(key, values, locale);
   const { dataset, partners, documentDefinitions, documentRequirements } = loadBundle();
 
   return (
     <div>
-      <h1 className="text-ink font-serif text-2xl leading-tight font-semibold">
-        {translate('ui.apply.heading')}
-      </h1>
-      <p className="text-ink-2 mt-2 text-sm leading-relaxed">{translate('ui.apply.lede')}</p>
+      <h1 className="text-ink font-serif text-2xl leading-tight font-semibold">{t('ui.apply.heading')}</h1>
+      <p className="text-ink-2 mt-2 text-sm leading-relaxed">{t('ui.apply.lede')}</p>
       <p className="border-accent bg-accent-soft text-ink-2 mt-3 border-l-[3px] px-3.5 py-2.5 text-xs leading-relaxed">
-        {translate('ui.apply.blank_hint')}
+        {t('ui.apply.blank_hint')}
       </p>
 
       <ApplyForm

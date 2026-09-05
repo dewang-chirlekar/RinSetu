@@ -158,65 +158,69 @@ export function PacketDocument({
   applicant,
   result,
   schemeByCode,
+  locale = 'en' as never,
 }: {
   applicant: ApplicantProfile;
   result: RecommendationResult;
   schemeByCode: Map<string, SchemeSpec>;
+  locale?: import('@/messages').Locale;
 }): React.ReactElement {
+  const t = (key: string, values?: Record<string, string | number | null | undefined>) =>
+    translate(key, values, locale);
   const recommended = result.schemes.find((s) => s.scheme_code === result.recommended_scheme_code);
-  const generatedAt = new Date(result.generated_at).toLocaleString('en-IN', {
+  const generatedAt = new Date(result.generated_at).toLocaleString(locale === 'hi' ? 'hi-IN' : locale === 'mr' ? 'mr-IN' : 'en-IN', {
     dateStyle: 'long',
     timeStyle: 'short',
   });
-  const unknown = translate('common.unknown');
+  const unknown = t('common.unknown');
 
   return (
     <Document title={`RinSetu packet — ${applicant.name ?? applicant.id ?? 'applicant'}`}>
       <Page size="A4" style={styles.page}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.brand}>{translate('ui.brand')} — {translate('ui.tagline')}</Text>
-          <Text style={styles.tagline}>{translate('ui.footer.build')}</Text>
+          <Text style={styles.brand}>{t('ui.brand')} — {t('ui.tagline')}</Text>
+          <Text style={styles.tagline}>{t('ui.footer.build')}</Text>
           {!result.dataset.figures_authoritative ? (
             <Text style={styles.stamp}>
-              {translate('dataset.banner.not_authoritative')} — {translate('dataset.banner.not_authoritative_detail')}
+              {t('dataset.banner.not_authoritative')} — {t('dataset.banner.not_authoritative_detail')}
             </Text>
           ) : null}
           <Text style={{ fontSize: 6, color: '#7b766a', marginTop: 4 }}>
-            {translate('recommendation.generated_at', { timestamp: generatedAt })} · {translate(result.dataset.label)}
+            {t('recommendation.generated_at', { timestamp: generatedAt })} · {t(result.dataset.label)}
           </Text>
         </View>
 
         {/* Applicant */}
-        <Text style={styles.h2}>{translate('ui.result.answers_heading')}</Text>
-        <FieldRow label={translate('ui.apply.name')} value={applicant.name ?? unknown} />
-        <FieldRow label={translate('ui.apply.age')} value={applicant.age == null ? unknown : String(applicant.age)} />
-        <FieldRow label={translate('ui.apply.category')} value={translate(`ui.category.${applicant.category}`)} />
-        <FieldRow label={translate('ui.apply.income')} value={applicant.annual_family_income == null ? unknown : rupees(applicant.annual_family_income)} />
-        <FieldRow label={translate('ui.apply.state')} value={applicant.state ?? unknown} />
-        <FieldRow label={translate('ui.apply.district')} value={applicant.district ?? unknown} />
-        <FieldRow label={translate('ui.apply.intent')} value={translate(`ui.intent.${applicant.intent}`)} />
-        <FieldRow label={translate('ui.apply.purpose')} value={applicant.purpose ?? unknown} />
-        <FieldRow label={translate('ui.apply.project_cost')} value={applicant.project_cost == null ? unknown : rupees(applicant.project_cost)} />
+        <Text style={styles.h2}>{t('ui.result.answers_heading')}</Text>
+        <FieldRow label={t('ui.apply.name')} value={applicant.name ?? unknown} />
+        <FieldRow label={t('ui.apply.age')} value={applicant.age == null ? unknown : String(applicant.age)} />
+        <FieldRow label={t('ui.apply.category')} value={t(`ui.category.${applicant.category}`)} />
+        <FieldRow label={t('ui.apply.income')} value={applicant.annual_family_income == null ? unknown : rupees(applicant.annual_family_income)} />
+        <FieldRow label={t('ui.apply.state')} value={applicant.state ?? unknown} />
+        <FieldRow label={t('ui.apply.district')} value={applicant.district ?? unknown} />
+        <FieldRow label={t('ui.apply.intent')} value={t(`ui.intent.${applicant.intent}`)} />
+        <FieldRow label={t('ui.apply.purpose')} value={applicant.purpose ?? unknown} />
+        <FieldRow label={t('ui.apply.project_cost')} value={applicant.project_cost == null ? unknown : rupees(applicant.project_cost)} />
 
         {/* Verdicts */}
-        <Text style={styles.h2}>{translate('ui.result.schemes_heading')}</Text>
+        <Text style={styles.h2}>{t('ui.result.schemes_heading')}</Text>
         {result.schemes.map((rec) => {
           const scheme = schemeByCode.get(rec.scheme_code);
           const isRec = rec.scheme_code === result.recommended_scheme_code;
           return (
             <View key={rec.scheme_code} style={{ marginBottom: 6, borderWidth: isRec ? 1 : 0, borderColor: '#1f3a5f', padding: isRec ? 6 : 0 }}>
               <Text style={{ fontSize: 9, fontFamily: 'Helvetica-Bold', color: isRec ? '#1f3a5f' : '#17160f' }}>
-                {scheme?.name_i18n.en ?? rec.scheme_code} — {translate(`status.${rec.status}`)} {isRec ? `(${translate('recommendation.heading')})` : ''}
+                {scheme?.name_i18n.en ?? rec.scheme_code} — {t(`status.${rec.status}`)} {isRec ? `(${t('recommendation.heading')})` : ''}
               </Text>
               {rec.verdicts.map((v) => (
                 <Text key={v.code} style={styles.bullet}>
-                  • {translate(v.messageKey, { actual: String(v.actual ?? ''), required: String(v.required ?? '') })} [{v.code}]
+                  • {t(v.messageKey, { actual: String(v.actual ?? ''), required: String(v.required ?? '') })} [{v.code}]
                 </Text>
               ))}
               {rec.remediations.map((r) => (
                 <Text key={r.code} style={{ fontSize: 7, color: '#4a4740', marginLeft: 12 }}>
-                  → {translate(r.messageKey, { delta: String(r.delta ?? ''), target: String(r.target ?? ''), fields: (r.alternatives ?? []).join(', ') })}
+                  → {t(r.messageKey, { delta: String(r.delta ?? ''), target: String(r.target ?? ''), fields: (r.alternatives ?? []).join(', ') })}
                 </Text>
               ))}
             </View>
@@ -226,33 +230,33 @@ export function PacketDocument({
         {/* Loan figures — recommended only */}
         {recommended?.computation && recommended.computation.computable ? (
           <View>
-            <Text style={styles.h2}>{translate('loan.loan')} — {recommended.scheme_code}</Text>
-            <FieldRow label={translate('loan.eligible_cost')} value={rupees(recommended.computation.eligible_cost)} />
-            <FieldRow label={translate('loan.subsidy')} value={rupees(recommended.computation.subsidy)} />
-            <FieldRow label={translate('loan.own_contribution')} value={rupees(recommended.computation.own_contribution)} />
-            <FieldRow label={translate('loan.loan')} value={rupees(recommended.computation.loan)} />
-            <FieldRow label={translate('loan.annual_rate_pct')} value={`${recommended.computation.annual_rate_pct}%`} />
-            <FieldRow label={translate('loan.emi')} value={rupees(recommended.computation.schedule.emi)} />
-            <FieldRow label={translate('loan.moratorium_months')} value={`${recommended.computation.moratorium_months} · ${recommended.computation.schedule.treatment}`} />
-            <FieldRow label={translate('loan.repayment_months')} value={String(recommended.computation.repayment_months)} />
-            <FieldRow label={translate('loan.total_interest')} value={rupees(recommended.computation.schedule.totals.total_interest)} />
-            <FieldRow label={translate('loan.total_outflow')} value={rupees(recommended.computation.schedule.totals.total_outflow)} />
+            <Text style={styles.h2}>{t('loan.loan')} — {recommended.scheme_code}</Text>
+            <FieldRow label={t('loan.eligible_cost')} value={rupees(recommended.computation.eligible_cost)} />
+            <FieldRow label={t('loan.subsidy')} value={rupees(recommended.computation.subsidy)} />
+            <FieldRow label={t('loan.own_contribution')} value={rupees(recommended.computation.own_contribution)} />
+            <FieldRow label={t('loan.loan')} value={rupees(recommended.computation.loan)} />
+            <FieldRow label={t('loan.annual_rate_pct')} value={`${recommended.computation.annual_rate_pct}%`} />
+            <FieldRow label={t('loan.emi')} value={rupees(recommended.computation.schedule.emi)} />
+            <FieldRow label={t('loan.moratorium_months')} value={`${recommended.computation.moratorium_months} · ${recommended.computation.schedule.treatment}`} />
+            <FieldRow label={t('loan.repayment_months')} value={String(recommended.computation.repayment_months)} />
+            <FieldRow label={t('loan.total_interest')} value={rupees(recommended.computation.schedule.totals.total_interest)} />
+            <FieldRow label={t('loan.total_outflow')} value={rupees(recommended.computation.schedule.totals.total_outflow)} />
 
             {/* Schedule — first 12 rows + totals */}
-            <Text style={styles.h3}>{translate('loan.schedule.heading')}</Text>
+            <Text style={styles.h3}>{t('loan.schedule.heading')}</Text>
             <View style={{ flexDirection: 'row' }}>
-              <Text style={[styles.cellHeader, { flex: 1 }]}>{translate('loan.schedule.month')}</Text>
-              <Text style={[styles.cellHeader, { flex: 2 }]}>{translate('loan.schedule.phase')}</Text>
-              <Text style={[styles.cellHeader, { flex: 2 }]}>{translate('loan.schedule.opening_balance')}</Text>
-              <Text style={[styles.cellHeader, { flex: 2 }]}>{translate('loan.schedule.payment')}</Text>
-              <Text style={[styles.cellHeader, { flex: 2 }]}>{translate('loan.schedule.interest')}</Text>
-              <Text style={[styles.cellHeader, { flex: 2 }]}>{translate('loan.schedule.principal')}</Text>
-              <Text style={[styles.cellHeader, { flex: 2 }]}>{translate('loan.schedule.closing_balance')}</Text>
+              <Text style={[styles.cellHeader, { flex: 1 }]}>{t('loan.schedule.month')}</Text>
+              <Text style={[styles.cellHeader, { flex: 2 }]}>{t('loan.schedule.phase')}</Text>
+              <Text style={[styles.cellHeader, { flex: 2 }]}>{t('loan.schedule.opening_balance')}</Text>
+              <Text style={[styles.cellHeader, { flex: 2 }]}>{t('loan.schedule.payment')}</Text>
+              <Text style={[styles.cellHeader, { flex: 2 }]}>{t('loan.schedule.interest')}</Text>
+              <Text style={[styles.cellHeader, { flex: 2 }]}>{t('loan.schedule.principal')}</Text>
+              <Text style={[styles.cellHeader, { flex: 2 }]}>{t('loan.schedule.closing_balance')}</Text>
             </View>
             {recommended.computation.schedule.rows.slice(0, 24).map((row) => (
               <View key={row.month} style={{ flexDirection: 'row' }}>
                 <Text style={[styles.cell, { flex: 1 }]}>{String(row.month)}</Text>
-                <Text style={[styles.cell, { flex: 2 }]}>{translate(`loan.schedule.${row.phase}`)}</Text>
+                <Text style={[styles.cell, { flex: 2 }]}>{t(`loan.schedule.${row.phase}`)}</Text>
                 <Text style={[styles.cell, { flex: 2 }]}>{rupees(row.opening_balance)}</Text>
                 <Text style={[styles.cell, { flex: 2 }]}>{rupees(row.payment)}</Text>
                 <Text style={[styles.cell, { flex: 2 }]}>{rupees(row.interest)}</Text>
@@ -267,37 +271,37 @@ export function PacketDocument({
             ) : null}
           </View>
         ) : recommended ? (
-          <Text style={{ fontSize: 8, color: '#9a3324', marginTop: 6 }}>{translate('loan.not_computable')}</Text>
+          <Text style={{ fontSize: 8, color: '#9a3324', marginTop: 6 }}>{t('loan.not_computable')}</Text>
         ) : null}
 
         {/* Partners */}
         {recommended?.partners && recommended.partners.eligible.length > 0 ? (
           <View>
-            <Text style={styles.h2}>{translate('partner.heading')}</Text>
+            <Text style={styles.h2}>{t('partner.heading')}</Text>
             {recommended.partners.ranked_by_distance.slice(0, 5).map((m, i) => (
               <View key={m.partner.code} style={{ flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 1, borderBottomColor: '#ded9cb', paddingVertical: 3 }}>
                 <Text style={{ fontSize: 8, width: '55%' }}>
                   {i + 1}. {m.partner.name} — {m.partner.district}, {m.partner.state} ({m.partner.type})
                 </Text>
                 <Text style={{ fontSize: 7, color: '#4a4740', width: '45%', textAlign: 'right' }}>
-                  {m.distance_km != null ? `${km(m.distance_km)} km` : translate('partner.distance_unknown')} · {m.health ? `${m.health.score.toFixed(2)}` : ''} {m.health ? translate(`health.capacity.${m.health.capacity_flag}`) : ''}
+                  {m.distance_km != null ? `${km(m.distance_km)} km` : t('partner.distance_unknown')} · {m.health ? `${m.health.score.toFixed(2)}` : ''} {m.health ? t(`health.capacity.${m.health.capacity_flag}`) : ''}
                 </Text>
               </View>
             ))}
-            <Text style={{ fontSize: 6, color: '#7b766a', marginTop: 4 }}>{translate('partner.map.eligible_only')}</Text>
+            <Text style={{ fontSize: 6, color: '#7b766a', marginTop: 4 }}>{t('partner.map.eligible_only')}</Text>
           </View>
         ) : null}
 
         {/* Checklist */}
         {recommended?.checklist ? (
           <View>
-            <Text style={styles.h2}>{translate('checklist.heading')}</Text>
+            <Text style={styles.h2}>{t('checklist.heading')}</Text>
             {recommended.checklist.items.map((item) => (
               <View key={item.doc_code} style={{ flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 1, borderBottomColor: '#ded9cb', paddingVertical: 3 }}>
                 <Text style={{ fontSize: 8, width: '55%' }}>
-                  {translate(item.name_key)} {item.mandatory ? `(${translate('checklist.mandatory')})` : `(${translate('checklist.optional')})`} — {translate(item.status === 'HAVE' ? 'checklist.have' : 'checklist.missing')}
+                  {t(item.name_key)} {item.mandatory ? `(${t('checklist.mandatory')})` : `(${t('checklist.optional')})`} — {t(item.status === 'HAVE' ? 'checklist.have' : 'checklist.missing')}
                 </Text>
-                <Text style={{ fontSize: 6, color: '#7b766a', width: '45%', textAlign: 'right' }}>{translate(item.where_to_obtain_key)}</Text>
+                <Text style={{ fontSize: 6, color: '#7b766a', width: '45%', textAlign: 'right' }}>{t(item.where_to_obtain_key)}</Text>
               </View>
             ))}
           </View>
@@ -305,10 +309,10 @@ export function PacketDocument({
 
         {/* Footer */}
         <View style={styles.footer}>
-          <Text>{translate('ui.footer.build')}</Text>
-          <Text>{translate('dataset.banner.not_authoritative_detail')}</Text>
+          <Text>{t('ui.footer.build')}</Text>
+          <Text>{t('dataset.banner.not_authoritative_detail')}</Text>
           <Text>
-            {translate(result.dataset.label)} · {result.dataset.figures_authoritative ? 'authoritative' : 'not authoritative'} · {result.dataset.notes.join(' · ')}
+            {t(result.dataset.label)} · {result.dataset.figures_authoritative ? 'authoritative' : 'not authoritative'} · {result.dataset.notes.join(' · ')}
           </Text>
         </View>
       </Page>

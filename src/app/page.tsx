@@ -35,8 +35,9 @@
  *      Every element it touches renders sharp and readable if it never runs.
  */
 
+import { getLocale } from 'next-intl/server';
 import { loadBundle } from '@/lib/dataset';
-import { translate } from '@/messages';
+import { translate, type Locale } from '@/messages';
 import { DatasetBanner, DatasetDetail } from '@/components/DatasetBanner';
 import { ScrollReveal } from '@/components/ScrollReveal';
 import { PrimaryLink, SecondaryLink } from '@/components/ui';
@@ -62,7 +63,11 @@ function BandLabel({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function HomePage() {
+export default async function HomePage() {
+  const locale = (await getLocale()) as Locale;
+  (globalThis as unknown as { __RINSETU_LOCALE__?: string }).__RINSETU_LOCALE__ = locale;
+  const t = (key: string, values?: Record<string, string | number | null | undefined>) =>
+    translate(key, values, locale);
   const { dataset } = loadBundle();
 
   return (
@@ -81,19 +86,19 @@ export default function HomePage() {
 
         <div className="intro pt-12 sm:pt-16">
           <h1 className="text-ink font-serif text-[1.75rem] leading-[1.1] font-semibold sm:text-[2.75rem]">
-            {translate('ui.tagline')}
+            {t('ui.tagline')}
           </h1>
           <p className="text-ink-2 mt-4 max-w-xl text-sm leading-relaxed sm:text-base">
-            {translate('ui.home.lede')}
+            {t('ui.home.lede')}
           </p>
           <div className="no-print flex flex-wrap gap-3 pt-7">
-            <PrimaryLink href="/apply">{translate('ui.home.start')}</PrimaryLink>
-            <SecondaryLink href="/personas">{translate('ui.home.browse_personas')}</SecondaryLink>
+            <PrimaryLink href="/apply">{t('ui.home.start')}</PrimaryLink>
+            <SecondaryLink href="/personas">{t('ui.home.browse_personas')}</SecondaryLink>
           </div>
         </div>
 
         <p className="scroll-cue no-print text-ink-3 mt-auto flex items-center gap-1.5 pt-12 text-[0.6875rem] font-semibold tracking-wider uppercase">
-          {translate('ui.home.scroll_hint')}
+          {t('ui.home.scroll_hint')}
           <svg
             aria-hidden="true"
             viewBox="0 0 12 12"
@@ -111,7 +116,7 @@ export default function HomePage() {
 
       {/* Titles only, four across. The step bodies are in the detail block below. */}
       <div className="border-rule mt-10 border-t pt-4">
-        <BandLabel>{translate('ui.home.how_heading')}</BandLabel>
+        <BandLabel>{t('ui.home.how_heading')}</BandLabel>
         <ol className="reveal-group mt-4 grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-4">
           {STEPS.map((step) => (
             <li key={step} data-reveal="" className="flex gap-2.5">
@@ -119,7 +124,7 @@ export default function HomePage() {
                 {step}
               </span>
               <span className="text-ink-2 text-xs leading-snug">
-                {translate(`ui.home.step_${step}_title`)}
+                {t(`ui.home.step_${step}_title`)}
               </span>
             </li>
           ))}
@@ -127,7 +132,7 @@ export default function HomePage() {
       </div>
 
       <div className="border-rule mt-10 border-t pt-4">
-        <BandLabel>{translate('ui.home.schemes_heading')}</BandLabel>
+        <BandLabel>{t('ui.home.schemes_heading')}</BandLabel>
         <ul className="reveal-group mt-4 grid gap-3 sm:grid-cols-3">
           {dataset.schemes.map((scheme) => (
             <li
@@ -146,7 +151,7 @@ export default function HomePage() {
               */}
               <div className="text-ink-3 mt-0.5 text-[0.6875rem]">{scheme.type}</div>
               <p className="text-ink-2 mt-1.5 text-xs leading-relaxed">
-                {translate(scheme.description_key)}
+                {t(scheme.description_key)}
               </p>
             </li>
           ))}
@@ -160,24 +165,24 @@ export default function HomePage() {
       */}
       <details className="border-rule mt-10 border-t pt-4">
         <summary data-reveal="" className="text-accent cursor-pointer text-xs font-medium">
-          {translate('ui.home.detail_heading')}
+          {t('ui.home.detail_heading')}
         </summary>
 
         <dl className="mt-4">
           {STEPS.map((step) => (
             <div key={step} className="border-rule border-b py-2.5 first:border-t">
               <dt className="text-ink text-sm font-medium">
-                {translate(`ui.home.step_${step}_title`)}
+                {t(`ui.home.step_${step}_title`)}
               </dt>
               <dd className="text-ink-2 mt-0.5 text-xs leading-relaxed">
-                {translate(`ui.home.step_${step}_body`)}
+                {t(`ui.home.step_${step}_body`)}
               </dd>
             </div>
           ))}
         </dl>
 
         <h3 className="text-ink-3 mt-6 text-[0.6875rem] font-semibold tracking-wider uppercase">
-          {translate('ui.home.honesty_heading')}
+          {t('ui.home.honesty_heading')}
         </h3>
         <ul className="mt-2 space-y-2">
           {(['will_1', 'will_2', 'will_3'] as const).map((key) => (
@@ -185,7 +190,7 @@ export default function HomePage() {
               <span aria-hidden className="text-pass shrink-0">
                 ✓
               </span>
-              <span>{translate(`ui.home.${key}`)}</span>
+              <span>{t(`ui.home.${key}`)}</span>
             </li>
           ))}
           {(['wont_1', 'wont_2'] as const).map((key) => (
@@ -193,7 +198,7 @@ export default function HomePage() {
               <span aria-hidden className="text-fail shrink-0">
                 ✗
               </span>
-              <span>{translate(`ui.home.${key}`)}</span>
+              <span>{t(`ui.home.${key}`)}</span>
             </li>
           ))}
         </ul>
