@@ -602,6 +602,30 @@
       "open": "Open result",
       "open_form": "Load into the form",
       "outcome_heading": "Outcome"
+    },
+    "admin": {
+      "health_upload": {
+        "heading": "Health data upload",
+        "lede": "Replace the simulated health seed with a real MIS extract. Each row becomes MIS_UPLOAD and the partner ranking updates immediately.",
+        "current_simulated": "Current data: SIMULATED",
+        "current_detail": "All health rows in this build are simulated and shown with an amber chip. This upload is the path the roadmap describes for a real MIS export.",
+        "login_heading": "Admin sign in",
+        "login_lede": "Single password from ADMIN_PASSWORD in .env. No user accounts — this screen is the only protected route.",
+        "password_label": "Password",
+        "sign_in": "Sign in",
+        "signing_in": "Signing in…",
+        "sign_out": "Sign out",
+        "signing_out": "Signing out…",
+        "login_hint": "Default local password is rinsetu-admin unless you set ADMIN_PASSWORD. Cookie lasts 8 hours.",
+        "template_heading": "Upload health CSV",
+        "template_hint": "Replacement for the simulated seed. Expected columns: partner_code, funds_sanctioned, funds_utilised, overdue_amount, npa_pct, avg_processing_days, capacity_flag, as_of. as_of is optional (defaults to today, YYYY-MM-DD). Every uploaded row is stored as MIS_UPLOAD.",
+        "download_template": "Download template CSV",
+        "choose_file": "Choose CSV file",
+        "preview": "Preview",
+        "checking": "Checking…",
+        "apply": "Apply {count} row(s) to database",
+        "writing": "Writing…"
+      }
     }
   }
 }
