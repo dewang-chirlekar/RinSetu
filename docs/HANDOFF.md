@@ -2,7 +2,7 @@
 
 **Read this before you change anything under `src/core/` or `src/app/`/`src/components/`.**
 
-[PROGRESS.md](PROGRESS.md) tells you *where the project stands* (now **paused 2026-09-06 for tomorrow** — `bd12a83` on `main` + DB `3/15/15` + `gemini-3.6-flash` + form till tehsil + i18n accurate, `npm run check` **11/237** green, `npm run build` **11 routes** `ƒ` all, `README.md` + `data/india-states-districts.json` + `src/llm/` + `hi`/`mr` accurate). This file tells you *how not to break it*. It is written for a model picking this up cold, and it concentrates on the three areas where I found and fixed subtle correctness bugs: the **EMI engine**, the **eligibility predicates**, and **partner matching** — plus, since `4a8eea7`, the **UI invariants** that keep the ledger honest (§6–7), and since 2026-09-05 the **DB parity** and **format pinning** (§5–6), and since 2026-09-06 the **form cascade + LLM 3.6-flash** (§5).
+[PROGRESS.md](PROGRESS.md) tells you *where the project stands* (now **code-complete 2026-09-07** — `3f4939e` on `main` + DB `3/15/15` + `gemini-3.6-flash` + `DEMO_MODE` fixture cache + form till tehsil + i18n accurate + **admin 2026-09-07 + demo hardening 2026-09-07 + parity offline-fix**, `npm run check` **11/237** green (236+1 skipped wifi off), `npm run build` **15 routes** `ƒ` all, `README.md` + `data/llm.fixtures.json` + `src/llm/extract.ts` + `tests/dataset-db.parity.test.ts` edits). This file tells you *how not to break it*. It is written for a model picking this up cold, and it concentrates on the three areas where I found and fixed subtle correctness bugs: the **EMI engine**, the **eligibility predicates**, and **partner matching** — plus, since `4a8eea7`, the **UI invariants** that keep the ledger honest (§6–7), and since 2026-09-05 the **DB parity** and **format pinning** (§5–6), and since 2026-09-06 the **form cascade + LLM 3.6-flash** (§5), and since 2026-09-07 the **admin CSV + DEMO_MODE + parity offline graceful** (§5, §8).
 
 The person you are working for does not write code. They cannot catch a wrong number by
 reading a diff. That is why the tests, the provenance machinery and the generated
@@ -49,8 +49,8 @@ npm run check
 ```
 
 It runs typecheck → lint → the architecture boundary check → the `VERIFY.md` freshness
-check → the tests. When I stopped, it exited 0 with **11 files and 237 tests
-passing** (1 skipped without `DATABASE_URL`). If your change drops that number, you deleted a test. If it raises the number, good. Previous gate was 9 files/230 tests; 2026-09-05 added `tests/eligibility.age-format.test.ts` (6, A3) + `tests/dataset-db.parity.test.ts` (1, DB parity).
+check → the tests. When I stopped, it exited 0 with **11 files and 237 tests**
+(wifi on: 237 passed, wifi off: 236 passed +1 skipped `DB unreachable, skipping parity check` via `tests/dataset-db.parity.test.ts:38` 2s probe). If your change drops that number, you deleted a test. If it raises the number, good. Previous gate was 9 files/230 tests; 2026-09-05 added `tests/eligibility.age-format.test.ts` (6, A3) + `tests/dataset-db.parity.test.ts` (1, DB parity); 2026-09-07 made the parity test offline-graceful (still 1 test, but now `console.warn` + `ctx.skip()` when unreachable instead of fail).
 
 If `npm run typecheck` fails on missing Prisma types, `npm install` now runs `prisma generate` via `postinstall` (`package.json:19`) — or run `npx prisma generate` once manually. The generated client is not committed. `.env` is gitignored and holds the Supabase pooler URL (connected 2026-09-05, parity verified `src/lib/dataset-db.ts:1`); `prisma.config.ts` keeps `generate` offline-capable.
 
@@ -460,7 +460,7 @@ Three guarantees, all of which you can break with an innocent-looking edit:
 
 **The weak spot, fixed 2026-09-05.** Field-level provenance was derived, but the *scheme-level* and *global-level* `verified` booleans were **copied straight from the JSON** at `dataset.ts:356` and `dataset.ts:387`. Fixed to `verified: Object.values(provenance).every(e=>e.verified)` (`src/lib/dataset.ts:356`/`387` + `src/lib/dataset-db.ts:33`) — now derived via `isCitable()` like field-level. `tests/dataset.honesty.test.ts:110` still guards the JSON claim. `recommend()` exposes `scheme_verified` — now trustworthy, but still prefer `dataset.figures_authoritative` + per-field `provenance` map for UI decisions.
 
-**New provenance surface:** `src/lib/dataset-db.ts:1` mirrors `src/lib/dataset.ts:1` for Prisma rows (reverse of `prisma/seed.ts:1`). `tests/dataset-db.parity.test.ts:1` proves JSON↔DB deep-equal; the two loaders must stay in lockstep.
+**New provenance surface:** `src/lib/dataset-db.ts:1` mirrors `src/lib/dataset.ts:1` for Prisma rows (reverse of `prisma/seed.ts:1`). `tests/dataset-db.parity.test.ts:38` proves JSON↔DB deep-equal (now with `isDbUnreachableError()` + 2s `connectionTimeoutMillis` probe + `DB unreachable, skipping parity check` → `ctx.skip()` for Phase 9 wifi-off gate); the two loaders must stay in lockstep.
 
 ### `VERIFY.md` is generated. Don't hand-edit it.
 
@@ -521,16 +521,23 @@ way around. Concrete rules the baseline follows — keep them:
 
 ### The LLM boundary
 
-The model is allowed in exactly two files, neither of which exists yet:
+The model is allowed in exactly two files:
 
-- `src/llm/extract.ts` — free text → `ApplicantProfile`, structured output, Zod-validated.
-- `src/llm/explain.ts` — an **already-computed** `RecommendationResult` → prose.
+- `src/llm/extract.ts` — free text → `ApplicantProfile`, structured output, Zod-validated, now with `DEMO_MODE` fixture cache (`src/llm/extract.ts:119` `extract:<lowercased>` + `__fallback__` via `data/llm.fixtures.json:1`, `isDemoMode()` guard so no `GEMINI_API_KEY` or network needed in `DEMO_MODE`).
+- `src/llm/explain.ts` — an **already-computed** `RecommendationResult` → prose, with `DEMO_MODE` deterministic fallback (`src/llm/explain.ts:49`) that narrates `recommended_scheme_code`/`loan`/`emi` verbatim and never translates `₹`/scheme names.
 
 `explain.ts` must not be given the authority or the data to introduce a fact. If you ever
 find yourself asking a model which scheme applies, or what the EMI is, you have broken the
 project. Everything must also work with the LLM disabled — the guided form is the
 **primary** intake path, not a fallback. The baseline (`4a8eea7`) preserves this:
-`/apply` → `/result` works with no LLM, no DB, no JS.
+`/apply` → `/result` works with no LLM, no DB, no JS, and now `DEMO_MODE=true` also works with no network (`PartnerMap.tsx:48` offline fallback, `DatasetBanner.tsx:1` `DEMO MODE` stamp).
+
+### The admin / demo boundary (new 2026-09-07)
+
+- `src/lib/admin-auth.ts:1` — single `ADMIN_PASSWORD` (default `rinsetu-admin`) → `sha256` HttpOnly `rinsetu_admin` cookie 8h; no session DB, no JWT.
+- `src/lib/health-csv.ts:1` — pure CSV parse (quoted-field split, `funds_sanctioned` `,`-strip, `as_of` YYYY-MM-DD, duplicate guard, forced `MIS_UPLOAD`), validated against `loadPartners()` codes.
+- `src/app/admin/health-upload/page.tsx:1` + `src/components/AdminHealthUpload.tsx:1` + `AdminLogin.tsx:1` → 5 `api/admin/*` routes (`login|logout|health-preview|health-apply|health-template`). `health-preview` is pure validation (no DB); `health-apply` uses `pg.Pool` `ssl:{rejectUnauthorized:false}` + upsert `(partnerCode,asOf)` → `dataOrigin:MIS_UPLOAD`.
+- Demo hardening: `next.config.ts:4` `NEXT_PUBLIC_DEMO_MODE`, `src/app/layout.tsx:26` `window.__RINSETU_DEMO__`, `public/manifest.json:1` PWA. Do not add XLSX/voice/Bhashini without a phase gate — they are deferred.
 
 ---
 
@@ -576,7 +583,7 @@ own tests, in its own commit — not a field added in the component.
 
 ## 8. Checklist before you say you're done
 
-- [ ] `npm run check` exits 0, with **≥237 tests passing** (was 230 at `b9f34ba`, 237 at 2026-09-05 core-hardened).
+- [ ] `npm run check` exits 0, with **≥237 tests** (wifi on: 237 passed, wifi off: 236 passed +1 skipped `DB unreachable, skipping parity check`, was 230 at `b9f34ba`, 237 at 2026-09-05 core-hardened, 2026-09-07 offline-graceful).
 - [ ] No new number in `src/core/` or in `data/*.json` that you cannot cite. If you added
       one, it is `null` or its provenance source is honest and `VERIFY.md` is regenerated.
 - [ ] No hardcoded user-facing English in `src/core/` or in components — message keys only

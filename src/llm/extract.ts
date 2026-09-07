@@ -13,7 +13,7 @@
 
 import { SchemaType } from '@google/generative-ai';
 import { ApplicantProfileSchema, type ApplicantProfile } from '@/core/types';
-import { getGeminiClient, MODEL_ID } from './client';
+import { getFixture, getGeminiClient, isDemoMode, MODEL_ID } from './client';
 
 const EXTRACT_INSTRUCTION = `
 You are RinSetu's intake parser. Extract an ApplicantProfile from the user's free text.
@@ -116,13 +116,37 @@ function normalizeExtracted(raw: unknown): unknown {
   return r;
 }
 
+function fixtureKeyForText(text: string): string {
+  return `extract:${text.trim().toLowerCase()}`;
+}
+
 export async function extractProfile(input: {
   text: string;
   language?: string;
 }): Promise<ApplicantProfile> {
   const text = input.text?.trim();
   if (!text) throw new Error('extractProfile: text is empty');
-  // No offline fixture for free-text — requires network + GEMINI_API_KEY (user request)
+
+  // Phase 9 — DEMO_MODE fixture cache: serve known demo sentences without network/key
+  if (isDemoMode()) {
+    const key = fixtureKeyForText(text);
+    const hit = await getFixture(key);
+    if (hit && typeof hit === 'object') {
+      return ApplicantProfileSchema.parse(normalizeExtracted(hit));
+    }
+    // No fixture hit: fall through to deterministic minimal extraction so the
+    // guided form path still works offline, but free-text unknown sentences
+    // get a clear message rather than a network timeout.
+    const fallbackHit = await getFixture('extract:__fallback__');
+    if (fallbackHit && typeof fallbackHit === 'object') {
+      return ApplicantProfileSchema.parse(normalizeExtracted({ ...(fallbackHit as object), notes: text }));
+    }
+    throw new Error(
+      'DEMO_MODE is on and this sentence has no fixture in data/llm.fixtures.json. Add "extract:<lowercased sentence>" to the fixtures, or turn DEMO_MODE off for live extraction.',
+    );
+  }
+
+  // No offline fixture for free-text in live mode — requires network + GEMINI_API_KEY (user request)
   if (!process.env.GEMINI_API_KEY && !process.env.NEXT_PUBLIC_GEMINI_API_KEY) {
     // getGeminiClient will throw with helpful message if key missing
   }
@@ -220,6 +244,20 @@ export async function extractFromDocuments(input: {
   language?: string;
 }): Promise<ApplicantProfile> {
   if (input.files.length === 0) throw new Error('extractFromDocuments: no files');
+
+  if (isDemoMode()) {
+    // Fixture per file count + required docs so demo can show extraction without network
+    const key = `extract-documents:${input.requiredDocCodes.join(',')}:${input.files.length}`;
+    const hit = await getFixture(key);
+    if (hit && typeof hit === 'object') {
+      return ApplicantProfileSchema.parse(normalizeExtracted(hit));
+    }
+    const fallback = await getFixture('extract-documents:__fallback__');
+    if (fallback && typeof fallback === 'object') {
+      return ApplicantProfileSchema.parse(normalizeExtracted(fallback));
+    }
+    throw new Error('DEMO_MODE is on and document extraction has no fixture. Add "extract-documents:__fallback__" to data/llm.fixtures.json.');
+  }
 
   const client = getGeminiClient();
   const model = client.getGenerativeModel({

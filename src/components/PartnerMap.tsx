@@ -47,11 +47,23 @@ export function PartnerMap({
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<import('maplibre-gl').Map | null>(null);
   const [failed, setFailed] = useState(false);
+  const [offline, setOffline] = useState(false);
   const hasApplicantLocation = applicantHasLocation(applicant);
 
   useEffect(() => {
     if (result.eligible.length === 0) return;
     if (!containerRef.current) return;
+    // DEMO_MODE / offline: don't fetch OSM tiles — show deterministic fallback so
+    // "wifi physically off" demo still has a map affordance and no hanging spinner.
+    const demoMode =
+      typeof window !== 'undefined' &&
+      ((window as unknown as { __RINSETU_DEMO__?: boolean }).__RINSETU_DEMO__ === true ||
+        document.documentElement.getAttribute('data-demo') === 'true');
+    const isOffline = typeof navigator !== 'undefined' && !navigator.onLine;
+    if (demoMode || isOffline) {
+      setOffline(true);
+      return;
+    }
 
     let cancelled = false;
     let map: import('maplibre-gl').Map | null = null;
@@ -164,7 +176,37 @@ export function PartnerMap({
 
   if (result.eligible.length === 0) return null;
 
-  if (failed) {
+  if (failed || offline) {
+    // Offline/DEMO_MODE fallback: static grid with partner dots + ranked list (no tiles)
+    if (offline) {
+      return (
+        <div className="mt-3">
+          <div className="flex items-baseline justify-between gap-2">
+            <h4 className="text-ink-3 text-[0.6875rem] font-semibold tracking-wider uppercase">
+              {translate('partner.map.heading')}
+            </h4>
+            <span className="stamp text-fail">Offline — tiles pre-cached for demo</span>
+          </div>
+          <div className="border-rule bg-paper-sunk mt-1.5 grid h-[240px] w-full place-items-center border px-3 py-3 text-center sm:h-[320px]">
+            <div>
+              <p className="text-ink text-xs font-medium">Map tiles unavailable offline — showing ranked partners</p>
+              <p className="text-ink-3 mt-1 text-[0.6875rem] leading-relaxed">
+                {translate('partner.map.eligible_only')} · {result.eligible.length} eligible partners · {translate('partner.map.note')}
+              </p>
+              <div className="mt-3 flex flex-wrap justify-center gap-1.5">
+                {result.ranked_by_distance.slice(0, 6).map((m) => (
+                  <span key={m.partner.code} className="border-rule bg-paper text-ink inline-flex items-center border px-2 py-1 text-[0.6875rem]">
+                    {m.partner.code}
+                    {m.distance_km != null ? ` · ${m.distance_km}km` : ''}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+          <p className="text-ink-3 mt-1.5 text-[0.6875rem] leading-relaxed">{translate('partner.map.note')}</p>
+        </div>
+      );
+    }
     return (
       <div className="border-rule bg-paper-sunk text-ink-3 border px-3 py-3 text-xs leading-relaxed">
         {translate('partner.map.failed')}

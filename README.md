@@ -10,7 +10,7 @@ RinSetu helps Scheduled Caste applicants understand which concessional-credit sc
 
 ---
 
-## Current state — 2026-09-06 (`bd12a83` on `main`, DB+core+Maps+PDF+i18n+form till tehsil+LLM 3.6-flash, clean tree — pause for tomorrow)
+## Current state — 2026-09-07 (`3f4939e` on `main`, all phases 0–9 code-complete, DB+admin+demo hardening done, parity offline-fix — pause for guideline transcription)
 
 | gate | command | result |
 |---|---|---|
@@ -19,13 +19,15 @@ RinSetu helps Scheduled Caste applicants understand which concessional-credit sc
 | lint | `npm run lint` | exit 0 |
 | boundaries | `npm run check:boundaries` | **passed** — `src/core/` imports nothing from `llm/`, `app/`, `components/`, Next, React or `fs` |
 | verify | `npm run check:verify` | **up to date** — `VERIFY.md` is generated from `data/*.json` |
-| tests | `npm run test` | **11 files, 237 tests, all passing** (1 skipped without DB) |
-| personas CLI | `npm run personas` | **40 rows** — 23 eligible, EMI populated |
-| dev server | `npm run dev` | `/`, `/apply`, `/result`, `/personas` + `/api/extract` (Gemini 3.6-flash) render |
-| prod build | `npm run build` | compiled, **11 routes** (`ƒ /api/extract`, `ƒ /api/extract-documents`, `ƒ /api/explain`, `ƒ /api/packet`), First Load JS 103 kB |
-| db | `DATABASE_URL` (pooler 6543) + `npm run seed` | **connected** — `20260905144514_init` applied, 3 schemes / 15 partners / 15 health rows · DB parity `src/lib/dataset-db.ts` verified |
-| llm | `GEMINI_API_KEY` + `gemini-3.6-flash` | **3.6-flash** (was 1.5/2.5 404, now `ListModels` 200, quota 20/min, retry 429 → `Retry-After:5`), `src/llm/` 3 files + `/api/*` |
+| tests | `npm run test` | **11 files, 237 tests, all passing** (1 skipped when offline — `tests/dataset-db.parity.test.ts:38` now `DB unreachable, skipping parity check`) |
+| personas CLI | `npm run personas` | **40 rows** — 23 eligible, EMI populated (also `DEMO_MODE=true npm run personas` offline) |
+| dev server | `npm run dev` | `/`, `/apply`, `/result`, `/personas`, `/admin/health-upload` + `/api/extract` (Gemini 3.6-flash / fixture) render |
+| prod build | `npm run build` | compiled, **15 routes** (`ƒ /api/extract`, `ƒ /api/extract-documents`, `ƒ /api/explain`, `ƒ /api/packet`, `ƒ /api/admin/*` ×5, `ƒ /admin/health-upload`), First Load JS 103 kB |
+| db | `DATABASE_URL` (pooler 6543) + `npm run seed` | **connected** — `20260905144514_init` applied, 3 schemes / 15 partners / 15 health rows · DB parity `src/lib/dataset-db.ts` verified (now offline-graceful) |
+| llm | `GEMINI_API_KEY` + `gemini-3.6-flash` | **3.6-flash** (was 1.5/2.5 404, now `ListModels` 200, quota 20/min, retry 429 → `Retry-After:5`), `src/llm/` 3 files + `/api/*` + `DEMO_MODE` fixture cache `data/llm.fixtures.json:1` |
 | i18n | `next-intl` + `hi`/`mr` 265 keys | **accurate** `hi`/`mr` via Gemini-class LLM, globe `LocaleSwitcher`, brand `RinSetu` locked, tab stays English |
+| admin | `ADMIN_PASSWORD` + `/admin/health-upload` | **done** — CSV `partner_code…as_of` → `PartnerHealth.data_origin=MIS_UPLOAD`, `src/lib/health-csv.ts:1` + `src/lib/admin-auth.ts:1`, template download, preview → apply |
+| demo | `DEMO_MODE=true` + `public/manifest.json:1` | **done** — `src/llm/extract.ts:119` fixture cache, `PartnerMap.tsx:48` offline fallback, `DatasetBanner.tsx:1` `DEMO MODE` banner, full demo with wifi off |
 
 ```
  45  tests/eligibility.branches.test.ts
@@ -42,7 +44,7 @@ RinSetu helps Scheduled Caste applicants understand which concessional-credit sc
 237  total
 ```
 
-Dataset: 3 schemes (MICRO, TERM, EDU — all `verified: false`), 15 fabricated partners on real city coordinates, 15 `SIMULATED` health rows, 265 i18n keys (`en`/`hi`/`mr`, +7 map+packet, accurate `hi`/`mr` 0 English left), 40 persona fixtures, `india-states-districts.json` (36 states/UTs, every district, MH 36×7–16 tehsils + 364 tehsils→villages, now till tehsil). Figures authoritative: **false** for two independent reasons (non-citable figures + demo overlay active).
+Dataset: 3 schemes (MICRO, TERM, EDU — all `verified: false`), 15 fabricated partners on real city coordinates, 15 `SIMULATED` health rows (replaceable via `/admin/health-upload` CSV → `MIS_UPLOAD`), 265 i18n keys (`en`/`hi`/`mr`, +7 map+packet, accurate `hi`/`mr` 0 English left), 40 persona fixtures, `india-states-districts.json` (36 states/UTs, every district, MH 36×7–16 tehsils + 364 tehsils→villages, now till tehsil). Figures authoritative: **false** for two independent reasons (non-citable figures + demo overlay active).
 
 ### What's built
 
@@ -60,15 +62,18 @@ Dataset: 3 schemes (MICRO, TERM, EDU — all `verified: false`), 15 fabricated p
 
 **Data layer — `data/` + `src/lib/dataset.ts` + `src/lib/dataset-db.ts`**: 7 JSON files, one JSON loader + one DB loader (both derive `verified` via `isCitable()` `src/core/types.ts:94`, never copied — fixed 2026-09-05 `src/lib/dataset.ts:356`/`387`), `figures_authoritative` false when any non-citable figure exists or overlay is applied, `VERIFY.md` generated with 4 structural findings (F1–F4) each with a live `check()` that refuses to write a false document.
 
-**Database — `prisma/schema.prisma` + `prisma/seed.ts` + `src/lib/dataset-db.ts`**: 10 tables via `20260905144514_init` (8 models + `_prisma_migrations`), validated, idempotent seed through the same loader. `DATABASE_URL` connected to Supabase pooler (`aws-0-ap-south-1.pooler.supabase.com:6543`, `sslmode=require`, `rejectUnauthorized:false` in `prisma/seed.ts:57`); `prisma generate` works without it (`prisma.config.ts` conditional datasource); `npm run seed` writes 3 schemes / 15 partners / 15 health rows. Verified 2026-09-05: `schemes 3`, `partners 15`, `partner_health 15`, `global_eligibility 1`. DB loader `src/lib/dataset-db.ts:1` is exact reverse of seed — `tests/dataset-db.parity.test.ts:1` proves JSON↔DB parity (237th test, skipped without `DATABASE_URL`).
+**Database — `prisma/schema.prisma` + `prisma/seed.ts` + `src/lib/dataset-db.ts`**: 10 tables via `20260905144514_init` (8 models + `_prisma_migrations`), validated, idempotent seed through the same loader. `DATABASE_URL` connected to Supabase pooler (`aws-0-ap-south-1.pooler.supabase.com:6543`, `sslmode=require`, `rejectUnauthorized:false` in `prisma/seed.ts:57`); `prisma generate` works without it (`prisma.config.ts` conditional datasource); `npm run seed` writes 3 schemes / 15 partners / 15 health rows. Verified 2026-09-05: `schemes 3`, `partners 15`, `partner_health 15`, `global_eligibility 1`. DB loader `src/lib/dataset-db.ts:1` is exact reverse of seed — `tests/dataset-db.parity.test.ts:1` proves JSON↔DB parity (237th test, now `DB unreachable, skipping parity check` offline graceful with 2s probe, 236+1 skipped when wifi off).
 
-### What is not yet built (for tomorrow)
+**Admin health upload — `src/app/admin/health-upload/page.tsx:1` + `src/lib/admin-auth.ts:1` + `src/lib/health-csv.ts:1`** (Phase 8, 2026-09-07): single-password `ADMIN_PASSWORD` (default `rinsetu-admin`) → HttpOnly `rinsetu_admin` cookie (8h), CSV `partner_code,funds_sanctioned,funds_utilised,overdue_amount,npa_pct,avg_processing_days,capacity_flag,as_of` → `PartnerHealth.data_origin=MIS_UPLOAD`, template download, preview (valid/invalid per line, `isDbUnreachableError` guard) → apply upsert `(partnerCode,asOf)` via `prisma/seed.ts:57` pool. All 15 rows currently `SIMULATED` until first upload; `PartnerPanel.tsx:1` already renders `DataOriginBadge` (`SIMULATED` amber / `MIS_UPLOAD`).
 
-- **LLM is built** — `src/llm/` `client.ts` `extract.ts` (`name`/`tehsil`/`village`, `normalizeExtracted`, `gemini-3.6-flash`, `429` retry) + `explain.ts` + `/api/extract`/`/api/extract-documents`/`/api/explain` + `FreeTextIntake`/`LoanConfirmation`/`DocumentUpload`/`ExplainPanel` — free-text now **requires** `GEMINI_API_KEY` + network (no offline fixture, per your request, quota 20/min `Retry-After:5`), document extraction only for required docs after loan confirm. Guided form still primary and works offline.
-- Admin health upload — no `/admin/*`; all `PartnerHealth.data_origin` is `SIMULATED` (Phase 8 next).
-- Offline hardening — no fixture cache, no pre-cached tiles (Phase 9).
+**Demo hardening — `DEMO_MODE=true`** (Phase 9, 2026-09-07): `src/llm/client.ts:18` `DEMO_MODE` flag → `src/llm/extract.ts:119` fixture cache `data/llm.fixtures.json:1` (`extract:<lowercased>` + `__fallback__`), `src/llm/explain.ts:49` deterministic prose fallback, `src/components/DatasetBanner.tsx:1` `DEMO MODE` stamp, `src/components/PartnerMap.tsx:48` offline fallback (no `tile.openstreetmap.org` fetch, shows ranked codes), `src/app/layout.tsx:26` `window.__RINSETU_DEMO__` + `next.config.ts:4` `NEXT_PUBLIC_DEMO_MODE`, `public/manifest.json:1` PWA manifest, `FreeTextIntake.tsx:88` hint. Full demo runs with wifi off: `DEMO_MODE=true npm run dev` + `npm run personas` + `/apply` free-text `I want to start a tailoring unit…` → `/result` → `/personas`. `tests/dataset-db.parity.test.ts:38` now skips on unreachable DB (236+1) so gate stays green offline.
 
-See `docs/PROGRESS.md` §5 and `docs/ROADMAP.md` for the ordered plan.
+### What is not yet built (next)
+
+- **Phase 0 verification** — 55 unverified figures (`VERIFY.md:11` 32 `demo_overlay` + 15 `ps_text` + 8 `placeholder`), 11 open questions (`data/schemes.seed.json:1`). Needs official guideline URLs/dates; engine is ready to ingest them without logic change. Nothing on screen is a sanction until `figures_authoritative:true`.
+- Optional polish — Lighthouse a11y ≥90 pass, XLSX alongside CSV, voice/Bhashini, Vercel deploy.
+
+We are at the **code-complete pause**: all deterministic, UI, DB, LLM, i18n, admin, offline paths work. Next work is **guideline transcription**, not code. See `docs/PROGRESS.md` §7–§8 and `docs/ROADMAP.md` §10–§14.
 
 ---
 
@@ -78,11 +83,12 @@ From `rinsetu/`:
 
 ```bash
 npm install && npm run check   # postinstall runs prisma generate
-# must end with 237 passed, 11 files (1 skipped without DATABASE_URL) — if not, stop and fix
+# must end with 237 passed, 11 files (236+1 skipped when offline, 237 when DB reachable) — if not, stop and fix
 
 npm run personas        # 40 rows live through recommend()
 npm run personas P19    # one persona in full detail
-npm run dev             # http://localhost:3000  — /, /apply, /result, /personas
+npm run dev             # http://localhost:3000  — /, /apply, /result, /personas, /admin/health-upload
+DEMO_MODE=true npm run dev  # offline demo — fixture cache, no GEMINI_API_KEY, map fallback, parity test skips
 npm run verify:report   # regenerate VERIFY.md after editing data/*.json
 ```
 
@@ -95,9 +101,9 @@ Fresh clone: `npm install` runs `prisma generate` via `postinstall` (`package.js
 ```
 guided form (/apply, GET → /result) ─┐
                                      ├→ ApplicantProfile (Zod) → src/core/recommend() → RecommendationResult
-free text → LLM extract (planned) ───┘         │  eligibility + finance + partner match + checklist
-                                               └→ LLM explain (planned, narration only)
-                                               └→ UI: verdict table + finance + partners + checklist
+free text → LLM extract (DEMO_MODE fixture) ─┘   │  eligibility + finance + partner match + checklist
+                                               └→ LLM explain (fixture/deterministic, narration only)
+                                               └→ UI: verdict table + finance + partners + checklist + admin health CSV → MIS_UPLOAD
 ```
 
 Two invariants (`CLAUDE.md`):
@@ -117,16 +123,17 @@ rinsetu/
 ├─ data/  schemes.seed.json  schemes.demo-overlay.json  partners.seed.json
 │         partner-health.sim.json  health-scoring.json  documents.seed.json  personas.fixtures.json
 │         india-states-districts.json (36 states/UTs, every district, MH 36×tehsils + 364 villages, now till tehsil)
-│         llm.fixtures.json (3 extract fixtures, demo for explain)
+│         llm.fixtures.json (7 fixtures, extract + documents fallback, DEMO_MODE)
 ├─ prisma/  schema.prisma  seed.ts  prisma.config.ts
 ├─ src/
 │  ├─ core/  types.ts  eligibility/  finance/  partners/  documents/  recommend.ts
-│  ├─ app/   layout.tsx  page.tsx  apply/page.tsx  result/page.tsx  personas/page.tsx  api/extract/route.ts  api/extract-documents/route.ts  api/explain/route.ts  api/packet/route.ts
-│  ├─ components/  ui.tsx  DatasetBanner.tsx  SchemeCard.tsx  VerdictList.tsx  LoanFigures.tsx  PartnerPanel.tsx  PartnerMap.tsx  ChecklistPanel.tsx  LocaleSwitcher.tsx  FreeTextIntake.tsx  LoanConfirmation.tsx  DocumentUpload.tsx  ExplainPanel.tsx  form.tsx  ScrollReveal.tsx
-│  ├─ lib/   dataset.ts  dataset-db.ts  packet.tsx  locale.ts  applicant-params.ts  format.ts  view.ts
-│  ├─ llm/   client.ts (gemini-3.6-flash, DEMO_MODE)  extract.ts (name/tehsil/village, 429 retry)  explain.ts
+│  ├─ app/   layout.tsx  page.tsx  apply/page.tsx  result/page.tsx  personas/page.tsx  admin/health-upload/page.tsx  api/extract/route.ts  api/extract-documents/route.ts  api/explain/route.ts  api/packet/route.ts  api/admin/login|logout|health-preview|health-apply|health-template/route.ts
+│  ├─ components/  ui.tsx  DatasetBanner.tsx  SchemeCard.tsx  VerdictList.tsx  LoanFigures.tsx  PartnerPanel.tsx  PartnerMap.tsx  ChecklistPanel.tsx  LocaleSwitcher.tsx  FreeTextIntake.tsx  LoanConfirmation.tsx  DocumentUpload.tsx  ExplainPanel.tsx  AdminHealthUpload.tsx  AdminLogin.tsx  form.tsx  ScrollReveal.tsx
+│  ├─ lib/   dataset.ts  dataset-db.ts  packet.tsx  locale.ts  applicant-params.ts  format.ts  view.ts  admin-auth.ts  health-csv.ts
+│  ├─ llm/   client.ts (gemini-3.6-flash, DEMO_MODE)  extract.ts (name/tehsil/village, fixture cache, 429 retry)  explain.ts (deterministic fallback)
 │  ├─ i18n.ts  (next-intl getRequestConfig, en/hi/mr, cookie + Accept-Language)
 │  └─ messages/  en.json  hi.json  mr.json  index.ts (strict throw, + next-intl, + globalThis.__RINSETU_LOCALE__)
+├─ public/  manifest.json (PWA, offline demo)
 └─ tests/  11 files, 237 tests  +  scripts/  check-boundaries.mjs  verify-report.ts  personas.ts
 ```
 

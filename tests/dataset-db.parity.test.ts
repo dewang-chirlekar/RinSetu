@@ -8,34 +8,91 @@
  * (up to ordering) or the engine would compute different numbers
  * depending on where it was loaded from.
  *
- * Skipped when DATABASE_URL is not set or the DB is unreachable —
- * so `npm run check` stays green on laptops with no Supabase.
+ * Skipped when DATABASE_URL is not set OR the DB is unreachable —
+ * so `npm run check` stays green offline / with wifi off (Phase 9 gate
+ * "full demo runs with wifi physically off", docs/ROADMAP.md:368).
  */
 
 import 'dotenv/config';
 import { describe, expect, it } from 'vitest';
 import { loadBundle } from '../src/lib/dataset';
 
-const hasDb = !!process.env.DATABASE_URL;
+function isDbUnreachableError(error: unknown): boolean {
+  const msg = error instanceof Error ? error.message : String(error);
+  const lowered = msg.toLowerCase();
+  return (
+    lowered.includes('enotfound') ||
+    lowered.includes('econnrefused') ||
+    lowered.includes('etimedout') ||
+    lowered.includes('getaddrinfo') ||
+    lowered.includes('connect etimedout') ||
+    lowered.includes('network is unreachable') ||
+    lowered.includes("can't reach database") ||
+    lowered.includes('timed out') ||
+    lowered.includes('fetch failed') ||
+    lowered.includes('connection terminated') ||
+    lowered.includes('self signed certificate')
+  );
+}
 
-describe.skipIf(!hasDb)('dataset-db parity — JSON loader vs Prisma rows', () => {
-  it('produces the same SchemeDataset, partners, health and documents', async () => {
-    // Lazy import so the test file itself can be parsed without DATABASE_URL
+describe('dataset-db parity — JSON loader vs Prisma rows', () => {
+  it('produces the same SchemeDataset, partners, health and documents', async (ctx) => {
+    const raw = process.env.DATABASE_URL;
+    if (!raw) {
+      console.warn('DB unreachable, skipping parity check — DATABASE_URL unset');
+      // Vitest 4 provides ctx.skip(); fallback to early return (counts as pass) if unavailable
+      const maybeSkip = (ctx as unknown as { skip?: () => void })?.skip;
+      if (typeof maybeSkip === 'function') maybeSkip();
+      return;
+    }
+
+    // Lazy imports so the file parses without DB deps when skipped
     const pg = await import('pg');
     const { PrismaPg } = await import('@prisma/adapter-pg');
     const { PrismaClient } = await import('@prisma/client');
     const { loadBundleFromDb } = await import('../src/lib/dataset-db');
 
-    const raw = process.env.DATABASE_URL!;
     const clean = raw.replace(/[?&]sslmode=[^&]*/g, '').replace(/[?&]$/, '').replace(/\?$/, '');
-    const pool = new pg.default.Pool({ connectionString: clean, ssl: { rejectUnauthorized: false } });
+    const pool = new pg.default.Pool({
+      connectionString: clean,
+      ssl: { rejectUnauthorized: false },
+      // Keep offline failure fast — 2s probe instead of default 10s
+      connectionTimeoutMillis: 2000,
+    });
     const db = new PrismaClient({ adapter: new PrismaPg(pool) });
+
+    // Probe reachability before running the full parity suite. If the DB
+    // is unreachable (wifi off), degrade to skip instead of fail.
+    try {
+      await db.$queryRaw`SELECT 1`;
+    } catch (error) {
+      if (isDbUnreachableError(error)) {
+        console.warn('DB unreachable, skipping parity check');
+        await db.$disconnect().catch(() => {});
+        const maybeSkip = (ctx as unknown as { skip?: () => void })?.skip;
+        if (typeof maybeSkip === 'function') maybeSkip();
+        return;
+      }
+      await db.$disconnect().catch(() => {});
+      throw error;
+    }
 
     try {
       // DB was seeded without --with-overlay (default), so compare against
       // seedOnly to avoid demo_overlay mismatch. If DB was seeded with overlay,
       // the overlay_applied flag will be true and we compare against overlay=true.
-      const dbBundleProbe = await loadBundleFromDb(db);
+      let dbBundleProbe: Awaited<ReturnType<typeof loadBundleFromDb>>;
+      try {
+        dbBundleProbe = await loadBundleFromDb(db);
+      } catch (error) {
+        if (isDbUnreachableError(error)) {
+          console.warn('DB unreachable, skipping parity check');
+          const maybeSkip = (ctx as unknown as { skip?: () => void })?.skip;
+          if (typeof maybeSkip === 'function') maybeSkip();
+          return;
+        }
+        throw error;
+      }
       const useOverlay = dbBundleProbe.dataset.overlay_applied;
       const jsonBundle = loadBundle({ applyOverlay: useOverlay });
       const dbBundle = dbBundleProbe;

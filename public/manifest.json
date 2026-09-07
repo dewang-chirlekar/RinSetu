@@ -1,0 +1,12 @@
+{
+  "name": "RinSetu",
+  "short_name": "RinSetu",
+  "description": "Concessional credit, worked out in the open — SIH26092",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fdfcf8",
+  "theme_color": "#1f3a5f",
+  "icons": [
+    { "src": "/file.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

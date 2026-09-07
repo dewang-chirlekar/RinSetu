@@ -29,12 +29,14 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   (globalThis as unknown as { __RINSETU_LOCALE__?: string }).__RINSETU_LOCALE__ = locale;
   const messages = await getMessages();
   const { translate: t } = await import('@/messages');
+  const isDemo = process.env.DEMO_MODE === 'true';
 
   return (
-    <html lang={locale}>
+    <html lang={locale} data-demo={isDemo ? 'true' : undefined}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${sourceSerif.variable} antialiased`}
       >
+        {isDemo ? <script dangerouslySetInnerHTML={{ __html: `window.__RINSETU_DEMO__=true` }} /> : null}
         <NextIntlClientProvider messages={messages} locale={locale}>
           <header className="border-rule bg-paper-edge border-b">
             <div className="mx-auto flex max-w-3xl flex-wrap items-baseline gap-x-4 gap-y-1 px-4 py-3">

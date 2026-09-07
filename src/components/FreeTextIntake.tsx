@@ -85,7 +85,10 @@ export function FreeTextIntake() {
         </button>
         <span className="text-ink-3 self-center text-xs">{translate('ui.apply.free_text_or')}</span>
       </div>
-      <p className="text-ink-3 mt-2 text-[0.6875rem] leading-relaxed">{translate('ui.apply.free_text_demo_note')}</p>
+      <p className="text-ink-3 mt-2 text-[0.6875rem] leading-relaxed">
+        {translate('ui.apply.free_text_demo_note')}
+        {process.env.NEXT_PUBLIC_DEMO_MODE === 'true' ? ' — DEMO MODE: fixture cache active, no API key needed.' : ''}
+      </p>
     </div>
   );
 }

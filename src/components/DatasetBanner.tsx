@@ -24,6 +24,17 @@
 import type { DatasetLabel } from '@/core/types';
 import { translate } from '@/messages';
 
+function DemoBanner() {
+  if (process.env.NEXT_PUBLIC_DEMO_MODE !== 'true' && process.env.DEMO_MODE !== 'true') return null;
+  // Also check global flag set by middleware/layout when DEMO_MODE true
+  return (
+    <aside className="border-accent bg-accent-soft mb-3 border-l-[3px] px-3.5 py-2">
+      <span className="stamp stamp-tilt text-accent">DEMO MODE</span>
+      <span className="text-ink-2 ml-2 text-xs">Fixture data — no network, no API key. Full demo runs offline.</span>
+    </aside>
+  );
+}
+
 export function DatasetBanner({
   dataset,
   compact = false,
@@ -31,49 +42,60 @@ export function DatasetBanner({
   dataset: DatasetLabel;
   compact?: boolean;
 }) {
+  // Demo banner is rendered above the provenance banner so the judge sees it first
+  const demo = <DemoBanner />;
   if (dataset.figures_authoritative) {
     return (
-      <p className="text-ink-3 border-rule border-b pb-3 text-xs">
-        {translate(dataset.label)}
-      </p>
+      <>
+        {demo}
+        <p className="text-ink-3 border-rule border-b pb-3 text-xs">
+          {translate(dataset.label)}
+        </p>
+      </>
     );
   }
 
   if (compact) {
     return (
-      <aside className="border-fail bg-fail-soft flex flex-wrap items-center gap-x-3 gap-y-1 border-l-[3px] px-3.5 py-2">
-        <span className="stamp stamp-tilt text-fail">
-          {translate('dataset.banner.not_authoritative')}
-        </span>
-        <span className="text-ink-2 text-xs">
-          {translate('dataset.banner.not_authoritative_short')}
-        </span>
-      </aside>
+      <>
+        {demo}
+        <aside className="border-fail bg-fail-soft flex flex-wrap items-center gap-x-3 gap-y-1 border-l-[3px] px-3.5 py-2">
+          <span className="stamp stamp-tilt text-fail">
+            {translate('dataset.banner.not_authoritative')}
+          </span>
+          <span className="text-ink-2 text-xs">
+            {translate('dataset.banner.not_authoritative_short')}
+          </span>
+        </aside>
+      </>
     );
   }
 
   return (
-    <aside className="border-fail bg-fail-soft border-l-[3px] px-4 py-3">
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="stamp stamp-tilt text-fail">
-          {translate('dataset.banner.not_authoritative')}
-        </span>
-        <span className="text-ink-3 text-[0.6875rem]">{translate(dataset.label)}</span>
-      </div>
-      <p className="text-ink-2 mt-2 text-xs leading-relaxed">
-        {translate('dataset.banner.not_authoritative_detail')}
-      </p>
-      {dataset.notes.length > 0 ? (
-        <ul className="text-ink-3 mt-2 space-y-1 text-xs">
-          {dataset.notes.map((note) => (
-            <li key={note} className="flex gap-1.5">
-              <span aria-hidden>—</span>
-              <span>{translate(note)}</span>
-            </li>
-          ))}
-        </ul>
-      ) : null}
-    </aside>
+    <>
+      {demo}
+      <aside className="border-fail bg-fail-soft border-l-[3px] px-4 py-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="stamp stamp-tilt text-fail">
+            {translate('dataset.banner.not_authoritative')}
+          </span>
+          <span className="text-ink-3 text-[0.6875rem]">{translate(dataset.label)}</span>
+        </div>
+        <p className="text-ink-2 mt-2 text-xs leading-relaxed">
+          {translate('dataset.banner.not_authoritative_detail')}
+        </p>
+        {dataset.notes.length > 0 ? (
+          <ul className="text-ink-3 mt-2 space-y-1 text-xs">
+            {dataset.notes.map((note) => (
+              <li key={note} className="flex gap-1.5">
+                <span aria-hidden>—</span>
+                <span>{translate(note)}</span>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+      </aside>
+    </>
   );
 }
 
