@@ -2,7 +2,7 @@
 
 **Read this before you change anything under `src/core/` or `src/app/`/`src/components/`.**
 
-[PROGRESS.md](PROGRESS.md) tells you *where the project stands* (now **code-complete 2026-09-07** — `3f4939e` on `main` + DB `3/15/15` + `gemini-3.6-flash` + `DEMO_MODE` fixture cache + form till tehsil + i18n accurate + **admin 2026-09-07 + demo hardening 2026-09-07 + parity offline-fix**, `npm run check` **11/237** green (236+1 skipped wifi off), `npm run build` **15 routes** `ƒ` all, `README.md` + `data/llm.fixtures.json` + `src/llm/extract.ts` + `tests/dataset-db.parity.test.ts` edits). This file tells you *how not to break it*. It is written for a model picking this up cold, and it concentrates on the three areas where I found and fixed subtle correctness bugs: the **EMI engine**, the **eligibility predicates**, and **partner matching** — plus, since `4a8eea7`, the **UI invariants** that keep the ledger honest (§6–7), and since 2026-09-05 the **DB parity** and **format pinning** (§5–6), and since 2026-09-06 the **form cascade + LLM 3.6-flash** (§5), and since 2026-09-07 the **admin CSV + DEMO_MODE + parity offline graceful** (§5, §8).
+[PROGRESS.md](PROGRESS.md) tells you *where the project stands* (now **code-complete 2026-09-10** — `13b111d` on `main` + **5 schemes / 41 personas (P41 multi-eligible tailoring 90k MICRO+AMY)** + form cascade strict + purpose flat + **LLM fallback 2.5-flash → flash-latest** + `DEMO_MODE` fixture cache + i18n `ui.confirm` fix + health-csv `finalSeen` guard, `npm run check` **11/237** green (236+1 skipped wifi off), `npm run build` **15 routes** `ƒ` all, `npm run personas` **41 rows / 24 eligible**, DB **5/15/15 +53 doc reqs**, `VERIFY.md` **48 unverified (19 demo_overlay + 29 placeholder)**, F2 now live via P41, `data/schemes.seed.json` + `src/lib/applicant-params.ts` + `src/components/ApplyForm.tsx` + `src/llm/client.ts` edits). This file tells you *how not to break it*. It is written for a model picking this up cold, and it concentrates on the three areas where I found and fixed subtle correctness bugs: the **EMI engine**, the **eligibility predicates**, and **partner matching** — plus, since `4a8eea7`, the **UI invariants** that keep the ledger honest (§6–7), and since 2026-09-05 the **DB parity** and **format pinning** (§5–6), and since 2026-09-06 the **form cascade + LLM 2.5-flash** (§5), and since 2026-09-07 the **admin CSV + DEMO_MODE + parity offline graceful** (§5, §8), and since 2026-09-10 the **5 schemes + P41 multi-eligible + cascade strict + purpose flat + LLM fallback** (§5, §7).
 
 The person you are working for does not write code. They cannot catch a wrong number by
 reading a diff. That is why the tests, the provenance machinery and the generated
@@ -506,6 +506,8 @@ way around. Concrete rules the baseline follows — keep them:
   string is the `ApplicantProfile` via `src/lib/applicant-params.ts` + Zod. This is
   why the flow works with JS disabled and why `/result?persona=P01` is shareable.
   Do not replace it with `useState`/`useEffect` form state.
+- **Intent sync via `paramsKey` (2026-09-10 fix).** `src/components/ApplyForm.tsx:127` uses `paramsKey = JSON.stringify(initialParams)` and `useEffect(() => { const next = JSON.parse(paramsKey)...; setIntent(prev => next !== prev ? next : prev) }, [paramsKey])` — only syncs when the URL actually carries a different intent. Don't add `intent` to the dep array; that reverts the user's in-flight dropdown pick to `''` (see `FRAGILE.md`).
+- **Lakh/thousand parsing.** `src/lib/applicant-params.ts:42` `num()` now parses `"5 lakh"` → `500000` and `"90 thousand"` → `90000` (strips `₹ ,` and lowercases), handling LLM-extracted `project_cost` strings and manual `?project_cost=5%20lakh` URLs. Blank → `null`, never `0`.
 - **Blanks mean unknown.** Every input can be left blank; blank → empty string →
   `null` → Zod default (`UNKNOWN`/`UNDISCLOSED`). Never add `required`.
 - **Provenance is rendered where the figure is.** `FieldRow` takes an optional
@@ -514,10 +516,12 @@ way around. Concrete rules the baseline follows — keep them:
   in `src/lib/dataset.ts` via `isCitable()`.
 - **All schemes, always.** `result/page.tsx:185` renders the recommended card open
   and every other `SchemeCard` collapsed with `StatusPill`. Collapsing is density,
-  not filtering. Do not filter `NOT_ELIGIBLE`/`INDETERMINATE`.
+  not filtering. Do not filter `NOT_ELIGIBLE`/`INDETERMINATE`. Since 2026-09-10 `SchemeCard` keeps the recommended scheme open and other **ELIGIBLE** cards collapsed (P41 shows MICRO open + AMY ELIGIBLE collapsed — F2 now visible).
 - **Two orderings, never a blend.** `PartnerPanel.tsx:1` keeps `ranked_by_distance`
   and `ranked_by_health` separate; the baseline hides the distance column when no
   coordinates exist rather than synthesising a centroid (hard rule 1).
+- **Purpose flat list.** Since 2026-09-10 `ApplyForm` renders `purpose` as a flat deduped list (no `optgroup`, eligibility is `category C` only). Changing purpose codes affects this deduping — see `FRAGILE.md`.
+- **Location cascade strict.** Since 2026-09-10 `district` is disabled until `state` and `tehsil` until `district` when JS is on (`ApplyForm.tsx:176`/`182` `jsEnabled` guard); with JS off all options show. This keeps the 360px layout usable — see `FRAGILE.md`.
 
 ### The LLM boundary
 
@@ -564,9 +568,7 @@ precisely so the UI can render it next to the recommendation. It is deliberately
 `pickRecommended` falls back to the first `ELIGIBLE` scheme when no scheme has computable
 figures — "which scheme applies" is still the honest answer to the question asked.
 
-Note: no persona today can put two eligible schemes in front of this function (the seed's
-three schemes are mutually exclusive — that is finding F2 in `VERIFY.md`), which is why
-`pickRecommended` is exported and tested directly. Don't inline it.
+Note: **F2 now live via P41** — tailoring 90k is ELIGIBLE for both MICRO (6.5% via SCA) and AMY (15% via NBFC-MFI) via shared `PLACEHOLDER_tailoring` and same 1.40L/1.25L ceiling; `RECOMMENDATION_POLICY` (`largest share → lower rate → code` in `src/core/recommend.ts`) picks MICRO. `SchemeCard` shows the recommended scheme open and other ELIGIBLE cards collapsed (`result/page.tsx:185` recommended open + `SchemeCard.tsx:107` policy `messageKey`). The remaining 40 personas stay single-eligible to keep snapshots stable. `pickRecommended` is still exported and tested directly — don't inline it. If more overlaps are added, review the policy copy in `SchemeCard.tsx`.
 
 ### How the baseline calls it
 

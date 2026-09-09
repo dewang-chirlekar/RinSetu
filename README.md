@@ -6,11 +6,11 @@ RinSetu helps Scheduled Caste applicants understand which concessional-credit sc
 
 > **Illustrative figures — not an offer**
 >
-> This build runs on **unverified placeholder scheme parameters** plus a labelled demo overlay. Eligibility logic is real and tested; the rupee amounts are not. Every figure carries `source`/`provenance` and the banner `Illustrative figures — not an offer` is rendered wherever a number appears. See `VERIFY.md` for the list of 55 unverified figures. Nothing on screen is a sanction.
+> This build runs on **unverified placeholder scheme parameters** plus a labelled demo overlay. Eligibility logic is real and tested; the rupee amounts are not. Every figure carries `source`/`provenance` and the banner `Illustrative figures — not an offer` is rendered wherever a number appears. See `VERIFY.md` for the list of 48 unverified figures. Nothing on screen is a sanction.
 
 ---
 
-## Current state — 2026-09-07 (`3f4939e` on `main`, all phases 0–9 code-complete, DB+admin+demo hardening done, parity offline-fix — pause for guideline transcription)
+## Current state — 2026-09-10 (`13b111d` on `main` + 5 schemes, 41 personas, form + LLM hardening — pause for remaining guideline transcription)
 
 | gate | command | result |
 |---|---|---|
@@ -19,15 +19,15 @@ RinSetu helps Scheduled Caste applicants understand which concessional-credit sc
 | lint | `npm run lint` | exit 0 |
 | boundaries | `npm run check:boundaries` | **passed** — `src/core/` imports nothing from `llm/`, `app/`, `components/`, Next, React or `fs` |
 | verify | `npm run check:verify` | **up to date** — `VERIFY.md` is generated from `data/*.json` |
-| tests | `npm run test` | **11 files, 237 tests, all passing** (1 skipped when offline — `tests/dataset-db.parity.test.ts:38` now `DB unreachable, skipping parity check`) |
-| personas CLI | `npm run personas` | **40 rows** — 23 eligible, EMI populated (also `DEMO_MODE=true npm run personas` offline) |
-| dev server | `npm run dev` | `/`, `/apply`, `/result`, `/personas`, `/admin/health-upload` + `/api/extract` (Gemini 3.6-flash / fixture) render |
+| tests | `npm run test` | **11 files, 237 tests, all passing** (now `DB unreachable, skipping parity check` only when DB truly unreachable via `isDbUnreachableError`) |
+| personas CLI | `npm run personas` | **41 rows** — 24 eligible (P41 multi-eligible MICRO+AMY), EMI populated (also `DEMO_MODE=true npm run personas` offline) |
+| dev server | `npm run dev` | `/`, `/apply`, `/result`, `/personas`, `/admin/health-upload` + `/api/extract` (Gemini 2.5-flash / fixture, 503→fallback) render |
 | prod build | `npm run build` | compiled, **15 routes** (`ƒ /api/extract`, `ƒ /api/extract-documents`, `ƒ /api/explain`, `ƒ /api/packet`, `ƒ /api/admin/*` ×5, `ƒ /admin/health-upload`), First Load JS 103 kB |
-| db | `DATABASE_URL` (pooler 6543) + `npm run seed` | **connected** — `20260905144514_init` applied, 3 schemes / 15 partners / 15 health rows · DB parity `src/lib/dataset-db.ts` verified (now offline-graceful) |
-| llm | `GEMINI_API_KEY` + `gemini-3.6-flash` | **3.6-flash** (was 1.5/2.5 404, now `ListModels` 200, quota 20/min, retry 429 → `Retry-After:5`), `src/llm/` 3 files + `/api/*` + `DEMO_MODE` fixture cache `data/llm.fixtures.json:1` |
-| i18n | `next-intl` + `hi`/`mr` 265 keys | **accurate** `hi`/`mr` via Gemini-class LLM, globe `LocaleSwitcher`, brand `RinSetu` locked, tab stays English |
-| admin | `ADMIN_PASSWORD` + `/admin/health-upload` | **done** — CSV `partner_code…as_of` → `PartnerHealth.data_origin=MIS_UPLOAD`, `src/lib/health-csv.ts:1` + `src/lib/admin-auth.ts:1`, template download, preview → apply |
-| demo | `DEMO_MODE=true` + `public/manifest.json:1` | **done** — `src/llm/extract.ts:119` fixture cache, `PartnerMap.tsx:48` offline fallback, `DatasetBanner.tsx:1` `DEMO MODE` banner, full demo with wifi off |
+| db | `DATABASE_URL` (pooler 6543) + `npm run seed` | **connected** — `20260905144514_init` applied, **5 schemes** / 15 partners / 15 health rows · DB parity `src/lib/dataset-db.ts` verified (offline-graceful) |
+| llm | `GEMINI_API_KEY` + `gemini-2.5-flash` | **2.5-flash** (3.6-flash 503 high-demand → fallback `flash-latest/2.5-flash-lite/3-flash-preview`, `isTransientError` + model fallback, `429/503` → `Retry-After:5/10`), `src/llm/` 3 files + `/api/*` + `DEMO_MODE` fixture cache `data/llm.fixtures.json:1` |
+| i18n | `next-intl` + `hi`/`mr` 274 keys | **accurate** `hi`/`mr`, globe `LocaleSwitcher`, brand `RinSetu` locked, tab stays English, `amy/uny` + `free_text_retry` + `partner.map.offline_*` added |
+| admin | `ADMIN_PASSWORD` + `/admin/health-upload` | **done** — CSV `partner_code…as_of` → `PartnerHealth.data_origin=MIS_UPLOAD`, `src/lib/health-csv.ts:210` duplicate guard fixed (seen added even for invalid rows), template download, preview → apply |
+| demo | `DEMO_MODE=true` + `public/manifest.json:1` | **done** — `src/llm/extract.ts:119` fixture cache, `PartnerMap.tsx:48` offline fallback (now `offline_badge/title` i18n), `DatasetBanner.tsx:1` `DEMO MODE` banner, full demo with wifi off |
 
 ```
  45  tests/eligibility.branches.test.ts
@@ -44,7 +44,7 @@ RinSetu helps Scheduled Caste applicants understand which concessional-credit sc
 237  total
 ```
 
-Dataset: 3 schemes (MICRO, TERM, EDU — all `verified: false`), 15 fabricated partners on real city coordinates, 15 `SIMULATED` health rows (replaceable via `/admin/health-upload` CSV → `MIS_UPLOAD`), 265 i18n keys (`en`/`hi`/`mr`, +7 map+packet, accurate `hi`/`mr` 0 English left), 40 persona fixtures, `india-states-districts.json` (36 states/UTs, every district, MH 36×7–16 tehsils + 364 tehsils→villages, now till tehsil). Figures authoritative: **false** for two independent reasons (non-citable figures + demo overlay active).
+Dataset: **5 schemes** (MICRO, TERM, EDU, **AMY Aajeevika 15%** + **UNY Udyam Nidhi 13%** — all `verified: false`, from `https://nsfdc.nic.in/scheme` 09.09.2026: MICRO 1.40L/1.25L 6.5% 3y, TERM 50L/45L 8% 7y, EDU 40L 6.5% 12y, AMY 1.40L/1.25L 15% 3y via NBFC-MFI, UNY 5L/4.5L 13% 5y via Coop; overlap **P41 tailoring 90k → MICRO+AMY both ELIGIBLE, ranking picks MICRO** `F2` live), 15 fabricated partners on real city coordinates, 15 `SIMULATED` health rows (replaceable via `/admin/health-upload` CSV → `MIS_UPLOAD`), 274 i18n keys (`en`/`hi`/`mr`, + `amy/uny` + `free_text_retry` + `offline_*`), **41 persona fixtures** (P41 multi-eligible), `india-states-districts.json` (36 states/UTs, every district, MH 36×7–16 tehsils + 364 tehsils→villages, now till tehsil). Figures authoritative: **false** for two independent reasons (non-citable figures + demo overlay active).
 
 ### What's built
 
@@ -54,15 +54,15 @@ Dataset: 3 schemes (MICRO, TERM, EDU — all `verified: false`), 15 fabricated p
 - `partners/` — haversine distance, weighted health composite, hard filters then soft ranking (never blended).
 - `documents/resolve.ts` + `recommend.ts` (single entry point the UI calls, returns verdicts for **all** schemes).
 
-**UI baseline — `src/app/` + `src/components/`** (Phase 3–6 baseline `4a8eea7`+`5eb1b1e`, Map 2026-09-05, PDF 2026-09-05, i18n 2026-09-05 — globe + brand lock + accurate `hi`/`mr` + form till tehsil + LLM 3.6-flash):
-- `/` — landing: compact provenance stamp, claim, CTAs to `/apply` and `/personas` + language switcher (`LocaleSwitcher.tsx:1` globe `h-7 w-7` → dropdown `English/हिन्दी/मराठी`, cookie `locale`, `NextIntlClientProvider`), 4-step band, scheme list from dataset (cannot drift), detail block. Ledger/paper design: warm paper, ink-navy, hairline rules, tabular monospace figures, stamp badges, no gradients. Mobile-first at 360 px. Brand **`RinSetu`** hardcoded (`layout.tsx:42`, `hi`/`mr` `ui.brand` locked `RinSetu` per glossary), tab stays English (`layout.tsx:16` `generateMetadata` hardcodes `'en'`).
-- `/apply` — guided intake, `GET → /result`, **free-text + guided** (both fill same `ApplicantProfile` → `?age=&…`): `FreeTextIntake.tsx:1` (`textarea` + `POST /api/extract` `gemini-3.6-flash` `name`/`tehsil`/`village` + quota 20/min retry `429` → `Retry-After:5`, fills form and **stays on `/apply`** with `router.replace('/apply?...')` + missing-field nudge `free_text_missing_prefix`/`free_text_filled`, no jump to `/result`), locale-aware (`getLocale()` + `globalThis.__RINSETU_LOCALE__` + client `document.cookie` `messages/index.ts:48`, `lib/locale.ts:1`), no JS required for guided, no LLM required for guided. Location cascade **state → district → tehsil** (village removed per request, till taluka), **all states** (36 + UTs) + every district for that state, **all tehsils for every Maharashtra district** (36×7–16, was 11 → now 36, was `Tehsil 1,2,3` → now real `Haveli`…; villages 364 tehsils → `*_Gaon` but UI stops at tehsil), unlocked one after another, every option shows all valid choices, typing `Haveli` auto-fills `Pune`/`Maharashtra` (`tehsil→district→state` reverse maps), village `TextField` removed. All labels/options/hints switch `en`/`hi`/`mr` (fixed 2026-09-05–06: `mr` 16+23 missing `ui.apply.*`/`ui.*` translated, 265 keys `hi` 2 left `mr` 0).
-- `/result` — runs `recommend()` on query string or `?persona=Pxx`, locale-aware (`getLocale()` + `translate(..., locale)`, `src/i18n.ts:1`), shows `DatasetBanner` (full), recommended `SchemeCard` + others collapsed with `StatusPill`, finance panel with schedule, partner map (MapLibre GL JS + OSM raster, `PartnerMap.tsx:1`, eligible only, straight-line) + dual ranking, exclusion reasons, checklist, **PDF packet** (`packet.tsx:1` + `api/packet/route.ts:1` `renderToBuffer`, respects `preferred_language`/UI locale) + **LLM explain** (`ExplainPanel.tsx:1` `POST /api/explain` `prose`, do-not-translate) + **Loan confirm → required docs upload** (`LoanConfirmation.tsx:1` → `DocumentUpload.tsx:1` `POST /api/extract-documents` `inlineData` `requiredDocCodes` only for confirmed loan, Gemini reads files to fill form, `Re-apply` link). Invariants: no arithmetic in components, every rupee from the engine, scheme names/amounts never translated.
-- `/personas` — 40 fixtures rendered live through `recommend()` at render time; no stored outcomes. Locale-aware.
+**UI baseline — `src/app/` + `src/components/`** (Phase 3–6 baseline `4a8eea7`+`5eb1b1e`, Map 2026-09-05, PDF 2026-09-05, i18n 2026-09-05 — globe + brand lock + accurate `hi`/`mr` + form till tehsil + LLM 2.5-flash + purpose flat):
+- `/` — landing: compact provenance stamp, claim, CTAs to `/apply` and `/personas` + language switcher (`LocaleSwitcher.tsx:1` globe `h-7 w-7` → dropdown `English/हिन्दी/मराठी`, cookie `locale`, `NextIntlClientProvider`), 4-step band, scheme list from dataset (cannot drift, now 5 schemes), detail block. Ledger/paper design: warm paper, ink-navy, hairline rules, tabular monospace figures, stamp badges, no gradients. Mobile-first at 360 px. Brand **`RinSetu`** hardcoded (`layout.tsx:42`, `hi`/`mr` `ui.brand` locked `RinSetu` per glossary), tab stays English (`layout.tsx:16` `generateMetadata` hardcodes `'en'`).
+- `/apply` — guided intake, `GET → /result`, **free-text + guided** (both fill same `ApplicantProfile` → `?age=&…`): `FreeTextIntake.tsx:1` (`textarea` + `POST /api/extract` `gemini-2.5-flash` fallback `flash-latest/2.5-lite` + `429/503` retry `isTransientError` + `Retry-After:5/10` with countdown `free_text_retry_in` → `free_text_guided_fallback`, fills form and **stays on `/apply`** with `router.replace('/apply?...')` + missing-field nudge `free_text_missing_prefix`/`free_text_filled`, no jump to `/result`), locale-aware (`getLocale()` + `globalThis.__RINSETU_LOCALE__` + client `document.cookie` `messages/index.ts:48`, `lib/locale.ts:1`), no JS required for guided, no LLM required for guided. **Purpose now flat** `ApplyForm.tsx:59` `purposeOptionsForIntent()` — deduped sorted generic activities without `optgroup` scheme labels (user describes activity, not picks scheme; was leaking `Micro Finance Scheme → petty_trade`). **Location cascade strict** `ApplyForm.tsx:171` — `district` disabled until `state`, `tehsil` disabled until `district` (was showing 700+ districts / 800+ tehsils unfiltered), `tehsil→district→state` auto-fill retained, `intent` sync fixed `paramsKey` not reverting, `applicant-params.ts:41` now parses `5 lakh`→500000. All labels/options/hints switch `en`/`hi`/`mr` (274 keys).
+- `/result` — runs `recommend()` on query string or `?persona=Pxx`, locale-aware (`getLocale()` + `translate(..., locale)`, `src/i18n.ts:1`), shows `DatasetBanner` (full), recommended `SchemeCard` + others collapsed with `StatusPill`, finance panel with schedule, partner map (MapLibre GL JS + OSM raster, `PartnerMap.tsx:1`, eligible only, straight-line; offline fallback now `offline_badge/title` i18n) + dual ranking, exclusion reasons, checklist, **PDF packet** (`packet.tsx:1` + `api/packet/route.ts:1` `renderToBuffer`, respects `preferred_language`/UI locale) + **LLM explain** (`ExplainPanel.tsx:1` `POST /api/explain` `prose`, do-not-translate, now 2.5-flash fallback) + **Loan confirm → required docs upload** (`LoanConfirmation.tsx:1` → `DocumentUpload.tsx:1` `POST /api/extract-documents` `inlineData` `requiredDocCodes` only for confirmed loan, now fixed `ui.confirm.*` keys). Invariants: no arithmetic in components, every rupee from the engine, scheme names/amounts never translated.
+- `/personas` — **41 fixtures** rendered live through `recommend()` at render time; no stored outcomes. Locale-aware. `P41` tailoring `90k` is `MICRO+AMY` both `ELIGIBLE` → ranking demo.
 
-**Data layer — `data/` + `src/lib/dataset.ts` + `src/lib/dataset-db.ts`**: 7 JSON files, one JSON loader + one DB loader (both derive `verified` via `isCitable()` `src/core/types.ts:94`, never copied — fixed 2026-09-05 `src/lib/dataset.ts:356`/`387`), `figures_authoritative` false when any non-citable figure exists or overlay is applied, `VERIFY.md` generated with 4 structural findings (F1–F4) each with a live `check()` that refuses to write a false document.
+**Data layer — `data/` + `src/lib/dataset.ts` + `src/lib/dataset-db.ts`**: 7 JSON files, one JSON loader + one DB loader (both derive `verified` via `isCitable()` `src/core/types.ts:94`, never copied — fixed 2026-09-05 `src/lib/dataset.ts:356`/`387`), `figures_authoritative` false when any non-citable figure exists or overlay is applied, `VERIFY.md` generated with 4 structural findings (F1–F4) each with a live `check()` that refuses to write a false document. **F2 now live:** `P41` tailoring proves `MICRO+AMY` overlap, ranking policy fires on real data.
 
-**Database — `prisma/schema.prisma` + `prisma/seed.ts` + `src/lib/dataset-db.ts`**: 10 tables via `20260905144514_init` (8 models + `_prisma_migrations`), validated, idempotent seed through the same loader. `DATABASE_URL` connected to Supabase pooler (`aws-0-ap-south-1.pooler.supabase.com:6543`, `sslmode=require`, `rejectUnauthorized:false` in `prisma/seed.ts:57`); `prisma generate` works without it (`prisma.config.ts` conditional datasource); `npm run seed` writes 3 schemes / 15 partners / 15 health rows. Verified 2026-09-05: `schemes 3`, `partners 15`, `partner_health 15`, `global_eligibility 1`. DB loader `src/lib/dataset-db.ts:1` is exact reverse of seed — `tests/dataset-db.parity.test.ts:1` proves JSON↔DB parity (237th test, now `DB unreachable, skipping parity check` offline graceful with 2s probe, 236+1 skipped when wifi off).
+**Database — `prisma/schema.prisma` + `prisma/seed.ts` + `src/lib/dataset-db.ts`**: 10 tables via `20260905144514_init` (8 models + `_prisma_migrations`), validated, idempotent seed through the same loader. `DATABASE_URL` connected to Supabase pooler (`aws-0-ap-south-1.pooler.supabase.com:6543`, `sslmode=require`, `rejectUnauthorized:false` in `prisma/seed.ts:57`); `prisma generate` works without it (`prisma.config.ts` conditional datasource); `npm run seed` writes **5 schemes** / 15 partners / 15 health rows / **53 doc reqs** (was 38). Verified 2026-09-10: `schemes 5`, `partners 15`, `partner_health 15`, `global_eligibility 1`. DB loader `src/lib/dataset-db.ts:1` is exact reverse of seed — `tests/dataset-db.parity.test.ts:1` proves JSON↔DB parity (now `DB unreachable, skipping parity check` offline graceful with 2s probe).
 
 **Admin health upload — `src/app/admin/health-upload/page.tsx:1` + `src/lib/admin-auth.ts:1` + `src/lib/health-csv.ts:1`** (Phase 8, 2026-09-07): single-password `ADMIN_PASSWORD` (default `rinsetu-admin`) → HttpOnly `rinsetu_admin` cookie (8h), CSV `partner_code,funds_sanctioned,funds_utilised,overdue_amount,npa_pct,avg_processing_days,capacity_flag,as_of` → `PartnerHealth.data_origin=MIS_UPLOAD`, template download, preview (valid/invalid per line, `isDbUnreachableError` guard) → apply upsert `(partnerCode,asOf)` via `prisma/seed.ts:57` pool. All 15 rows currently `SIMULATED` until first upload; `PartnerPanel.tsx:1` already renders `DataOriginBadge` (`SIMULATED` amber / `MIS_UPLOAD`).
 
@@ -70,10 +70,10 @@ Dataset: 3 schemes (MICRO, TERM, EDU — all `verified: false`), 15 fabricated p
 
 ### What is not yet built (next)
 
-- **Phase 0 verification** — 55 unverified figures (`VERIFY.md:11` 32 `demo_overlay` + 15 `ps_text` + 8 `placeholder`), 11 open questions (`data/schemes.seed.json:1`). Needs official guideline URLs/dates; engine is ready to ingest them without logic change. Nothing on screen is a sanction until `figures_authoritative:true`.
+- **Phase 0 verification** — **48 unverified figures** (`VERIFY.md:11` 19 `demo_overlay` + 29 `placeholder`, 0 `ps_text` after 09.09.2026 NSFDC transcription: cost/loan caps, 6.5%/8%/15%/13% rates, tenure, moratorium windows now `official_guideline`), 11 open questions (`data/schemes.seed.json:194` — Q5 moratorium treatment, Q3 subsidy still `TODO(verify)`). Needs compendium for `margin_pct`, `subsidy`, `moratorium_interest_treatment`; engine is ready to ingest without logic change. Nothing on screen is a sanction until `figures_authoritative:true`.
 - Optional polish — Lighthouse a11y ≥90 pass, XLSX alongside CSV, voice/Bhashini, Vercel deploy.
 
-We are at the **code-complete pause**: all deterministic, UI, DB, LLM, i18n, admin, offline paths work. Next work is **guideline transcription**, not code. See `docs/PROGRESS.md` §7–§8 and `docs/ROADMAP.md` §10–§14.
+We are at the **code-complete + real-data pause**: deterministic, UI, DB, LLM, i18n, admin, offline paths work **and 5 NSFDC schemes from `https://nsfdc.nic.in/scheme` are transcribed**; remaining `TODO(verify)` need compendium. See `docs/PROGRESS.md` §7–§8 and `docs/ROADMAP.md` §10–§14.
 
 ---
 
@@ -83,9 +83,10 @@ From `rinsetu/`:
 
 ```bash
 npm install && npm run check   # postinstall runs prisma generate
-# must end with 237 passed, 11 files (236+1 skipped when offline, 237 when DB reachable) — if not, stop and fix
+# must end with 237 passed, 11 files — if not, stop and fix
 
-npm run personas        # 40 rows live through recommend()
+npm run personas        # 41 rows live through recommend() (P41 multi-eligible MICRO+AMY)
+npm run personas P41    # multi-scheme ranking demo
 npm run personas P19    # one persona in full detail
 npm run dev             # http://localhost:3000  — /, /apply, /result, /personas, /admin/health-upload
 DEMO_MODE=true npm run dev  # offline demo — fixture cache, no GEMINI_API_KEY, map fallback, parity test skips
@@ -120,19 +121,19 @@ Two invariants (`CLAUDE.md`):
 rinsetu/
 ├─ CLAUDE.md, VERIFY.md (generated), README.md
 ├─ docs/  PROGRESS.md  ROADMAP.md  HANDOFF.md  FRAGILE.md  TEST-RECORD.md
-├─ data/  schemes.seed.json  schemes.demo-overlay.json  partners.seed.json
-│         partner-health.sim.json  health-scoring.json  documents.seed.json  personas.fixtures.json
-│         india-states-districts.json (36 states/UTs, every district, MH 36×tehsils + 364 villages, now till tehsil)
+├─ data/  schemes.seed.json (5 schemes: MICRO/TERM/EDU/AMY/UNY)  schemes.demo-overlay.json  partners.seed.json
+│         partner-health.sim.json  health-scoring.json  documents.seed.json (53 reqs)  personas.fixtures.json (41, P41 multi-eligible)
+│         india-states-districts.json (36 states/UTs, every district, MH 36×7–16 tehsils + 364 tehsils→villages, now till tehsil)
 │         llm.fixtures.json (7 fixtures, extract + documents fallback, DEMO_MODE)
 ├─ prisma/  schema.prisma  seed.ts  prisma.config.ts
 ├─ src/
 │  ├─ core/  types.ts  eligibility/  finance/  partners/  documents/  recommend.ts
 │  ├─ app/   layout.tsx  page.tsx  apply/page.tsx  result/page.tsx  personas/page.tsx  admin/health-upload/page.tsx  api/extract/route.ts  api/extract-documents/route.ts  api/explain/route.ts  api/packet/route.ts  api/admin/login|logout|health-preview|health-apply|health-template/route.ts
 │  ├─ components/  ui.tsx  DatasetBanner.tsx  SchemeCard.tsx  VerdictList.tsx  LoanFigures.tsx  PartnerPanel.tsx  PartnerMap.tsx  ChecklistPanel.tsx  LocaleSwitcher.tsx  FreeTextIntake.tsx  LoanConfirmation.tsx  DocumentUpload.tsx  ExplainPanel.tsx  AdminHealthUpload.tsx  AdminLogin.tsx  form.tsx  ScrollReveal.tsx
-│  ├─ lib/   dataset.ts  dataset-db.ts  packet.tsx  locale.ts  applicant-params.ts  format.ts  view.ts  admin-auth.ts  health-csv.ts
-│  ├─ llm/   client.ts (gemini-3.6-flash, DEMO_MODE)  extract.ts (name/tehsil/village, fixture cache, 429 retry)  explain.ts (deterministic fallback)
+│  ├─ lib/   dataset.ts  dataset-db.ts  packet.tsx  locale.ts  applicant-params.ts (lakh/thousand parse)  format.ts  view.ts  admin-auth.ts  health-csv.ts (dedupe fix)
+│  ├─ llm/   client.ts (gemini-2.5-flash fallback, isTransientError)  extract.ts (purpose flat, fixture cache, 429/503 retry)  explain.ts (deterministic fallback)
 │  ├─ i18n.ts  (next-intl getRequestConfig, en/hi/mr, cookie + Accept-Language)
-│  └─ messages/  en.json  hi.json  mr.json  index.ts (strict throw, + next-intl, + globalThis.__RINSETU_LOCALE__)
+│  └─ messages/  en.json (274 keys: +amy/uny + retry/confirm/offline)  hi.json  mr.json  index.ts (strict throw, + next-intl, + globalThis.__RINSETU_LOCALE__)
 ├─ public/  manifest.json (PWA, offline demo)
 └─ tests/  11 files, 237 tests  +  scripts/  check-boundaries.mjs  verify-report.ts  personas.ts
 ```

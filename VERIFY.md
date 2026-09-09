@@ -149,7 +149,7 @@ Transcribed from `open_questions_for_phase_0` in data/schemes.seed.json. These a
 8. Which partner types are actually authorised to process each scheme category? Partially resolved: MFS/TERM via SCAs/CAs, AMY via NBFC-MFI, UNY via Cooperatives/SFBs — need exact SCA list.
 9. Does the education scheme have separate ceilings for study in India vs abroad? NSFDC page shows single ₹40 lakh for both — suggests no split, but placeholder kept for verification.
 10. Is the education moratorium a fixed month count or course-duration-plus-grace? Resolved as course-duration-based per §5 — fixed month fields are wrong shape for EDU, left null.
-11. Can one applicant be eligible for more than one scheme at the same time? With new purpose lists still disjoint, overlap remains unlikely — but AMY vs MICRO now overlap on micro purposes if purposes not disjoint. Review RECOMMENDATION_POLICY.
+11. Can one applicant be eligible for more than one scheme at the same time? Now demonstrated as YES: P41 tailoring 90k is ELIGIBLE for both MICRO (6.5%) and AMY (15%) via shared tailoring purpose and same 1.40L ceiling — ranking picks MICRO per RECOMMENDATION_POLICY (largest share → lower rate).
 
 ## Structural findings
 
@@ -159,9 +159,9 @@ Consequences of the current parameters, not defects. Each one is re-checked agai
 
 Persona P06. MICRO rejects the purpose (manufacturing is not in its eligible_purposes) and TERM rejects the cost (₹1,40,000 is one rupee below its floor). This is a finding about the seed parameters, not a defect in the engine: with disjoint purpose lists and a floor set one rupee above the micro ceiling, an applicant can fall between the two schemes. Either the real guidelines overlap at this boundary or the boundary genuinely excludes this applicant, and we cannot tell which until open question 7 is answered. Whichever it is, the engine reports it honestly today: two rejections, each with its own reason code and remediation.
 
-### F2 — No applicant can be eligible for two schemes at once
+### F2 — One applicant (P41) is eligible for two schemes at once — the ranking policy is live
 
-The seed gives MICRO, TERM and EDU disjoint eligible_purposes, and the cost predicates (PROJECT_COST_WITHIN_UNIT_COST versus PROJECT_COST_ABOVE_MICRO_FLOOR) are mutually exclusive. So the ranking rule in src/core/recommend.ts (RECOMMENDATION_POLICY) never fires on real data and is covered by a direct unit test instead of a persona. If the published guidelines do overlap, that policy becomes visible to applicants and needs review before it ships. Open question 11.
+P41 tailoring 90k is ELIGIBLE for both MICRO (6.5% via SCA) and AMY (15% via NBFC-MFI) — they share PLACEHOLDER_tailoring and the same 1.40L/1.25L ceiling. The remaining 40 personas stay single-eligible to keep snapshots stable. Ranking in src/core/recommend.ts (RECOMMENDATION_POLICY: largest share → lower rate → code) now fires on real data via P41 and is visible in the UI (MICRO recommended, AMY ELIGIBLE collapsed). If more overlaps are added, review the policy copy in SchemeCard.tsx.
 
 ### F3 — The SERVICED moratorium treatment is not reachable from any scheme in the data
 

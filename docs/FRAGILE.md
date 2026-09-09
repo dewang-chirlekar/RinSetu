@@ -113,6 +113,18 @@ Two opposite mistakes to avoid: do not "fix" it by demanding those fields
 unconditionally (that blocks a scheme on a figure that cannot change the answer), and do
 not reuse the pattern anywhere a fallback could actually reach the arithmetic.
 
+### A7. Purpose flat list vs `optgroup` — changing purpose codes breaks UI deduping silently
+
+**Where:** `eligible_purposes` in [data/schemes.seed.json](data/schemes.seed.json) and `src/components/ApplyForm.tsx` purpose flat deduping
+
+Eligibility is `category C` only — purpose is not grouped by scheme. Since 2026-09-10 `ApplyForm` renders `purpose` as a **flat deduped list** (no `optgroup`), deduped via `Set` across all schemes. MICRO and AMY now share `PLACEHOLDER_tailoring` intentionally so P41 can be ELIGIBLE for both — deduping hides the duplicate, but `purposeEligible` still checks per-scheme. If you change a purpose code, add a new code that duplicates an existing label, or re-introduce `optgroup`/per-scheme grouping, the dropdown can silently hide or duplicate an option and P41 stops proving F2. No test fails if you duplicate a code because deduping masks it; the snapshot only notices if the persona count changes. Keep purpose codes canonical (one code = one activity), dedupe in the UI, and don't filter purposes by `intent` or scheme type.
+
+### A8. Location cascade strict disabling — removing the guard breaks 360px and hints
+
+**Where:** `src/components/ApplyForm.tsx:176` `districtsForState` / `src/components/ApplyForm.tsx:182` `tehsilsForDistrict` and `ApplyForm.tsx:454`/`469` `disabled` + `hint`
+
+Since 2026-09-10 `district` is **disabled until `state`** and `tehsil` until `district` when JS is on (`jsEnabled` guard); with JS off all options show (graceful degradation). This is load-bearing for 360px: showing every district/tehsil in one `<select>` overflows the viewport and hides the `"select state first"` / `"select district first"` (`district_need_state` / `tehsil_need_district`) hint that prevents a wrong-jurisdiction submission. If you restore the old behaviour (show all districts when no state), the partner jurisdiction filter later does the right thing, so **no test fails** — the form just becomes unusable on a small phone and an applicant can pick a tehsil that doesn't belong to the chosen district (auto-detect in `handleTehsilChange` then silently corrects `state`). Don't remove the `jsEnabled && !selectedState` guard or the `disabled` prop, and keep the hints.
+
 ---
 
 ## Part B — Caught, only by a snapshot that can be regenerated away
@@ -120,7 +132,7 @@ not reuse the pattern anywhere a fallback could actually reach the arithmetic.
 This category deserves its own section, because the failure *looks* like the safety net
 working when it is not.
 
-Some tests work by recording the exact output for all 40 test applicants and comparing
+Some tests work by recording the exact output for all **41** test applicants (was 40 before P41) and comparing
 future runs against that record. Change engine behaviour and they fail — good. But the
 "fix" a careless editor reaches for is to **regenerate the recorded output**, which makes
 the failure disappear without anyone examining what changed. Green again, behaviour
@@ -144,12 +156,17 @@ When both are missing, checking the guideline side first means we do not ask som
 information that could not have helped them anyway. Swap the order and the messages
 change for real users. The snapshot notices; it just looks like noise.
 
-### B3. Anything touching the recommendation tie-breaks
+### B3. Anything touching the recommendation tie-breaks — now live via P41 (F2)
 
 The engine chooses between qualifying schemes by largest share of project cost, then lower
 interest rate, then scheme code alphabetically — that last one purely so the answer is
-repeatable. Changes here move which scheme gets recommended, and again show up only as a
-snapshot diff.
+repeatable. **Since 2026-09-10 this is no longer hypothetical:** P41 tailoring 90k is ELIGIBLE for both MICRO (6.5% via SCA) and AMY (15% via NBFC-MFI) and the ranking picks MICRO; `result/page.tsx:185` shows MICRO open + AMY ELIGIBLE collapsed. Changes here now move which scheme P41 recommends, and still show up only as a `tests/personas.snapshot.test.ts` diff (P41 row flips). Regenerating the snapshot hides the change — explain why the output changed before touching the recorded file.
+
+### B4. F2 — multi-scheme eligibility is now live (was unreachable)
+
+**Where:** `data/schemes.seed.json` `eligible_purposes` overlap (`PLACEHOLDER_tailoring` in MICRO + AMY) + `data/personas.fixtures.json` P41 + `src/core/recommend.ts` `RECOMMENDATION_POLICY`
+
+Previously no persona could be ELIGIBLE for two schemes — the purpose lists were disjoint and `recommend()` ranking never fired on real data (finding F2 in `VERIFY.md` said "they cannot"). Since 2026-09-10 **F2 is live via P41** (tailoring 90k, `intent: other`, Nagpur): both MICRO and AMY ELIGIBLE, `RECOMMENDATION_POLICY` picks MICRO (largest share tied → lower rate wins). `SchemeCard` keeps the recommended scheme open and other ELIGIBLE cards collapsed. If you break the overlap (rename a purpose code, change a ceiling, remove `PLACEHOLDER_tailoring` from one scheme) P41 goes single-eligible and the ranking looks dead again; the snapshot fails but with a P41-only diff that's easy to regenerate away. Don't treat ranking as dead code — it's exercised, and `SchemeCard.tsx:107` policy copy must stay in sync.
 
 ### The rule that protects you
 

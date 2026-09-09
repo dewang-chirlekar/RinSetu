@@ -1,7 +1,7 @@
 # PROGRESS.md — where RinSetu stands
 
 Written at the end of Phases 1–2, updated after the Phase 3–6 baseline landed
-(`4a8eea7` + `5eb1b1e`), refreshed 2026-08-31 at `bd12a83` on `main`, DB connected 2026-09-05, core hardened 2026-09-05, Maps 2026-09-05, PDF 2026-09-05, i18n 2026-09-05, form till tehsil + LLM 3.6-flash 2026-09-06, **admin health upload 2026-09-07, demo hardening 2026-09-07, parity offline-fix 2026-09-07 — code-complete pause for guideline transcription, see §2**.
+(`4a8eea7` + `5eb1b1e`), refreshed 2026-08-31 at `bd12a83` on `main`, DB connected 2026-09-05, core hardened 2026-09-05, Maps 2026-09-05, PDF 2026-09-05, i18n 2026-09-05, form till tehsil + LLM 3.6-flash 2026-09-06, **admin health upload 2026-09-07, demo hardening 2026-09-07, parity offline-fix 2026-09-07, 5 schemes + F2 P41 + cascade/LLM harden 2026-09-10 at `13b111d` — code-complete pause for guideline transcription, see §2**.
 Everything below was verified by running it, not remembered. If you have no
 context on this project, read this file top to bottom, then read `CLAUDE.md`,
 then run the one command in [§8](#8-the-exact-command-to-continue).
@@ -31,6 +31,8 @@ then run the one command in [§8](#8-the-exact-command-to-continue).
 > **2026-09-07 demo hardening:** `src/llm/extract.ts:119` `DEMO_MODE` fixture cache (`extract:<lowercased>` + `__fallback__` in `data/llm.fixtures.json:1` now 7 fixtures) + `src/llm/explain.ts:49` already deterministic, `src/components/DatasetBanner.tsx:1` `DEMO MODE` stamp, `src/components/PartnerMap.tsx:48` offline fallback (no `tile.openstreetmap.org` fetch, shows ranked codes), `src/app/layout.tsx:26` `window.__RINSETU_DEMO__` + `next.config.ts:4` `NEXT_PUBLIC_DEMO_MODE`, `public/manifest.json:1` PWA, `FreeTextIntake.tsx:88` hint. Verified `DEMO_MODE=true npx tsx` extract + `npm run personas` 40 rows offline.
 >
 > **2026-09-07 parity offline-fix:** `tests/dataset-db.parity.test.ts:38` now `isDbUnreachableError()` + 2s `connectionTimeoutMillis` probe + `console.warn('DB unreachable, skipping parity check')` → `ctx.skip()`. Wifi on: `11 files, 237 passed`; wifi off: `11 files, 236 passed | 1 skipped` — `npm run check` stays green for Phase 9 gate.
+>
+> **2026-09-10 5 schemes + F2 P41 + cascade/LLM harden:** HEAD `13b111d` on `main` + working tree — `data/schemes.seed.json:1` now 5 schemes (MICRO, TERM, EDU, **AMY Aajeevika 15% via NBFC-MFI**, **UNY Udyam Nidhi 13% via Coop**), `data/personas.fixtures.json:1` 41 personas (**P41** tailoring 90k eligible for MICRO 6.5% + AMY 15% both, ranking picks MICRO — **F2 now live**), `src/components/ApplyForm.tsx:1` purpose flat deduped (no `optgroup`, eligibility `category C` only) + cascade strict (`district` disabled until `state`, `tehsil` disabled until `district`, `paramsKey` intent-sync + `lakh`/`thousand` parsing fix), `src/llm/client.ts:1` fallback `gemini-2.5-flash` → `gemini-flash-latest` with 429/503 retry + `Retry-After` handling (was 3.6-flash), `src/messages/en.json:1` + `hi`/`mr` missing `ui.confirm.*` fixed (`/result?persona=P41` now 200, was 500), `src/lib/health-csv.ts:1` duplicate guard `finalSeen` fixed (valid > invalid), `src/components/PartnerMap.tsx:1` offline `partner.map.offline` i18n keys. `npm run check` **11 files / 237 tests** all passing, `npm run personas` **41 rows / 24 eligible / 0 no figures**, `npm run build` **15 routes**, DB **5/15/15 +53 doc reqs**, `VERIFY.md:11` now **48 unverified (was 55)** = 19 `demo_overlay` + 29 `placeholder` (5/5 schemes unverified), F2 now expects P41 multi.
 
 ---
 
@@ -50,9 +52,9 @@ The whole project is organised around one idea: **the numbers have to be defensi
 A plausible-looking invented interest rate is the worst possible outcome, worse than no
 number at all. Almost every design decision recorded below follows from that.
 
-## 2. Current state: green — code-complete 2026-09-07, pause for guideline transcription
+## 2. Current state: green — code-complete 2026-09-10, pause for guideline transcription
 
-Verified 2026-09-07 from `rinsetu/` at `3f4939e` on `main` + DB + Maps + PDF + i18n + form till tehsil + LLM 3.6-flash + **admin 2026-09-07 + demo hardening 2026-09-07 + parity offline-fix** (working tree with `data/llm.fixtures.json` + `next.config.ts` + `src/llm/extract.ts` + `tests/dataset-db.parity.test.ts` edits, `origin/main` ahead) — **code-complete, see §5/§7**:
+Verified 2026-09-10 from `rinsetu/` at `13b111d` on `main` + working tree with 5 schemes (MICRO, TERM, EDU, AMY Aajeevika 15% via NBFC-MFI, UNY Udyam Nidhi 13% via Coop), 41 personas (P41 tailoring 90k eligible for MICRO 6.5% + AMY 15% both, ranking picks MICRO — F2 now live), purpose flat deduped, cascade strict, LLM 2.5-flash fallback + health-csv guard + `ui.confirm` fix (`/result?persona=P41` 200) — **code-complete, see §5/§7**:
 
 | check | command | result |
 | --- | --- | --- |
@@ -62,13 +64,13 @@ Verified 2026-09-07 from `rinsetu/` at `3f4939e` on `main` + DB + Maps + PDF + i
 | architecture boundary | `npm run check:boundaries` | passed — `src/core/` imports nothing from `llm/`, `app/`, `components/` |
 | VERIFY.md freshness | `npm run check:verify` | up to date |
 | tests | `npm run test` | **11 files, 237 tests** (wifi on: 237 passed, wifi off: 236 passed +1 skipped via `DB unreachable, skipping parity check`) |
-| demo CLI | `npm run personas` | prints 40 rows (23 eligible), EMI column populated (also `DEMO_MODE=true` offline) |
-| dev server | `npm run dev` | renders `/`, `/apply` (till tehsil, globe), `/result` (map+PDF+explain), `/personas`, `/admin/health-upload` + `/api/extract` (3.6-flash or `DEMO_MODE` fixture) |
+| demo CLI | `npm run personas` | prints **41 rows (24 eligible, 0 no figures)**, EMI column populated (also `DEMO_MODE=true` offline) — **P41** tailoring 90k proves F2 multi-eligible ranking |
+| dev server | `npm run dev` | renders `/`, `/apply` (flat purpose, cascade strict, globe), `/result` (map+PDF+explain, **P41 now 200**), `/personas`, `/admin/health-upload` + `/api/extract` (**2.5-flash → flash-latest** 429/503 `Retry-After` or `DEMO_MODE` fixture) |
 | prod build | `npm run build` | compiled, **15 routes** (`ƒ /api/extract`, `ƒ /api/extract-documents`, `ƒ /api/explain`, `ƒ /api/packet`, `ƒ /api/admin/*`×5, `ƒ /admin/health-upload`, `ƒ /apply` 12.4kB), First Load JS 103 kB |
-| db | `DATABASE_URL` (pooler 6543) + `npm run seed` + `dataset-db` | **connected + parity verified** — `20260905144514_init` applied, 3/15/15 + `src/lib/dataset-db.ts` JSON↔DB deep-equal (now 2s probe, offline graceful) |
-| llm | `GEMINI_API_KEY` + `gemini-3.6-flash` + `DEMO_MODE` fixture | **3.6-flash** (was 1.5 404, `ListModels` 200, quota 20/min `429` retry) + `data/llm.fixtures.json:1` 7 fixtures (`extract:<lowercased>` + `__fallback__`), `src/llm/` 3 files + `FreeTextIntake`/`DocumentUpload`/`LoanConfirmation`/`ExplainPanel`, `DEMO MODE` banner |
-| i18n | `next-intl` + `hi`/`mr` 265 keys + `india-states-districts.json` | **accurate** `hi`/`mr` + globe `LocaleSwitcher`, `RinSetu` locked, form till tehsil (36×7–16), tab English |
-| admin | `ADMIN_PASSWORD` + `/admin/health-upload` | **done** — `rinsetu-admin` default, `health-csv.ts` quoted split, `MIS_UPLOAD` forced, preview → apply upsert |
+| db | `DATABASE_URL` (pooler 6543) + `npm run seed` + `dataset-db` | **connected + parity verified** — `20260905144514_init` applied, **5/15/15 +53 doc reqs** + `src/lib/dataset-db.ts` JSON↔DB deep-equal (now 2s probe, offline graceful) |
+| llm | `GEMINI_API_KEY` + `gemini-2.5-flash` + `DEMO_MODE` fixture | **2.5-flash → flash-latest** fallback (was 3.6-flash, 1.5 404) with **429/503 retry + `Retry-After`** + `data/llm.fixtures.json:1` 7 fixtures (`extract:<lowercased>` + `__fallback__`), `src/llm/` 3 files + `FreeTextIntake`/`DocumentUpload`/`LoanConfirmation`/`ExplainPanel`, `DEMO MODE` banner |
+| i18n | `next-intl` + `hi`/`mr` 265 keys + `india-states-districts.json` | **accurate** `hi`/`mr` + globe `LocaleSwitcher`, `RinSetu` locked, form till tehsil (36×7–16), tab English, **PartnerMap offline keys added** |
+| admin | `ADMIN_PASSWORD` + `/admin/health-upload` | **done** — `rinsetu-admin` default, `health-csv.ts` quoted split + **duplicate guard fixed** (`finalSeen`), `MIS_UPLOAD` forced, preview → apply upsert |
 | demo | `DEMO_MODE=true` + `public/manifest.json:1` | **done** — `PartnerMap` offline fallback (no tiles, shows codes), full demo with wifi off |
 
 Per-file test counts (they should only ever go up):
@@ -88,12 +90,7 @@ Per-file test counts (they should only ever go up):
 237  total
 ```
 
-Git: `main` is 5 commits ahead of `9f6bffc` — `6737439 initialize RinSetu
-project` → `4a8eea7 built frontend` → `5eb1b1e landing page ui changes` →
-`b9f34ba Update README.md` → `bd12a83 handoff & progress(frontend)`. Working
-tree clean. After this refresh: two files modified locally (`README.md` rewritten,
-this file updated) — commit before continuing. Earlier drafts claimed "nothing is
-committed" — that was true at the Phase 1–2 gate, no longer.
+Git: `main` at `13b111d` (was `3f4939e`/`bd12a83`, 5 commits ahead of `9f6bffc` — `6737439 initialize RinSetu project` → `4a8eea7 built frontend` → `5eb1b1e landing page ui changes` → `b9f34ba Update README.md` → `bd12a83 handoff & progress(frontend)` → … → `13b111d`). Working tree with 5 schemes + P41 + cascade/LLM/i18n/health-csv edits (uncommitted, see §2). After this refresh: this file updated — commit before continuing. Earlier drafts claimed "nothing is committed" — that was true at the Phase 1–2 gate, no longer.
 
 ---
 
@@ -121,9 +118,9 @@ enforced by `scripts/check-boundaries.mjs`, which runs in `npm run check`.
 | `documents/resolve.ts` | Scheme + partner-type document checklist. |
 | `recommend.ts` | The one entry point the UI will call. Returns verdicts for **all** schemes. |
 
-Four properties of the core worth knowing before you touch it:
+Four properties of the core worth knowing before you touch it (all still true at 5 schemes, 2026-09-10):
 
-- **It is parameterised over the data.** There are no scheme numbers in `src/core/`.
+- **It is parameterised over the data.** There are no scheme numbers in `src/core/` — MICRO, TERM, EDU, **AMY (Aajeevika 15% via NBFC-MFI)** and **UNY (Udyam Nidhi 13% via Coop)** landed 2026-09-10 without a line of core changed. P41 tailoring 90k is eligible for both MICRO 6.5% and AMY 15%; ranking picks the cheaper MICRO — **F2 now live**, proves `hard filters before soft ranking` (§6) generically.
   This is what lets real guideline figures drop in without editing logic — and it is why
   the engine can be correct while the figures are still placeholders.
 - **`INDETERMINATE` is a real answer.** A verdict carries `evaluable: false` when a
@@ -143,13 +140,13 @@ Four properties of the core worth knowing before you touch it:
 
 | file | contents |
 | --- | --- |
-| `schemes.seed.json` | The scheme master: MICRO, TERM, EDU. Most figures are placeholders. Also holds `open_questions_for_phase_0` (11 entries). |
-| `schemes.demo-overlay.json` | Stand-in values that fill **only null slots**, so the engine can be exercised. Stamped `demo_overlay`. |
+| `schemes.seed.json` | The scheme master: **MICRO, TERM, EDU, AMY (Aajeevika 15% via NBFC-MFI), UNY (Udyam Nidhi 13% via Coop)** — 5 schemes, all `verified: false`, most figures placeholders. Also holds `open_questions_for_phase_0` (11 entries). |
+| `schemes.demo-overlay.json` | Stand-in values that fill **only null slots**, so the engine can be exercised. Stamped `demo_overlay` — now **19 `demo_overlay`** slots (was 32). |
 | `partners.seed.json` | 15 fabricated channel partners on real city coordinates. |
 | `partner-health.sim.json` | 15 health rows, every one `data_origin: "SIMULATED"`. |
 | `health-scoring.json` | The four health weights, each with a rationale message key. |
-| `documents.seed.json` | Document catalogue and per-scheme requirements. |
-| `personas.fixtures.json` | 40 test applicants covering the branch matrix. |
+| `documents.seed.json` | Document catalogue and per-scheme requirements — now **53 doc reqs** (AMY/UNY add `aay-jat`, `udyam-nidhi` blocks). |
+| `personas.fixtures.json` | **41** test applicants covering the branch matrix — **P41** (tailoring 90k, `intent: other`, Nagpur) proves F2 multi-eligible ranking. |
 
 Two mechanisms here carry a lot of weight (now enforced in *both* loaders, `dataset.ts:80` `prov()` + `dataset.ts:356`/`387` and `dataset-db.ts:33`):
 
@@ -157,14 +154,14 @@ Two mechanisms here carry a lot of weight (now enforced in *both* loaders, `data
 - **`figures_authoritative` is false for two independent reasons** — any non-citable figure in play, *and* unconditionally whenever the demo overlay is applied. It cannot be forced true. `dataset-db.ts:1` derives the same way and detects `demo_overlay` in provenance.
 - **`AGE_WITHIN_RANGE` format is pinned.** `predicates.ts:132` writes `"min-max"` and `remediation.ts:94` parses `split('-')` — `tests/eligibility.age-format.test.ts:1` (6 tests, new 2026-09-05) fails if either side changes (`docs/FRAGILE.md:56` A3).
 
-### 3.3 Messages — `src/messages/` (i18n 2026-09-05, accurate 2026-09-05)
+### 3.3 Messages — `src/messages/` (i18n 2026-09-05, accurate 2026-09-05, harden 2026-09-10)
 
-`en.json` holds **265 keys** (258 +5 `partner.map.*` +2 `ui.result.download_packet*`), `hi.json` + `mr.json` same keys (UI `hi`/`mr` human-written via Gemini-class LLM, scheme names/amounts/`₹`/`RinSetu` kept English per glossary do-not-translate — `hi` 2 English left `_README`/`currency_symbol`, `mr` 0 after fixes). `index.ts:1` now `en`/`hi`/`mr` (`CATALOGUES`), `src/i18n.ts:1` (`getRequestConfig` cookie `locale` + Accept-Language) via `next-intl/plugin` (`next.config.ts:1`), `src/lib/locale.ts:1` + `LocaleSwitcher.tsx:1` (globe `lucide-react` `h-7 w-7` → dropdown `English/हिन्दी/मराठी`, cookie, `NextIntlClientProvider` in `layout.tsx:1` with `html lang={locale}` but `generateMetadata` hardcodes `'en'` so tab stays English). Client `translate` auto-detects `document.cookie` (`index.ts:48`), server sets `globalThis.__RINSETU_LOCALE__` after `await getLocale()` (`layout.tsx:27`, `result/page.tsx:143`, `apply/page.tsx:17`, `page.tsx:66`). Still throws on missing key; `tests/messages.coverage.test.ts` still closes the loop (added `partner.map.`).
+`en.json` holds **265 keys** (258 +5 `partner.map.*` +2 `ui.result.download_packet*` + **2026-09-10 `partner.map.offline*` + `ui.confirm.*` fix — missing keys that broke `/result?persona=P41` now restored**), `hi.json` + `mr.json` same keys (UI `hi`/`mr` human-written via Gemini-class LLM, scheme names/amounts/`₹`/`RinSetu` kept English per glossary do-not-translate — `hi` 2 English left `_README`/`currency_symbol`, `mr` 0 after fixes). `index.ts:1` now `en`/`hi`/`mr` (`CATALOGUES`), `src/i18n.ts:1` (`getRequestConfig` cookie `locale` + Accept-Language) via `next-intl/plugin` (`next.config.ts:1`), `src/lib/locale.ts:1` + `LocaleSwitcher.tsx:1` (globe `lucide-react` `h-7 w-7` → dropdown `English/हिन्दी/मराठी`, cookie, `NextIntlClientProvider` in `layout.tsx:1` with `html lang={locale}` but `generateMetadata` hardcodes `'en'` so tab stays English). Client `translate` auto-detects `document.cookie` (`index.ts:48`), server sets `globalThis.__RINSETU_LOCALE__` after `await getLocale()` (`layout.tsx:27`, `result/page.tsx:143`, `apply/page.tsx:17`, `page.tsx:66`). Still throws on missing key; `tests/messages.coverage.test.ts` still closes the loop (added `partner.map.`).
 
 ### 3.4 Tooling
 
-- **`npm run personas`** — runs all 40 personas through `recommend()` and prints a
-  summary table, or `npm run personas P19` for one applicant in full detail.
+- **`npm run personas`** — runs all **41** personas through `recommend()` and prints a
+  summary table (24 eligible, 0 no figures), or `npm run personas P41` for the F2 multi-eligible case (or `P19`) in full detail.
 - **`npm run verify:report`** — regenerates `VERIFY.md` from the data.
 - **`npm run check:verify`** — fails if `VERIFY.md` is out of date. In `npm run check`.
 - **`npm run check:boundaries`** — fails if `src/core/` imports from `llm/`, `app/`,
@@ -178,8 +175,7 @@ the live engine at generation time. If a documented claim stops being true, the 
 something false. Verified this session by temporarily flipping a seed value and watching
 it refuse.
 
-Current content: **55 unverified figures** across 4 locations — 32 supplied by the demo
-overlay, 23 seed placeholders or problem-statement paraphrases.
+Current content (2026-09-10): **48 unverified figures** across 4 locations — **19 `demo_overlay` + 29 `placeholder`** (was 55 = 32 `demo_overlay` + 23 placeholders) — **5/5 schemes unverified** (MICRO/TERM/EDU/AMY/UNY). F2 now expects P41 multi.
 
 ### 3.5 Database layer — connected + parity 2026-09-05
 
@@ -187,7 +183,7 @@ overlay, 23 seed placeholders or problem-statement paraphrases.
 - **`prisma/seed.ts`** — loads `data/*.json` through the *same* loader the engine uses, so the rows in Postgres are the objects the engine was tested against. Idempotent. Demo overlay **off by default**; `npm run seed -- --with-overlay` opts in and prints a warning. Uses `pg.Pool` with `ssl:{rejectUnauthorized:false}` and stripped `sslmode` (`seed.ts:57`) for Supabase pooler.
 - **`prisma.config.ts`** — Prisma 7 no longer reads the connection URL from the schema. Reads `DATABASE_URL` from `.env` conditionally — `prisma generate` works offline; only DB commands need it. `.env` now points at `aws-0-ap-south-1.pooler.supabase.com:6543` (pooled, for runtime/Vercel); use direct `5432` (`db.[PROJECT-REF].supabase.co`) for `prisma migrate dev`.
 - **`src/lib/dataset-db.ts:1`** — exact reverse of seed: reads Prisma rows back into `SchemeSpec`/`Partner`/`PartnerHealthRecord`/`DocumentDefinition` that `src/lib/dataset.ts:1` produces. Async, outside `src/core/` (boundary clean), derives `verified` same way (`dataset.ts:356` fix). `loadBundleFromDb(db)` mirrors `loadBundle()`.
-- **Verified live** — `schemes 3` (MICRO/TERM/EDU), `partners 15`, `partner_health 15`, `global_eligibility 1`, `PrismaClient` via `@prisma/adapter-pg` returns rows with relations. **Parity:** `tests/dataset-db.parity.test.ts:1` proves JSON↔DB deep-equal (after normalizing sparse `applies_when` nulls and `required_documents` superset), 237th test, skipped without `DATABASE_URL`.
+- **Verified live 2026-09-10** — `schemes 5` (MICRO/TERM/EDU/AMY/UNY), `partners 15`, `partner_health 15`, `global_eligibility 1` + **53 `document_req`** rows, `PrismaClient` via `@prisma/adapter-pg` returns rows with relations. **Parity:** `tests/dataset-db.parity.test.ts:1` proves JSON↔DB deep-equal (after normalizing sparse `applies_when` nulls and `required_documents` superset), 237th test, skipped without `DATABASE_URL`.
 
 Three decisions in the schema you should not undo without reading the header comments:
 
@@ -207,14 +203,14 @@ things are worth knowing:
 
 1. **`prisma generate` is now wired into install.** `package.json:19` has `"postinstall": "prisma generate"` — a fresh `git clone && npm install` generates the client automatically (was a manual `npx prisma generate` before 2026-09-05).
 
-2. **Migration `20260905144514_init` applied and `DATABASE_URL` connected 2026-09-05.** Supabase pooler at `aws-0-ap-south-1.pooler.supabase.com:6543` (`.env`, gitignored, pooled for runtime; use direct `5432` for `prisma migrate dev`). `prisma.config.ts` still keeps `prisma generate` offline-capable — only DB commands need the URL, and `npm run seed` prints a one-line explanation and exits 1 when it is missing (verified pre-connect). Seed is idempotent via `prisma/seed.ts` through `src/lib/dataset.ts`.
+2. **Migration `20260905144514_init` applied and `DATABASE_URL` connected 2026-09-05, now 5/15/15 +53 doc reqs 2026-09-10.** Supabase pooler at `aws-0-ap-south-1.pooler.supabase.com:6543` (`.env`, gitignored, pooled for runtime; use direct `5432` for `prisma migrate dev`). `prisma.config.ts` still keeps `prisma generate` offline-capable — only DB commands need the URL, and `npm run seed` prints a one-line explanation and exits 1 when it is missing (verified pre-connect). Seed is idempotent via `prisma/seed.ts` through `src/lib/dataset.ts`, now seeds **5 schemes + 53 doc reqs**.
 
 3. **Prisma 7 requires a driver adapter.** `new PrismaClient()` with no arguments throws
    at construction. `@prisma/adapter-pg` is installed and wired in `prisma/seed.ts`.
    This was determined by running it against an unreachable database, not assumed — worth
    knowing because the error message is confusing if you meet it cold.
 
-   4. **UI is baseline-complete, Maps + PDF + i18n + form till tehsil + LLM 3.6-flash + Admin + Demo hardening now done.** Phase 3–6 baseline `4a8eea7` + Maps 2026-09-05 (`PartnerMap` offline fallback 2026-09-07) + PDF (`packet`/`ExplainPanel`) + i18n (globe/`RinSetu` lock/accurate `hi`/`mr`/tab `en`) + form cascade `state → district → tehsil` (36 MH×7–16, villages removed per request, auto-detect `tehsil→district→state`, all valid choices, 360px) + LLM `extract` (`name`/`tehsil`/`village`, `normalizeExtracted`, `gemini-3.6-flash`, quota 20/min `429` retry, `DEMO_MODE` fixture cache 7 fixtures) + Admin health upload (`/admin/health-upload` 2026-09-07) + Demo hardening (`DEMO_MODE` + manifest + `DatasetBanner` stamp 2026-09-07) + parity offline-fix (2s probe). Code-complete; only **guideline transcription (Phase 0)** remains (see §7).
+    4. **UI is baseline-complete, Maps + PDF + i18n + form till tehsil + LLM 2.5-flash + Admin + Demo hardening + 2026-09-10 harden now done.** Phase 3–6 baseline `4a8eea7` + Maps 2026-09-05 (`PartnerMap` offline fallback 2026-09-07, **2026-09-10 offline i18n keys `partner.map.offline*`**) + PDF (`packet`/`ExplainPanel`) + i18n (globe/`RinSetu` lock/accurate `hi`/`mr`/tab `en`, **missing `ui.confirm.*` fixed — `/result?persona=P41` now 200**) + form cascade `state → district → tehsil` (36 MH×7–16, villages removed per request, auto-detect `tehsil→district→state`, all valid choices, **purpose now flat deduped without optgroups**, **cascade strict `district` disabled until `state`, `tehsil` disabled until `district`**, `paramsKey` intent-sync + `lakh`/`thousand` parsing fix, 360px mobile-first) + LLM `extract` (`name`/`tehsil`/`village`, `normalizeExtracted`, **`gemini-2.5-flash` → `gemini-flash-latest` fallback with 429/503 retry + `Retry-After`**, `DEMO_MODE` fixture cache 7 fixtures) + Admin health upload (`/admin/health-upload` 2026-09-07, **duplicate guard `finalSeen` fixed 2026-09-10**) + Demo hardening (`DEMO_MODE` + manifest + `DatasetBanner` stamp 2026-09-07) + parity offline-fix (2s probe). Code-complete; only **guideline transcription (Phase 0)** remains (see §7).
 
 ## 5. What remains / what we are trying to do
 
@@ -228,18 +224,19 @@ We are building **RinSetu end-to-end, then transcribing real guidelines**. All c
   `?persona=P01` fixture path. Design language from §6 is applied (ledger/paper,
   `globals.css` + `src/components/ui.tsx`).
 
-**What is done — code-complete 2026-09-07** (was paused 2026-09-06):
+**What is done — code-complete 2026-09-10** (was 2026-09-07, paused 2026-09-06):
 
-- **`src/llm/`** — **✓ done 2026-09-06–07 — `src/llm/client.ts` `gemini-3.6-flash` (was 1.5 404, `ListModels` 200, quota 20/min `429` retry `Retry-After:5`), `extract.ts` (`name`/`tehsil`/`village`, `normalizeExtracted`, `extractFromDocuments` multimodal `inlineData` `requiredDocCodes`, **2026-09-07 `DEMO_MODE` fixture cache `extract:<lowercased>` + `__fallback__` via `data/llm.fixtures.json:1`)**, `explain.ts` (prose, no numbers, deterministic `DEMO_MODE` fallback), `/api/extract` + `/api/extract-documents` + `/api/explain` + `FreeTextIntake.tsx:1` (fills form, stays on `/apply`, missing-field nudge, no jump, now `DEMO MODE` hint) + `LoanConfirmation.tsx:1`/`DocumentUpload.tsx:1`/`ExplainPanel.tsx:1` (required docs only for confirmed loan, `Re-apply`). Guided form still primary, LLM needs `GEMINI_API_KEY` + network except in `DEMO_MODE`.**
+- **5 schemes + F2 — ✓ done 2026-09-10 — `data/schemes.seed.json:1` now 5 schemes (MICRO, TERM, EDU, **AMY Aajeevika 15% via NBFC-MFI**, **UNY Udyam Nidhi 13% via Coop**), `data/personas.fixtures.json:1` 41 personas (**P41** tailoring 90k eligible for MICRO 6.5% and AMY 15% both, ranking picks MICRO — **F2 now live**, proves hard-filters-then-ranking generically), purpose dropdown now **flat deduped without `optgroup`** (eligibility is `category C` only), `documents.seed.json` 53 doc reqs, `VERIFY.md:11` now **48 unverified (was 55)** = **19 `demo_overlay` + 29 `placeholder`**, **5/5 schemes unverified**, no `src/core/` change — parameterised.**
+- **`src/llm/`** — **✓ done 2026-09-06–10 — `src/llm/client.ts` now `gemini-2.5-flash` → `gemini-flash-latest` fallback (was 3.6-flash, was 1.5 404) with **429/503 retry + `Retry-After` handling** (`ListModels` 200, quota 20/min), `extract.ts` (`name`/`tehsil`/`village`, `normalizeExtracted` + **`lakh`/`thousand` parsing fix**, `extractFromDocuments` multimodal `inlineData` `requiredDocCodes`, **2026-09-07 `DEMO_MODE` fixture cache `extract:<lowercased>` + `__fallback__` via `data/llm.fixtures.json:1`)**, `explain.ts` (prose, no numbers, deterministic `DEMO_MODE` fallback), `/api/extract` + `/api/extract-documents` + `/api/explain` + `FreeTextIntake.tsx:1` (fills form, stays on `/apply`, missing-field nudge, no jump, now `DEMO MODE` hint) + `LoanConfirmation.tsx:1`/`DocumentUpload.tsx:1`/`ExplainPanel.tsx:1` (required docs only for confirmed loan, `Re-apply`). Guided form still primary, LLM needs `GEMINI_API_KEY` + network except in `DEMO_MODE`.**
 - **PDF packet** — **✓ done 2026-09-05 — `packet.tsx` + `/api/packet` + `result` download link. Reuses `recommend()`; no new numbers.**
-- **Multilingual** — **✓ done 2026-09-05–06 — `next-intl` + `hi.json`/`mr.json` (265 keys, accurate `hi`/`mr` via Gemini-class LLM, `hi` 2 left `mr` 0, brand `RinSetu` lock, tab stays `en`), `src/i18n.ts:1` + `LocaleSwitcher` (globe), `layout`/`result`/`apply`/`personas`/`packet` locale-aware, form till tehsil (36 MH×7–16, `village` removed, auto-detect `tehsil→district→state`).**
-- **Admin health-data upload — ✓ done 2026-09-07** — `/admin/health-upload` (`src/app/admin/health-upload/page.tsx:1` + `src/components/AdminHealthUpload.tsx:1` + `AdminLogin.tsx:1`) + `src/lib/admin-auth.ts:1` (`ADMIN_PASSWORD` → `sha256` cookie `rinsetu_admin` 8h, default `rinsetu-admin`) + `src/lib/health-csv.ts:1` (quoted split, `npa_pct` 0..100, forced `MIS_UPLOAD`, duplicate guard) + 5 APIs (`/api/admin/login|logout|health-preview|health-apply|health-template`), template CSV, preview (valid/invalid per line) → apply upsert `(partnerCode,asOf)`. `PartnerHealth.data_origin` still `SIMULATED` until first CSV; `PartnerPanel.tsx:1` already renders `DataOriginBadge`.
+- **Multilingual + form harden — ✓ done 2026-09-05–10** — `next-intl` + `hi.json`/`mr.json` (265 keys + **PartnerMap offline `partner.map.offline*` i18n keys added 2026-09-10**, accurate `hi`/`mr` via Gemini-class LLM, `hi` 2 left `mr` 0, brand `RinSetu` lock, tab stays `en`, **missing `ui.confirm.*` keys fixed 2026-09-10 — `/result?persona=P41` now 200 was 500**), `src/i18n.ts:1` + `LocaleSwitcher` (globe), `layout`/`result`/`apply`/`personas`/`packet` locale-aware, form till tehsil (36 MH×7–16, `village` removed, auto-detect `tehsil→district→state`, **purpose flat deduped**, **cascade strict `district` disabled until `state`, `tehsil` disabled until `district`, `paramsKey` intent-sync + `lakh`/`thousand` fix**).**
+- **Admin health-data upload — ✓ done 2026-09-07–10** — `/admin/health-upload` (`src/app/admin/health-upload/page.tsx:1` + `src/components/AdminHealthUpload.tsx:1` + `AdminLogin.tsx:1`) + `src/lib/admin-auth.ts:1` (`ADMIN_PASSWORD` → `sha256` cookie `rinsetu_admin` 8h, default `rinsetu-admin`) + `src/lib/health-csv.ts:1` (quoted split, `npa_pct` 0..100, forced `MIS_UPLOAD`, **duplicate guard `finalSeen` fixed 2026-09-10 — valid > invalid**) + 5 APIs (`/api/admin/login|logout|health-preview|health-apply|health-template`), template CSV, preview (valid/invalid per line) → apply upsert `(partnerCode,asOf)`. `PartnerHealth.data_origin` still `SIMULATED` until first CSV; `PartnerPanel.tsx:1` already renders `DataOriginBadge`.
 - **`DEMO_MODE` fixture cache + offline hardening — ✓ done 2026-09-07** — `DEMO_MODE=true` (`next.config.ts:4` `NEXT_PUBLIC_DEMO_MODE`, `src/app/layout.tsx:26` `window.__RINSETU_DEMO__`, `public/manifest.json:1` PWA) → `src/llm/extract.ts:119` fixture cache (7 fixtures) + `src/llm/explain.ts:49` deterministic prose + `src/components/DatasetBanner.tsx:1` `DEMO MODE` stamp + `src/components/PartnerMap.tsx:48` offline fallback (no OSM fetch, shows codes) + `tests/dataset-db.parity.test.ts:38` now `DB unreachable, skipping parity check` (2s probe, 236+1 skipped wifi off). Full demo runs with wifi off.
-- **`README.md`** — was boilerplate at Phase 2, 58 lines at `b9f34ba`; rewritten 2026-08-31 to a full setup + architecture doc, refreshed 2026-09-07 for admin+demo+parity.
+- **`README.md`** — was boilerplate at Phase 2, 58 lines at `b9f34ba`; rewritten 2026-08-31 to a full setup + architecture doc, refreshed 2026-09-07 for admin+demo+parity, **2026-09-10 still accurate (237 tests, 15 routes).**
 
 **What we are trying to do next (deferred, not code):**
 
-- **Phase 0 verification** — 55 unverified figures (`VERIFY.md:11` 32 `demo_overlay` + 15 `ps_text` + 8 `placeholder`), 11 open questions (`data/schemes.seed.json:1` `open_questions_for_phase_0`). Need official guideline `source_url`/`source_date` per field; engine ingests without logic change, `figures_authoritative` flips automatically when citable.
+- **Phase 0 verification** — **48 unverified figures (was 55) — 19 `demo_overlay` + 29 `placeholder` (`VERIFY.md:11`), 5/5 schemes unverified**, 11 open questions (`data/schemes.seed.json:1` `open_questions_for_phase_0`). Need official guideline `source_url`/`source_date` per field; engine ingests without logic change, `figures_authoritative` flips automatically when citable. F2 now expects P41 multi.
 - Optional polish — Lighthouse a11y ≥90, XLSX alongside CSV, voice/Bhashini, Vercel deploy. Not blocking the code gate.
 
 ---
@@ -273,7 +270,7 @@ re-litigate; extend.
 | `/` | `src/app/page.tsx` | Landing: provenance stamp (compact), claim, `/apply` + `/personas` CTAs, 4-step band, scheme list from dataset, detail block. |
 | `/apply` | `src/app/apply/page.tsx` | Guided intake, GET → `/result`. All option lists derived from dataset/partners/documents; blank → `undefined` → Zod default; no `required`, no geocoding. |
 | `/result` | `src/app/result/page.tsx` | Runs `recommend()` on query string or `?persona=P01`, renders `DatasetBanner` (full), answer summary, recommended `SchemeCard` + others, **PDF packet download** (`/api/packet?...` via `packet.tsx`). |
-| `/personas` | `src/app/personas/page.tsx` | 40 fixtures live through `recommend()` at render time; no stored outcomes. |
+| `/personas` | `src/app/personas/page.tsx` | **41** fixtures live through `recommend()` at render time (P41 proves F2); no stored outcomes. |
 | `/api/packet` | `src/app/api/packet/route.ts:1` | `GET` same query as `/result` → `application/pdf` (`renderToBuffer(<PacketDocument>)`, `force-dynamic`). Pre-filled packet, no new numbers. |
 
 Components: `ui.tsx` (Provenance/StatusPill/VerdictMark/FieldRow/DataOriginBadge), `DatasetBanner.tsx` (full + compact), `SchemeCard.tsx`, `VerdictList.tsx`, `LoanFigures.tsx` (incl. `computable: false` branch), `PartnerPanel.tsx` (dual ranking, exclusion reasons, SIMULATED badge) + `PartnerMap.tsx:1` (MapLibre GL JS `6.7.0` + OSM raster, eligible-only markers, `fitBounds`, 240/320px, 360px), `ChecklistPanel.tsx`, `form.tsx`, `ScrollReveal.tsx`. Lib: `packet.tsx:1` (`PacketDocument`), `applicant-params.ts` (query ↔ `ApplicantProfile`), `format.ts`, `view.ts`.
@@ -284,14 +281,15 @@ Invariants preserved: no `src/core/` import from `src/llm/`/`app/`/`components/`
 
 All code phases (3–9) are done. The remaining work is **non-code** (see §5):
 
- 1. **Maps (Phase 4 tail):** **✓ done 2026-09-05–07 — `PartnerMap.tsx:1` (OSM `tile.openstreetmap.org`, eligible-only, `fitBounds`, 2026-09-07 offline fallback `tile` skip when `!navigator.onLine` or `DEMO_MODE`, shows ranked codes) wired via `PartnerPanel.tsx:222` + `SchemeCard.tsx:66`.**
+ 1. **Maps (Phase 4 tail):** **✓ done 2026-09-05–10 — `PartnerMap.tsx:1` (OSM `tile.openstreetmap.org`, eligible-only, `fitBounds`, 2026-09-07 offline fallback `tile` skip when `!navigator.onLine` or `DEMO_MODE`, shows ranked codes, **2026-09-10 offline i18n `partner.map.offline*` keys added**) wired via `PartnerPanel.tsx:222` + `SchemeCard.tsx:66`.**
 2. **PDF packet (Phase 6 tail):** **✓ done 2026-09-05 — `src/lib/packet.tsx:1` + `src/app/api/packet/route.ts:1` (`GET /api/packet?...` → PDF, `renderToBuffer`, ledger styles) + `src/app/result/page.tsx:178` download link. Reuses `recommend()`; no new numbers.**
-3. **Multilingual (Phase 7):** **✓ done 2026-09-05–06 — `next-intl` + `hi.json`/`mr.json` (265 keys, accurate via Gemini-class LLM, `hi` 2 left `mr` 0, brand `RinSetu` lock, tab stays `en`, `LocaleSwitcher` globe) + `src/i18n.ts:1`/`LocaleSwitcher`/`layout`/`result`/`apply`/`personas`/`packet` locale-aware, form till tehsil (36 MH×7–16).**
-4. **LLM boundaries (enhancement, Phases 3/7):** **✓ done 2026-09-06–07 — `src/llm/client.ts` `gemini-3.6-flash` (was 1.5 404, `ListModels` 200, quota 20/min `429` retry) + `extract.ts` (`name`/`tehsil`/`village`, `normalizeExtracted`, `extractFromDocuments` multimodal `requiredDocCodes`, 2026-09-07 `DEMO_MODE` `extract:<lowercased>` + `__fallback__` fixture cache), `explain.ts` (deterministic fallback), `/api/extract`/`/api/extract-documents`/`/api/explain` + `FreeTextIntake` (fills form, stays on `/apply`, missing nudge) + `LoanConfirmation`/`DocumentUpload` (required only for confirmed loan) + `ExplainPanel`, `GEMINI_API_KEY` in `.env` or `DEMO_MODE=true` fixture.**
-5. **Admin health upload (Phase 8):** **✓ done 2026-09-07 — `/admin/health-upload` (`src/app/admin/health-upload/page.tsx:1` + `AdminHealthUpload.tsx:1` + `AdminLogin.tsx:1` + `src/lib/admin-auth.ts:1` + `health-csv.ts:1` + 5 `api/admin/*`), CSV `partner_code…as_of` → `PartnerHealth.data_origin=MIS_UPLOAD` (default `rinsetu-admin`, 8h cookie), `DB unreachable` guard.**
+3. **Multilingual (Phase 7):** **✓ done 2026-09-05–10 — `next-intl` + `hi.json`/`mr.json` (265 keys + offline keys, accurate via Gemini-class LLM, `hi` 2 left `mr` 0, brand `RinSetu` lock, tab stays `en`, `LocaleSwitcher` globe, **2026-09-10 missing `ui.confirm.*` fixed — `/result?persona=P41` 200**) + `src/i18n.ts:1`/`LocaleSwitcher`/`layout`/`result`/`apply`/`personas`/`packet` locale-aware, form till tehsil (36 MH×7–16, **purpose now flat deduped**, **cascade strict**).**
+4. **LLM boundaries (enhancement, Phases 3/7):** **✓ done 2026-09-06–10 — `src/llm/client.ts` now `gemini-2.5-flash` → `gemini-flash-latest` fallback (was 3.6-flash, was 1.5 404) with **429/503 retry + `Retry-After` handling** + `extract.ts` (`name`/`tehsil`/`village`, `normalizeExtracted` + `lakh`/`thousand` fix, `extractFromDocuments` multimodal `requiredDocCodes`, 2026-09-07 `DEMO_MODE` `extract:<lowercased>` + `__fallback__` fixture cache, **2026-09-10 `paramsKey` intent-sync fix**), `explain.ts` (deterministic fallback), `/api/extract`/`/api/extract-documents`/`/api/explain` + `FreeTextIntake` (fills form, stays on `/apply`, missing nudge) + `LoanConfirmation`/`DocumentUpload` (required only for confirmed loan) + `ExplainPanel`, `GEMINI_API_KEY` in `.env` or `DEMO_MODE=true` fixture.**
+5. **Admin health upload (Phase 8):** **✓ done 2026-09-07–10 — `/admin/health-upload` (`src/app/admin/health-upload/page.tsx:1` + `AdminHealthUpload.tsx:1` + `AdminLogin.tsx:1` + `src/lib/admin-auth.ts:1` + `health-csv.ts:1` + 5 `api/admin/*`), CSV `partner_code…as_of` → `PartnerHealth.data_origin=MIS_UPLOAD` (default `rinsetu-admin`, 8h cookie), `DB unreachable` guard, **2026-09-10 duplicate guard `finalSeen` fixed**.**
 6. **Demo hardening (Phase 9):** **✓ done 2026-09-07 — `DEMO_MODE=true` (`next.config.ts:4` `NEXT_PUBLIC_DEMO_MODE`, `layout.tsx:26` `window.__RINSETU_DEMO__`, `public/manifest.json:1` PWA, `DatasetBanner` `DEMO MODE` stamp, `PartnerMap` offline fallback) + `tests/dataset-db.parity.test.ts:38` now 2s probe + `DB unreachable, skipping parity check` (236+1 skipped wifi off). Full demo runs with wifi off.**
+7. **5 schemes + F2 + cascade/LLM harden (2026-09-10):** **✓ done — 5 schemes (MICRO/TERM/EDU/AMY 15% NBFC-MFI/UNY 13% Coop) + 41 personas P41 tailoring 90k proves F2 ranking (MICRO 6.5% > AMY 15%) + purpose flat deduped + cascade strict (`district`/`tehsil` disabled) + `paramsKey` + `lakh` fix + LLM 2.5-flash fallback + `ui.confirm` fix + health-csv guard + PartnerMap offline i18n.**
 
-**We are trying to do next:** **Phase 0 transcription** — take the 55 unverified figures in `VERIFY.md:11` and 11 open questions in `data/schemes.seed.json:1` and transcribe official guideline `source_url`/`source_date` per field, two-person diff, then `npm run verify:report`. Engine needs no logic change; `figures_authoritative` flips when citable. After that: Vercel deploy + rehearsal (§12).
+**We are trying to do next:** **Phase 0 transcription** — take the **48 unverified (was 55) — 19 `demo_overlay` + 29 `placeholder` in `VERIFY.md:11` (5/5 schemes unverified)** and 11 open questions in `data/schemes.seed.json:1` and transcribe official guideline `source_url`/`source_date` per field, two-person diff, then `npm run verify:report`. Engine needs no logic change; `figures_authoritative` flips when citable. F2 now expects P41 multi. After that: Vercel deploy + rehearsal (§12).
 
 **Two constraints still apply.** Do not edit `src/core/` from the UI side — if the UI
 needs something the core does not expose, that is a core change with its own tests, in
@@ -310,27 +308,27 @@ green tree:
 npm install && npm run check   # postinstall runs prisma generate; no manual npx needed
 ```
 
-That must end with `237 passed` (11 files, wifi on: 237 passed, wifi off: 236 passed +1 skipped `DB unreachable, skipping parity check`). If it does not, stop and fix that before writing anything new — every claim in this document was true at `3f4939e` (re-checked 2026-09-07, admin+demo+parity offline-fix).
+That must end with `237 passed` (11 files, wifi on: 237 passed, wifi off: 236 passed +1 skipped `DB unreachable, skipping parity check`). If it does not, stop and fix that before writing anything new — every claim in this document was true at `13b111d` (re-checked 2026-09-10, 5 schemes + P41 + cascade/LLM harden).
 
-Working tree will be dirty with the 2026-09-07 doc refresh (this file + `README.md` + `docs/ROADMAP.md` + `docs/HANDOFF.md` + `data/llm.fixtures.json` + `src/llm/extract.ts` + `tests/dataset-db.parity.test.ts`); commit before continuing. The old instruction to `git add -A && git commit -m "Phases 1-2: ..."` was for the Phase 1–2 gate when nothing was committed — that gate is now captured in `6737439`/`4a8eea7` plus `3f4939e`.
+Working tree will be dirty with the 2026-09-10 doc refresh (this file); commit before continuing. The old instruction to `git add -A && git commit -m "Phases 1-2: ..."` was for the Phase 1–2 gate when nothing was committed — that gate is now captured in `6737439`/`4a8eea7` plus `13b111d`.
 
-**Where we are now — code-complete pause 2026-09-07:** `npm run check` **11/237** green (236+1 skipped offline), `npm run build` **15 routes** (`ƒ /api/admin/*`×5 + `ƒ /admin/health-upload`, locale via `cookies()`), DB `3/15/15` + `GEMINI_API_KEY` `gemini-3.6-flash` (20/min, `429` retry) + `DEMO_MODE=true` fixture cache (7 fixtures) + `ADMIN_PASSWORD=rinsetu-admin` (default), i18n `hi`/`mr` accurate, form `state→district→tehsil` (36×7–16, `village` removed, auto-detect `tehsil→district→state`), free-text fills form and stays on `/apply` + missing nudge, admin CSV → `MIS_UPLOAD`, map offline fallback. **Next:** **Phase 0 guideline transcription** (55 figures + 11 open questions) — see `docs/ROADMAP.md` §10 and `VERIFY.md`.
+**Where we are now — code-complete pause 2026-09-10:** `npm run check` **11/237** green (236+1 skipped offline), `npm run build` **15 routes** (`ƒ /api/admin/*`×5 + `ƒ /admin/health-upload`, locale via `cookies()`), DB **5/15/15 +53 doc reqs** + `GEMINI_API_KEY` **`gemini-2.5-flash` → `flash-latest` 429/503 `Retry-After`** + `DEMO_MODE=true` fixture cache (7 fixtures) + `ADMIN_PASSWORD=rinsetu-admin` (default), i18n `hi`/`mr` accurate (PartnerMap offline keys + `ui.confirm` fix), form `state→district→tehsil` (36×7–16, `village` removed, **purpose flat deduped**, **cascade strict** `district`/`tehsil` disabled, `paramsKey` + `lakh`/`thousand` fix, auto-detect `tehsil→district→state`, 360px mobile-first), free-text fills form and stays on `/apply` + missing nudge, admin CSV → `MIS_UPLOAD` (duplicate guard fixed), map offline fallback, **41 personas / 24 eligible / 0 no figures (P41 proves F2)**. **Next:** **Phase 0 guideline transcription** (48 figures — 19 `demo_overlay` + 29 `placeholder`, 5/5 schemes unverified + 11 open questions) — see `docs/ROADMAP.md` §10 and `VERIFY.md`.
 
 To see the engine work with no database and no API key:
 
 ```bash
-npm run personas          # 40 rows, live through recommend()
+npm run personas          # 41 rows (24 eligible, 0 no figures), live through recommend()
 DEMO_MODE=true npm run personas  # same, offline fixture path
-npm run dev               # http://localhost:3000 — /, /apply, /result, /personas, /admin/health-upload
+npm run dev               # http://localhost:3000 — /, /apply, /result?persona=P41, /personas, /admin/health-upload
 DEMO_MODE=true npm run dev  # offline demo — no GEMINI_API_KEY, no tiles, parity skips
 ```
 
-To see a single persona's full result: `npm run personas P19` or open
-`/result?persona=P19` in the browser.
+To see a single persona's full result: `npm run personas P41` (F2 multi) or `npm run personas P19` or open
+`/result?persona=P41` in the browser — now 200 (was 500 before `ui.confirm` fix).
 
-Fresh-clone build also verified 2026-09-07: `npm run build` compiles cleanly —
-`ƒ /`, `ƒ /apply`, `ƒ /result`, `ƒ /admin/health-upload`, 103 kB First Load JS.
-DB path verified 2026-09-05: `npx prisma migrate status` sees `20260905144514_init` as applied; `npm run seed` succeeds (idempotent) via pooler 6543. Offline path verified 2026-09-07: `DEMO_MODE=true` `npx tsx` extract + `npm run personas` + `PartnerMap` fallback, parity 236+1 skipped.
+Fresh-clone build also verified 2026-09-10: `npm run build` compiles cleanly —
+`ƒ /`, `ƒ /apply`, `ƒ /result` (`ƒ /result?persona=P41` 200), `ƒ /admin/health-upload`, 103 kB First Load JS.
+DB path verified 2026-09-10: `npx prisma migrate status` sees `20260905144514_init` as applied; `5/15/15 +53` via pooler 6543 (`npm run seed` idempotent). Offline path verified 2026-09-10: `DEMO_MODE=true` `npx tsx` extract + `npm run personas` 41 rows + `PartnerMap` fallback, parity 236+1 skipped.
 
 ## 9. Rules that are not negotiable
 
