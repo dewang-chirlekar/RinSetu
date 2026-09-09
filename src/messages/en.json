@@ -251,7 +251,10 @@
       "eligible_only": "Eligible partners only — straight line, not by road",
       "note": "Markers show straight-line distance. Road distance and travel time are not calculated.",
       "applicant_marker": "You",
-      "failed": "Map could not be loaded. The list below still shows the ranked partners."
+      "failed": "Map could not be loaded. The list below still shows the ranked partners.",
+      "offline_badge": "Offline — tiles pre-cached for demo",
+      "offline_title": "Map tiles unavailable offline — showing ranked partners",
+      "offline_note": "Showing ranked partners offline"
     }
   },
   "health": {
@@ -396,6 +399,12 @@
     },
     "edu": {
       "description": "Loans for professional and technical courses, in India or abroad."
+    },
+    "amy": {
+      "description": "Micro loans via NBFC-MFIs, for small business activities (Aajeevika)."
+    },
+    "uny": {
+      "description": "Loans via cooperatives and small finance banks, for micro enterprises (Udyam Nidhi)."
     }
   },
   "recommendation": {
@@ -516,6 +525,10 @@
       "free_text_loading": "Extracting…",
       "free_text_or": "or fill the guided form below",
       "free_text_demo_note": "Free-text extraction requires internet and a Gemini API key. The guided form is the primary path and works offline.",
+      "free_text_retry": "Try again",
+      "free_text_retry_in": "Retry in {seconds}s",
+      "free_text_guided_fallback": "or use the guided form below — it works offline, no AI needed.",
+      "free_text_demo_active": "DEMO MODE: fixture cache active, no API key needed.",
       "free_text_missing_prefix": "We got some fields — please also fill:",
       "free_text_missing_hint": "Review the form below and complete the missing fields before seeing the result.",
       "upload_heading": "Upload required documents for this loan",

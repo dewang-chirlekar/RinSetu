@@ -185,11 +185,11 @@ export function PartnerMap({
             <h4 className="text-ink-3 text-[0.6875rem] font-semibold tracking-wider uppercase">
               {translate('partner.map.heading')}
             </h4>
-            <span className="stamp text-fail">Offline — tiles pre-cached for demo</span>
+            <span className="stamp text-fail">{translate('partner.map.offline_badge')}</span>
           </div>
           <div className="border-rule bg-paper-sunk mt-1.5 grid h-[240px] w-full place-items-center border px-3 py-3 text-center sm:h-[320px]">
             <div>
-              <p className="text-ink text-xs font-medium">Map tiles unavailable offline — showing ranked partners</p>
+              <p className="text-ink text-xs font-medium">{translate('partner.map.offline_title')}</p>
               <p className="text-ink-3 mt-1 text-[0.6875rem] leading-relaxed">
                 {translate('partner.map.eligible_only')} · {result.eligible.length} eligible partners · {translate('partner.map.note')}
               </p>

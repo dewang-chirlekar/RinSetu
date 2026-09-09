@@ -34,8 +34,25 @@ export async function POST(request: Request): Promise<Response> {
     });
     return Response.json(profile);
   } catch (e) {
-    const msg = e instanceof Error ? e.message : String(e);
-    const isKeyMissing = msg.includes('GEMINI_API_KEY');
-    return Response.json({ error: msg }, { status: isKeyMissing ? 500 : 500 });
+    const raw = e instanceof Error ? e.message : String(e);
+    const lower = raw.toLowerCase();
+    const isQuota = lower.includes('quota') || raw.includes('429');
+    const isBusy = lower.includes('503') || lower.includes('high demand') || lower.includes('overloaded') || lower.includes('service unavailable') || lower.includes('busy');
+    let status = 500;
+    let retryAfter: string | undefined;
+    let msg = raw;
+    if (isQuota) {
+      msg = 'Free-tier quota exceeded (20/min). Please wait a few seconds and retry, or use the guided form below — it works offline.';
+      status = 429;
+      retryAfter = '5';
+    } else if (isBusy) {
+      msg = 'AI service is busy (high demand on Gemini). Please wait 10–15 seconds and try again, or use the guided form — it works offline.';
+      status = 503;
+      retryAfter = '10';
+    }
+    const isKeyMissing = lower.includes('gemini_api_key');
+    if (isKeyMissing) status = 500;
+    console.error('POST /api/extract-documents failed:', raw);
+    return Response.json({ error: msg }, { status, headers: retryAfter ? { 'Retry-After': retryAfter } : undefined });
   }
 }

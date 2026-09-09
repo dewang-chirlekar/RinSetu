@@ -13,7 +13,7 @@
  */
 
 import { SchemaType } from '@google/generative-ai';
-import { getFixture, getGeminiClient, isDemoMode, MODEL_ID } from './client';
+import { FALLBACK_MODELS, getFixture, getGeminiClient, isDemoMode, isModelNotFoundError, isTransientError, MODEL_ID } from './client';
 import type { RecommendationResult } from '@/core/types';
 
 const EXPLAIN_INSTRUCTION = `
@@ -103,25 +103,51 @@ export async function explainResult(input: {
     return parts.join(' ');
   }
 
-  const client = getGeminiClient();
-  const model = client.getGenerativeModel({
-    model: MODEL_ID,
-    generationConfig: {
-      temperature: 0.3,
-      responseMimeType: 'application/json',
-      responseSchema: {
-        type: SchemaType.OBJECT,
-        properties: { prose: { type: SchemaType.STRING } },
-        required: ['prose'],
-      },
-    },
-  });
-
   // Only the computed result is sent — the model has no other source of truth
   const payload = JSON.stringify({ result, language });
   const prompt = `${EXPLAIN_INSTRUCTION}\n\nInput JSON:\n${payload}`;
-  const res = await model.generateContent(prompt);
-  const text = res.response.text();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const proseSchema: any = {
+    type: SchemaType.OBJECT,
+    properties: { prose: { type: SchemaType.STRING } },
+    required: ['prose'],
+  };
+  const modelsToTry = [MODEL_ID, ...FALLBACK_MODELS.filter((m) => m !== MODEL_ID)];
+  let text: string | undefined;
+  let lastErrorExplain: string | undefined;
+  outerExplain: for (const modelId of modelsToTry) {
+    const client = getGeminiClient();
+    const model = client.getGenerativeModel({
+      model: modelId,
+      generationConfig: {
+        temperature: 0.3,
+        responseMimeType: 'application/json',
+        responseSchema: proseSchema,
+      },
+    });
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const res = await model.generateContent(prompt);
+        text = res.response.text();
+        break outerExplain;
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e);
+        lastErrorExplain = msg;
+        if (isModelNotFoundError(msg)) break;
+        if (isTransientError(msg) && attempt < 2) {
+          const m = msg.match(/retry in (\d+(\.\d+)?)s/i);
+          const waitMs = m ? Math.ceil(parseFloat(m[1]) * 1000) : 1200 * (attempt + 1) + Math.random() * 500;
+          await new Promise((r) => setTimeout(r, waitMs));
+          continue;
+        }
+        if (isTransientError(msg)) break;
+        throw e;
+      }
+    }
+  }
+  if (!text) {
+    throw new Error(lastErrorExplain ?? 'explainResult: no response');
+  }
   let parsed: unknown;
   try {
     parsed = JSON.parse(text);

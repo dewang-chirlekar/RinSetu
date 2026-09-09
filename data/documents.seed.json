@@ -64,6 +64,23 @@
     { "scheme_code": "EDU", "partner_type": "PSB", "doc_code": "PAN",              "mandatory": true,  "notes_key": "doc.note.pan_of_coborrower" },
     { "scheme_code": "EDU", "partner_type": "PSB", "doc_code": "GUARANTOR_FORM",   "mandatory": false, "notes_key": "doc.note.guarantor_above_threshold" },
     { "scheme_code": "EDU", "partner_type": "PSB", "doc_code": "BANK_STATEMENT",   "mandatory": true,  "notes_key": "doc.note.bank_statement_months" },
-    { "scheme_code": "EDU", "partner_type": "SCA", "doc_code": "PAN",              "mandatory": false, "notes_key": "doc.note.pan_of_coborrower" }
+    { "scheme_code": "EDU", "partner_type": "SCA", "doc_code": "PAN",              "mandatory": false, "notes_key": "doc.note.pan_of_coborrower" },
+
+    { "scheme_code": "AMY", "partner_type": "*",        "doc_code": "CASTE_CERT",      "mandatory": true,  "notes_key": "doc.note.caste_must_be_state_issued" },
+    { "scheme_code": "AMY", "partner_type": "*",        "doc_code": "INCOME_CERT",     "mandatory": true,  "notes_key": "doc.note.income_recent" },
+    { "scheme_code": "AMY", "partner_type": "*",        "doc_code": "AADHAAR",         "mandatory": true,  "notes_key": null },
+    { "scheme_code": "AMY", "partner_type": "*",        "doc_code": "PHOTO",           "mandatory": true,  "notes_key": "doc.note.photo_count" },
+    { "scheme_code": "AMY", "partner_type": "*",        "doc_code": "RESIDENCE_PROOF", "mandatory": true,  "notes_key": null },
+    { "scheme_code": "AMY", "partner_type": "*",        "doc_code": "QUOTATION",       "mandatory": true,  "notes_key": "doc.note.quotation_itemised" },
+    { "scheme_code": "AMY", "partner_type": "NBFC_MFI", "doc_code": "GROUP_REFERENCE", "mandatory": true,  "notes_key": "doc.note.mfi_group" },
+    { "scheme_code": "AMY", "partner_type": "NBFC_MFI", "doc_code": "BANK_PASSBOOK",   "mandatory": true,  "notes_key": null },
+
+    { "scheme_code": "UNY", "partner_type": "*",        "doc_code": "CASTE_CERT",      "mandatory": true,  "notes_key": "doc.note.caste_must_be_state_issued" },
+    { "scheme_code": "UNY", "partner_type": "*",        "doc_code": "INCOME_CERT",     "mandatory": true,  "notes_key": "doc.note.income_recent" },
+    { "scheme_code": "UNY", "partner_type": "*",        "doc_code": "AADHAAR",         "mandatory": true,  "notes_key": null },
+    { "scheme_code": "UNY", "partner_type": "*",        "doc_code": "PHOTO",           "mandatory": true,  "notes_key": "doc.note.photo_count" },
+    { "scheme_code": "UNY", "partner_type": "*",        "doc_code": "RESIDENCE_PROOF", "mandatory": true,  "notes_key": null },
+    { "scheme_code": "UNY", "partner_type": "*",        "doc_code": "QUOTATION",       "mandatory": true,  "notes_key": "doc.note.quotation_itemised" },
+    { "scheme_code": "UNY", "partner_type": "SCA",      "doc_code": "BANK_PASSBOOK",   "mandatory": true,  "notes_key": "doc.note.sca_disburses_to_account" }
   ]
 }

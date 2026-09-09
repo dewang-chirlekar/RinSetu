@@ -37,11 +37,21 @@ function many(params: RawParams, key: string): string[] {
   return (Array.isArray(value) ? value : [value]).filter((entry) => entry.trim().length > 0);
 }
 
-/** Blank or unparseable → null. Never a zero substituted for a blank. */
+/** Blank or unparseable → null. Never a zero substituted for a blank. Handles “5 lakh”, “90 thousand”, “₹ 1,25,000”. */
 function num(params: RawParams, key: string): number | null {
   const raw = one(params, key);
   if (raw === null) return null;
-  const parsed = Number(raw.replace(/[,\s]/g, ''));
+  const cleaned = raw.replace(/[,\s₹]/g, '').toLowerCase();
+  if (cleaned.includes('lakh')) {
+    const n = parseFloat(cleaned.replace('lakh', ''));
+    return Number.isFinite(n) ? Math.round(n * 100000) : null;
+  }
+  if (cleaned.includes('thousand')) {
+    const n = parseFloat(cleaned.replace('thousand', ''));
+    return Number.isFinite(n) ? Math.round(n * 1000) : null;
+  }
+  // Plain number like "500000" or "5.5"
+  const parsed = Number(cleaned);
   return Number.isFinite(parsed) ? parsed : null;
 }
 

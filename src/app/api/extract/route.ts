@@ -27,12 +27,29 @@ export async function POST(request: Request): Promise<Response> {
     return Response.json(profile);
   } catch (e) {
     const raw = e instanceof Error ? e.message : e instanceof Event ? `Network error (${(e as Event).type})` : String(e);
-    const isQuota = raw.toLowerCase().includes('quota') || raw.includes('429');
-    const msg = isQuota
-      ? 'Free-tier quota exceeded (20/min). Please wait a few seconds and retry, or use the guided form below — it works offline and is the primary path.'
-      : raw;
+    const lower = raw.toLowerCase();
+    const isQuota = lower.includes('quota') || raw.includes('429');
+    const isBusy = lower.includes('503') || lower.includes('high demand') || lower.includes('overloaded') || lower.includes('service unavailable') || lower.includes('busy');
+    const isTransient = isQuota || isBusy;
+    let msg = raw;
+    let status = 500;
+    let retryAfter: string | undefined;
+    if (isQuota) {
+      msg = 'Free-tier quota exceeded (20/min). Please wait a few seconds and retry, or use the guided form below — it works offline and is the primary path.';
+      status = 429;
+      retryAfter = '5';
+    } else if (isBusy) {
+      msg = 'AI service is busy (high demand on Gemini). Please wait 10–15 seconds and try again, or use the guided form below — it works offline and is the primary path.';
+      status = 503;
+      retryAfter = '10';
+    } else if (lower.includes('gemini failed')) {
+      // Already user-friendly hint from extract.ts
+      msg = raw;
+      status = isTransient ? 503 : 500;
+      retryAfter = isTransient ? '10' : undefined;
+    }
     console.error('POST /api/extract failed:', raw);
-    return Response.json({ error: msg }, { status: isQuota ? 429 : 500, headers: isQuota ? { 'Retry-After': '5' } : undefined });
+    return Response.json({ error: msg }, { status, headers: retryAfter ? { 'Retry-After': retryAfter } : undefined });
   }
 }
 
@@ -46,11 +63,22 @@ export async function GET(request: Request): Promise<Response> {
     return Response.json(profile);
   } catch (e) {
     const raw = e instanceof Error ? e.message : e instanceof Event ? `Network error (${(e as Event).type})` : String(e);
-    const isQuota = raw.toLowerCase().includes('quota') || raw.includes('429');
-    const msg = isQuota
-      ? 'Free-tier quota exceeded (20/min). Please wait a few seconds and retry, or use the guided form below — it works offline and is the primary path.'
-      : raw;
+    const lower = raw.toLowerCase();
+    const isQuota = lower.includes('quota') || raw.includes('429');
+    const isBusy = lower.includes('503') || lower.includes('high demand') || lower.includes('overloaded') || lower.includes('service unavailable') || lower.includes('busy');
+    let msg = raw;
+    let status = 500;
+    let retryAfter: string | undefined;
+    if (isQuota) {
+      msg = 'Free-tier quota exceeded (20/min). Please wait a few seconds and retry, or use the guided form below — it works offline and is the primary path.';
+      status = 429;
+      retryAfter = '5';
+    } else if (isBusy) {
+      msg = 'AI service is busy (high demand on Gemini). Please wait 10–15 seconds and try again, or use the guided form below — it works offline and is the primary path.';
+      status = 503;
+      retryAfter = '10';
+    }
     console.error('GET /api/extract failed:', raw);
-    return Response.json({ error: msg }, { status: isQuota ? 429 : 500, headers: isQuota ? { 'Retry-After': '5' } : undefined });
+    return Response.json({ error: msg }, { status, headers: retryAfter ? { 'Retry-After': retryAfter } : undefined });
   }
 }

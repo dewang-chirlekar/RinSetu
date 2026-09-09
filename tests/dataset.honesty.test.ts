@@ -190,10 +190,13 @@ describe('the overlay fills gaps and never overwrites the seed', () => {
     let filled = 0;
     for (const seedScheme of seedOnly.schemes) {
       const overlaid = withOverlay.schemes.find((scheme) => scheme.code === seedScheme.code)!;
-      for (const field of ['max_unit_cost', 'margin_pct', 'subsidy_pct'] as const) {
+      for (const field of ['max_unit_cost', 'margin_pct', 'subsidy_pct', 'min_loan', 'min_project_cost'] as const) {
         if (seedScheme[field] === null && overlaid[field] !== null) filled += 1;
       }
     }
+    // Check global age too — demo overlay supplies 18/60
+    if (seedOnly.global.age_min === null && withOverlay.global.age_min !== null) filled += 1;
+    if (seedOnly.global.age_max === null && withOverlay.global.age_max !== null) filled += 1;
     // If this hits zero the overlay has stopped doing its job and the personas
     // script is silently reporting nothing computable.
     expect(filled).toBeGreaterThan(0);

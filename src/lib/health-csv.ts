@@ -202,12 +202,15 @@ export function parseHealthCsv(
       rowErrors.push('avg_processing_days cannot be negative');
 
     const dedupeKey = `${partner_code}::${asOf}`;
-    if (partner_code && asOf && seen.has(dedupeKey)) {
-      rowErrors.push(`Duplicate partner_code+as_of '${dedupeKey}' in file`);
+    if (partner_code && asOf) {
+      if (seen.has(dedupeKey)) {
+        rowErrors.push(`Duplicate partner_code+as_of '${dedupeKey}' in file`);
+      } else {
+        seen.add(dedupeKey);
+      }
     }
 
     const valid = rowErrors.length === 0;
-    if (valid) seen.add(dedupeKey);
 
     let record: PartnerHealthRecord | undefined;
     if (valid) {

@@ -12,12 +12,12 @@ CLAUDE.md invariant 2: no numeric or regulatory value enters this codebase witho
 
 ## Where things stand
 
-- **55** unverified figures across **4** locations, with the demo overlay applied.
-- **32** of those are values the demo overlay supplies purely so the engine can be exercised; the other **23** are seed placeholders or paraphrases of the problem statement.
-- With the overlay off, **55** figures are unverified — the same slots. Turning the overlay off changes where a value comes from, never whether it can be defended.
-- By source: `demo_overlay` 32 · `ps_text` 15 · `placeholder` 8.
+- **48** unverified figures across **6** locations, with the demo overlay applied.
+- **10** of those are values the demo overlay supplies purely so the engine can be exercised; the other **38** are seed placeholders or paraphrases of the problem statement.
+- With the overlay off, **48** figures are unverified — the same slots. Turning the overlay off changes where a value comes from, never whether it can be defended.
+- By source: `placeholder` 38 · `demo_overlay` 10.
 - `figures_authoritative` is **false** (overlay applied: **true**).
-- **3 of 3** schemes are unverified.
+- **5 of 5** schemes are unverified.
 - Partner registry: **15** partners, all `fabricated`. Health data: **15** rows, all `SIMULATED`.
 
 **Nothing in the loan, EMI, subsidy or rate columns of this application may be quoted.**
@@ -41,8 +41,6 @@ These apply across all schemes: the income ceiling, the reserved category and th
 
 | field | value in play | source | note |
 | --- | --- | --- | --- |
-| `annual_family_income_cap` | 500000 | `ps_text` | PS states 'annual family income of up to ₹5.00 Lakhs'. Income ceilings on schemes like these have been revised more than once, so confirm the figure AND its effective date against the current guideline. |
-| `category_requirement` | SC | `ps_text` | — |
 | `age_min` | 18 | `demo_overlay` | Filled by data/schemes.demo-overlay.json. Not a real figure. |
 | `age_max` | 60 | `demo_overlay` | Filled by data/schemes.demo-overlay.json. Not a real figure. |
 
@@ -50,75 +48,84 @@ These apply across all schemes: the income ceiling, the reserved category and th
 
 ### MICRO — Micro Finance Scheme
 
-`verified: false` · source_url: **none** · source_date: **none**
+`verified: false` · source_url: https://nsfdc.nic.in/scheme · source_date: 2026-09-09
 
 | field | value in play | source | note |
 | --- | --- | --- | --- |
-| `interest_rules` | [1 rule(s)] | `demo_overlay` | — |
 | `cost_ceiling_rules` | [0 rule(s)] | `placeholder` | — |
-| `max_unit_cost` | 140000 | `ps_text` | PS states micro projects 'up to ₹1.40 lakh'. Confirm whether this is the unit cost ceiling or the loan ceiling — they are different things. |
-| `max_loan` | 140000 | `ps_text` | Likely lower than max_unit_cost once margin money is applied. VERIFY. |
 | `min_loan` | 10000 | `demo_overlay` | Filled by data/schemes.demo-overlay.json. Not a real figure. |
 | `min_project_cost` | 0 | `demo_overlay` | Filled by data/schemes.demo-overlay.json. Not a real figure. |
-| `loan_pct_cap` | 0.9 | `ps_text` | PS states assistance covers 'up to 90% of project or education costs'. |
-| `margin_pct` | 0.05 | `demo_overlay` | Filled by data/schemes.demo-overlay.json. Not a real figure. |
-| `subsidy_pct` | 0.1 | `demo_overlay` | Filled by data/schemes.demo-overlay.json. Not a real figure. |
-| `subsidy_cap` | 10000 | `demo_overlay` | Filled by data/schemes.demo-overlay.json. Not a real figure. |
-| `subsidy_timing` | FRONT | `placeholder` | FRONT reduces the loan and therefore the EMI; BACK is adjusted at closure and leaves the EMI unchanged. Getting this wrong changes every number on screen. |
-| `moratorium_months_min` | 3 | `ps_text` | — |
-| `moratorium_months_max` | 12 | `ps_text` | — |
+| `margin_pct` | 0.1 | `placeholder` | TODO(verify): Not explicitly labelled margin on scheme page. 90% loan implies 10% contribution but verify compendium before marking official_guideline. |
+| `subsidy_pct` | 0 | `placeholder` | TODO(verify): No subsidy mentioned for MFS on scheme page — assumed 0, verify compendium. |
+| `subsidy_cap` | 0 | `placeholder` | — |
+| `subsidy_timing` | BACK | `placeholder` | Irrelevant when subsidy 0, but required by schema if subsidy>0. |
 | `moratorium_months_default` | 6 | `demo_overlay` | Filled by data/schemes.demo-overlay.json. Not a real figure. |
-| `moratorium_interest_treatment` | CAPITALISED | `placeholder` | One of CAPITALISED \| SERVICED \| WAIVED. This is the single most consequential unverified field in the file. |
-| `tenure_months_max` | 60 | `demo_overlay` | Filled by data/schemes.demo-overlay.json. Not a real figure. |
-| `tenure_includes_moratorium` | false | `demo_overlay` | Filled by data/schemes.demo-overlay.json. Not a real figure. |
+| `moratorium_interest_treatment` | CAPITALISED | `placeholder` | TODO(verify): Not stated whether interest during 3-month moratorium is CAPITALISED/SERVICED/WAIVED. Critical — verify compendium, do not assume. Placeholder to keep demo computable. |
 
 ### TERM — Term Loan Scheme
 
-`verified: false` · source_url: **none** · source_date: **none**
+`verified: false` · source_url: https://nsfdc.nic.in/scheme · source_date: 2026-09-09
 
 | field | value in play | source | note |
 | --- | --- | --- | --- |
-| `interest_rules` | [3 rule(s)] | `demo_overlay` | — |
 | `cost_ceiling_rules` | [0 rule(s)] | `placeholder` | — |
-| `max_unit_cost` | 5000000 | `ps_text` | PS states larger projects 'up to ₹50.00 lakh'. |
-| `max_loan` | 5000000 | `ps_text` | VERIFY whether ₹50 lakh is the project ceiling or the loan ceiling. |
-| `min_loan` | 100000 | `demo_overlay` | Filled by data/schemes.demo-overlay.json. Not a real figure. |
-| `min_project_cost` | 140001 | `demo_overlay` | Filled by data/schemes.demo-overlay.json. Not a real figure. |
-| `loan_pct_cap` | 0.9 | `ps_text` | — |
-| `margin_pct` | 0.1 | `demo_overlay` | Filled by data/schemes.demo-overlay.json. Not a real figure. |
-| `subsidy_pct` | 0 | `demo_overlay` | Filled by data/schemes.demo-overlay.json. Not a real figure. |
-| `subsidy_cap` | 0 | `demo_overlay` | Filled by data/schemes.demo-overlay.json. Not a real figure. |
-| `subsidy_timing` | FRONT | `placeholder` | — |
-| `moratorium_months_min` | 3 | `ps_text` | — |
-| `moratorium_months_max` | 12 | `ps_text` | — |
+| `margin_pct` | 0.1 | `placeholder` | TODO(verify): 90% loan implies 10% contribution but not explicitly labelled margin_pct. |
+| `subsidy_pct` | 0 | `placeholder` | TODO(verify): No subsidy mentioned for TERM on scheme page. |
+| `subsidy_cap` | 0 | `placeholder` | — |
+| `subsidy_timing` | BACK | `placeholder` | — |
 | `moratorium_months_default` | 6 | `demo_overlay` | Filled by data/schemes.demo-overlay.json. Not a real figure. |
-| `moratorium_interest_treatment` | CAPITALISED | `placeholder` | — |
-| `tenure_months_max` | 84 | `demo_overlay` | Filled by data/schemes.demo-overlay.json. Not a real figure. |
-| `tenure_includes_moratorium` | false | `demo_overlay` | Filled by data/schemes.demo-overlay.json. Not a real figure. |
+| `moratorium_interest_treatment` | CAPITALISED | `placeholder` | TODO(verify): Not stated — CAPITALISED/SERVICED/WAIVED unknown. Placeholder to keep computable. |
 
 ### EDU — Educational Loan Scheme
 
-`verified: false` · source_url: **none** · source_date: **none**
+`verified: false` · source_url: https://nsfdc.nic.in/scheme · source_date: 2026-09-09
 
 | field | value in play | source | note |
 | --- | --- | --- | --- |
-| `interest_rules` | [2 rule(s)] | `demo_overlay` | — |
 | `cost_ceiling_rules` | [2 rule(s)] | `demo_overlay` | — |
-| `max_unit_cost` | 1000000 | `demo_overlay` | Filled by data/schemes.demo-overlay.json. Not a real figure. |
-| `max_loan` | 1000000 | `demo_overlay` | Filled by data/schemes.demo-overlay.json. Not a real figure. |
 | `min_loan` | 50000 | `demo_overlay` | Filled by data/schemes.demo-overlay.json. Not a real figure. |
 | `min_project_cost` | 0 | `demo_overlay` | Filled by data/schemes.demo-overlay.json. Not a real figure. |
-| `loan_pct_cap` | 0.9 | `ps_text` | — |
-| `margin_pct` | 0 | `demo_overlay` | Filled by data/schemes.demo-overlay.json. Not a real figure. |
-| `subsidy_pct` | 0 | `demo_overlay` | Filled by data/schemes.demo-overlay.json. Not a real figure. |
-| `subsidy_cap` | 0 | `demo_overlay` | Filled by data/schemes.demo-overlay.json. Not a real figure. |
+| `margin_pct` | 0 | `placeholder` | TODO(verify): No margin stated for ELS — assume 0 pending compendium. |
+| `subsidy_pct` | 0 | `placeholder` | TODO(verify): No subsidy stated for ELS. Interest subsidy via MHRD during moratorium mentioned for NSTFDC variant but not NSFDC. |
+| `subsidy_cap` | 0 | `placeholder` | — |
 | `subsidy_timing` | BACK | `placeholder` | — |
-| `moratorium_months_min` | 3 | `ps_text` | Education loans commonly tie the moratorium to course duration plus a grace period rather than a fixed month count. If so, this field needs a different shape — flag it rather than forcing it. |
-| `moratorium_months_max` | 12 | `ps_text` | — |
+| `moratorium_months_min` | 3 | `placeholder` | TODO(verify): EDU official moratorium is course period + 01 year / 6 months (variable) per https://nsfdc.nic.in/scheme §5 — fixed 3-month min is placeholder to keep demo computable, shape is wrong. Do not quote. |
+| `moratorium_months_max` | 12 | `placeholder` | TODO(verify): Placeholder 12-month max — real is course-duration-based. |
 | `moratorium_months_default` | 12 | `demo_overlay` | Filled by data/schemes.demo-overlay.json. Not a real figure. |
-| `moratorium_interest_treatment` | WAIVED | `placeholder` | Subsidised education schemes sometimes waive interest during study. Do not assume — verify. |
-| `tenure_months_max` | 120 | `demo_overlay` | Filled by data/schemes.demo-overlay.json. Not a real figure. |
-| `tenure_includes_moratorium` | false | `demo_overlay` | Filled by data/schemes.demo-overlay.json. Not a real figure. |
+| `moratorium_interest_treatment` | WAIVED | `placeholder` | TODO(verify): Not stated for NSFDC ELS — placeholder WAIVED to keep demo computable, but do not assume. |
+| `tenure_includes_moratorium` | false | `placeholder` | TODO(verify): Placeholder false — page distinguishes separately, but need compendium to confirm inclusive/exclusive. |
+
+### AMY — Aajeevika Micro-Finance Yojana
+
+`verified: false` · source_url: https://nsfdc.nic.in/scheme · source_date: 2026-09-09
+
+| field | value in play | source | note |
+| --- | --- | --- | --- |
+| `cost_ceiling_rules` | [0 rule(s)] | `placeholder` | — |
+| `min_loan` | null | `placeholder` | — |
+| `min_project_cost` | null | `placeholder` | — |
+| `margin_pct` | 0.1 | `placeholder` | TODO(verify): 90% implies 10% but not labelled margin. |
+| `subsidy_pct` | 0 | `placeholder` | TODO(verify): No subsidy mentioned — assumed 0. |
+| `subsidy_cap` | 0 | `placeholder` | — |
+| `subsidy_timing` | BACK | `placeholder` | — |
+| `moratorium_months_default` | null | `placeholder` | — |
+| `moratorium_interest_treatment` | CAPITALISED | `placeholder` | TODO(verify): Not stated — placeholder CAPITALISED to keep computable. |
+
+### UNY — Udyam Nidhi Yojana
+
+`verified: false` · source_url: https://nsfdc.nic.in/scheme · source_date: 2026-09-09
+
+| field | value in play | source | note |
+| --- | --- | --- | --- |
+| `cost_ceiling_rules` | [0 rule(s)] | `placeholder` | — |
+| `min_loan` | null | `placeholder` | — |
+| `min_project_cost` | null | `placeholder` | — |
+| `margin_pct` | 0.1 | `placeholder` | TODO(verify): Not stated explicitly. |
+| `subsidy_pct` | 0 | `placeholder` | TODO(verify): No subsidy mentioned. |
+| `subsidy_cap` | 0 | `placeholder` | — |
+| `subsidy_timing` | BACK | `placeholder` | — |
+| `moratorium_months_default` | null | `placeholder` | — |
+| `moratorium_interest_treatment` | CAPITALISED | `placeholder` | TODO(verify): Not stated — placeholder. |
 
 ## Partner registry and health data
 
@@ -132,17 +139,17 @@ Replacing this with a real MIS feed changes `data_origin` to `MIS_UPLOAD` and no
 
 Transcribed from `open_questions_for_phase_0` in data/schemes.seed.json. These are questions about the schemes, not about the code.
 
-1. Which corporation sponsors this PS? The description matches a national SC finance and development corporation but never names it. Everything downstream depends on knowing whose guidelines are authoritative.
-2. Is ₹1.40 lakh / ₹50 lakh the project cost ceiling or the loan ceiling?
-3. Is there a subsidy component, and is it front-ended or back-ended?
-4. What is the actual banded rate card, and does it vary by gender or applicant category?
-5. Which moratorium interest treatment applies to each scheme?
-6. Is the maximum tenure inclusive or exclusive of the moratorium?
-7. What is the loan floor that separates MICRO from TERM?
-8. Which partner types are actually authorised to process each scheme category? This is the backbone of the routing feature.
-9. Does the education scheme have separate ceilings for study in India vs abroad?
-10. Is the education moratorium a fixed month count or course-duration-plus-grace? If the latter, moratorium_months_* is the wrong shape and must become a formula field.
-11. Can one applicant be eligible for more than one scheme at the same time? In this seed they cannot — the purpose lists are disjoint and the cost predicates mutually exclusive — so the engine's multi-scheme ranking never fires on real data. If the published guidelines do overlap, RECOMMENDATION_POLICY in src/core/recommend.ts becomes user-visible and needs review; see the known_gaps note in data/personas.fixtures.json.
+1. Which corporation sponsors this PS? Resolved as NSFDC per https://nsfdc.nic.in/scheme and https://nsfdc.nic.in/eligibility-requirements — confirm with SIH nodal officer that PS SIH26092 expects NSFDC.
+2. Is ₹1.40 lakh / ₹50 lakh the project cost ceiling or the loan ceiling? Resolved: MICRO max_unit_cost 1.40L / max_loan 1.25L, TERM max_unit_cost 50L / max_loan 45L, UNY 5L/4.5L, ELS 40L — per https://nsfdc.nic.in/scheme, but TERM 45L vs 50L still needs compendium confirmation.
+3. Is there a subsidy component, and is it front-ended or back-ended? No subsidy mentioned on scheme page for these 5 — likely 0, but verify compendium (Central Sector subsidy scheme referenced in compendium excerpt).
+4. What is the actual banded rate card, and does it vary by gender or applicant category? Partially resolved: rates are per-channel (SCA 6.5-8%, NBFC-MFI 15%, Coop 13%/15%) not by gender — verify compendium for gender/category bands.
+5. Which moratorium interest treatment applies to each scheme? Still unresolved — page states duration only, not CAPITALISED/SERVICED/WAIVED. Placeholder set to keep demo computable, but remains TODO(verify).
+6. Is the maximum tenure inclusive or exclusive of the moratorium? Resolved for 4 schemes as inclusive (wording includes moratorium) per https://nsfdc.nic.in/scheme — EDU remains ambiguous (tenure_includes_moratorium null).
+7. What is the loan floor that separates MICRO from TERM? Resolved as ₹1.40 lakh unit cost boundary and ₹1.25 lakh loan boundary per §1/§2.
+8. Which partner types are actually authorised to process each scheme category? Partially resolved: MFS/TERM via SCAs/CAs, AMY via NBFC-MFI, UNY via Cooperatives/SFBs — need exact SCA list.
+9. Does the education scheme have separate ceilings for study in India vs abroad? NSFDC page shows single ₹40 lakh for both — suggests no split, but placeholder kept for verification.
+10. Is the education moratorium a fixed month count or course-duration-plus-grace? Resolved as course-duration-based per §5 — fixed month fields are wrong shape for EDU, left null.
+11. Can one applicant be eligible for more than one scheme at the same time? With new purpose lists still disjoint, overlap remains unlikely — but AMY vs MICRO now overlap on micro purposes if purposes not disjoint. Review RECOMMENDATION_POLICY.
 
 ## Structural findings
 

@@ -124,10 +124,14 @@ export function ApplyForm({
 
   // When FreeTextIntake extracts and does router.replace('/apply?...'), initialParams changes.
   // Sync intent so progressive disclosure and purpose filtering update without a full remount.
+  // FIX: only watch the serialized params, not local intent — otherwise picking intent from
+  // the dropdown is immediately reverted to the URL value (''), see FRAGILE.
+  const paramsKey = JSON.stringify(initialParams);
   useEffect(() => {
-    const next = first(initialParams, 'intent');
-    if (next !== intent) setIntent(next);
-  }, [initialParams, intent]);
+    const next = first(JSON.parse(paramsKey) as RawParams, 'intent');
+    // Only sync if URL actually carries a different intent — don't clobber user's in-flight pick
+    setIntent((prev) => (next !== prev ? next : prev));
+  }, [paramsKey]);
 
   const isLivelihood = intent === 'LIVELIHOOD';
   const isEducation = intent === 'EDUCATION';
@@ -169,23 +173,22 @@ export function ApplyForm({
   }, [initialParams]);
 
   const districtsForState = useMemo(() => {
-    if (!selectedState) return allStates.flatMap((s) => s.districts).sort();
+    if (!jsEnabled) return allStates.flatMap((s) => s.districts).sort();
+    if (!selectedState) return [];
     const found = allStates.find((s) => s.name === selectedState);
     return found ? [...found.districts].sort() : [];
-  }, [selectedState, allStates]);
+  }, [selectedState, allStates, jsEnabled]);
 
   const tehsilsForDistrict = useMemo(() => {
-    if (selectedDistrict) return tehsilMap[selectedDistrict] ?? tehsilMap._default ?? [];
-    if (selectedState) {
-      const districts = allStates.find((s) => s.name === selectedState)?.districts ?? [];
-      const all = districts.flatMap((d) => tehsilMap[d] ?? []);
-      return all.length > 0 ? [...new Set(all)].sort() : (tehsilMap._default ?? []);
+    if (!jsEnabled) {
+      const all = Object.entries(tehsilMap)
+        .filter(([k]) => k !== '_default')
+        .flatMap(([, v]) => v);
+      return [...new Set(all)].sort();
     }
-    const all = Object.entries(tehsilMap)
-      .filter(([k]) => k !== '_default')
-      .flatMap(([, v]) => v);
-    return [...new Set(all)].sort().slice(0, 50);
-  }, [selectedDistrict, selectedState, allStates, tehsilMap]);
+    if (!selectedDistrict) return [];
+    return tehsilMap[selectedDistrict] ?? tehsilMap._default ?? [];
+  }, [selectedDistrict, tehsilMap, jsEnabled]);
 
   // Auto-detect upper levels when tehsil is typed directly
   function handleTehsilChange(value: string) {
@@ -233,9 +236,10 @@ export function ApplyForm({
     <form key={formKey} action="/result" method="get" className="pb-8">
       {/* Step progress — visible only when JS is on */}
       {jsEnabled ? (
-        <div className="border-rule bg-paper-edge/50 -mx-4 mb-2 flex items-center gap-1.5 border-y px-4 py-2 sm:mx-0 sm:rounded sm:border">
-          <span className={`h-1.5 flex-1 rounded ${hasIntent ? 'bg-accent' : 'bg-accent/40'}`} />
-          <span className={`h-1.5 flex-1 rounded ${hasIntent ? 'bg-accent' : 'bg-rule-strong'}`} />
+        <div className="border-rule bg-paper-edge/50 -mx-4 mb-2 flex items-center gap-1.5 border-y px-4 py-2 sm:mx-0 sm:rounded sm:border" role="progressbar" aria-valuenow={hasIntent ? 3 : 1} aria-valuemin={1} aria-valuemax={3} aria-label={translate('ui.apply.progress_choose')}>
+          <span className="bg-accent h-1.5 flex-1 rounded" aria-hidden />
+          <span className={`h-1.5 flex-1 rounded ${hasIntent ? 'bg-accent' : 'bg-accent/40'}`} aria-hidden />
+          <span className={`h-1.5 flex-1 rounded ${hasIntent ? 'bg-accent' : 'bg-rule-strong'}`} aria-hidden />
           <span className="text-ink-3 ml-2 text-[0.625rem] font-semibold tracking-wider uppercase">
             {hasIntent
               ? isLivelihood
@@ -450,6 +454,8 @@ export function ApplyForm({
             label={translate('ui.apply.district')}
             options={[BLANK(translate('ui.apply.select_state')), ...districtsForState.map((d) => ({ value: d, label: d }))]}
             defaultValue={selectedDistrict}
+            disabled={jsEnabled && !selectedState && !selectedDistrict}
+            hint={jsEnabled && !selectedState && !selectedDistrict ? translate('ui.apply.district_need_state') : undefined}
             onChange={(e) => {
               const v = (e.target as HTMLSelectElement).value;
               setSelectedDistrict(v);
@@ -463,6 +469,8 @@ export function ApplyForm({
             label={translate('ui.apply.tehsil')}
             options={[BLANK(translate('ui.apply.select_tehsil')), ...tehsilsForDistrict.map((t) => ({ value: t, label: t }))]}
             defaultValue={selectedTehsil}
+            disabled={jsEnabled && !selectedDistrict && !selectedTehsil}
+            hint={jsEnabled && !selectedDistrict && !selectedTehsil ? translate('ui.apply.tehsil_need_district') : translate('ui.apply.village_auto_hint')}
             onChange={(e) => handleTehsilChange((e.target as HTMLSelectElement).value)}
           />
         </Fieldset>

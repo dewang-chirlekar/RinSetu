@@ -13,7 +13,7 @@
 
 import { SchemaType } from '@google/generative-ai';
 import { ApplicantProfileSchema, type ApplicantProfile } from '@/core/types';
-import { getFixture, getGeminiClient, isDemoMode, MODEL_ID } from './client';
+import { FALLBACK_MODELS, getFixture, getGeminiClient, isDemoMode, isModelNotFoundError, isTransientError, MODEL_ID } from './client';
 
 const EXTRACT_INSTRUCTION = `
 You are RinSetu's intake parser. Extract an ApplicantProfile from the user's free text.
@@ -151,72 +151,91 @@ export async function extractProfile(input: {
     // getGeminiClient will throw with helpful message if key missing
   }
 
-  const client = getGeminiClient();
-  const model = client.getGenerativeModel({
-    model: MODEL_ID,
-    generationConfig: {
-      temperature: 0,
-      responseMimeType: 'application/json',
-      responseSchema: {
-        type: SchemaType.OBJECT,
-        properties: {
-          name: { type: SchemaType.STRING, nullable: true },
-          age: { type: SchemaType.NUMBER, nullable: true },
-          gender: { type: SchemaType.STRING, format: 'enum', enum: ['FEMALE', 'MALE', 'OTHER', 'UNDISCLOSED'], nullable: true },
-          category: { type: SchemaType.STRING, format: 'enum', enum: ['SC', 'ST', 'OBC', 'GENERAL', 'UNKNOWN'], nullable: true },
-          annual_family_income: { type: SchemaType.NUMBER, nullable: true },
-          state: { type: SchemaType.STRING, nullable: true },
-          district: { type: SchemaType.STRING, nullable: true },
-          tehsil: { type: SchemaType.STRING, nullable: true },
-          village: { type: SchemaType.STRING, nullable: true },
-          lat: { type: SchemaType.NUMBER, nullable: true },
-          lng: { type: SchemaType.NUMBER, nullable: true },
-          intent: { type: SchemaType.STRING, format: 'enum', enum: ['LIVELIHOOD', 'EDUCATION', 'UNKNOWN'], nullable: true },
-          purpose: { type: SchemaType.STRING, nullable: true },
-          project_cost: { type: SchemaType.NUMBER, nullable: true },
-          own_funds_available: { type: SchemaType.NUMBER, nullable: true },
-          education: {
-            type: SchemaType.OBJECT,
-            nullable: true,
-            properties: {
-              admission_confirmed: { type: SchemaType.BOOLEAN, nullable: true },
-              study_location: { type: SchemaType.STRING, format: 'enum', enum: ['INDIA', 'ABROAD'], nullable: true },
-            },
-          },
-          documents_available: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING } },
-          preferred_language: { type: SchemaType.STRING, nullable: true },
-          requested_tenure_months: { type: SchemaType.NUMBER, nullable: true },
-          requested_moratorium_months: { type: SchemaType.NUMBER, nullable: true },
-          notes: { type: SchemaType.STRING, nullable: true },
-        },
-        required: ['gender', 'category', 'intent', 'documents_available'],
-      },
-    },
-  });
-
   const prompt = `${EXTRACT_INSTRUCTION}\n\nUser text:\n"""${text}"""`;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const responseSchema: any = {
+    type: SchemaType.OBJECT,
+    properties: {
+      name: { type: SchemaType.STRING, nullable: true },
+      age: { type: SchemaType.NUMBER, nullable: true },
+      gender: { type: SchemaType.STRING, format: 'enum', enum: ['FEMALE', 'MALE', 'OTHER', 'UNDISCLOSED'], nullable: true },
+      category: { type: SchemaType.STRING, format: 'enum', enum: ['SC', 'ST', 'OBC', 'GENERAL', 'UNKNOWN'], nullable: true },
+      annual_family_income: { type: SchemaType.NUMBER, nullable: true },
+      state: { type: SchemaType.STRING, nullable: true },
+      district: { type: SchemaType.STRING, nullable: true },
+      tehsil: { type: SchemaType.STRING, nullable: true },
+      village: { type: SchemaType.STRING, nullable: true },
+      lat: { type: SchemaType.NUMBER, nullable: true },
+      lng: { type: SchemaType.NUMBER, nullable: true },
+      intent: { type: SchemaType.STRING, format: 'enum', enum: ['LIVELIHOOD', 'EDUCATION', 'UNKNOWN'], nullable: true },
+      purpose: { type: SchemaType.STRING, nullable: true },
+      project_cost: { type: SchemaType.NUMBER, nullable: true },
+      own_funds_available: { type: SchemaType.NUMBER, nullable: true },
+      education: {
+        type: SchemaType.OBJECT,
+        nullable: true,
+        properties: {
+          admission_confirmed: { type: SchemaType.BOOLEAN, nullable: true },
+          study_location: { type: SchemaType.STRING, format: 'enum', enum: ['INDIA', 'ABROAD'], nullable: true },
+        },
+      },
+      documents_available: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING } },
+      preferred_language: { type: SchemaType.STRING, nullable: true },
+      requested_tenure_months: { type: SchemaType.NUMBER, nullable: true },
+      requested_moratorium_months: { type: SchemaType.NUMBER, nullable: true },
+      notes: { type: SchemaType.STRING, nullable: true },
+    },
+    required: ['gender', 'category', 'intent', 'documents_available'],
+  };
+
+  // Try models in order: primary + fallbacks, retrying transient 503/429 with backoff
+  const modelsToTry = [MODEL_ID, ...FALLBACK_MODELS.filter((m) => m !== MODEL_ID)];
   let rawText: string | undefined;
-  // Retry on 429 quota with exponential backoff (free tier 20/min)
-  for (let attempt = 0; attempt < 3; attempt++) {
-    try {
-      const result = await model.generateContent(prompt);
-      rawText = result.response.text();
-      break;
-    } catch (e) {
-      const msg = e instanceof Error ? e.message : String(e);
-      const isQuota = msg.includes('429') || msg.toLowerCase().includes('quota') || msg.includes('Too Many Requests');
-      if (isQuota && attempt < 2) {
-        const m = msg.match(/retry in (\d+(\.\d+)?)s/i);
-        const waitMs = m ? Math.ceil(parseFloat(m[1]) * 1000) : 1500 * (attempt + 1);
-        await new Promise((r) => setTimeout(r, waitMs));
-        continue;
+  let lastError: string | undefined;
+  outer: for (const modelId of modelsToTry) {
+    const client = getGeminiClient();
+    const model = client.getGenerativeModel({
+      model: modelId,
+      generationConfig: {
+        temperature: 0,
+        responseMimeType: 'application/json',
+        responseSchema,
+      },
+    });
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const result = await model.generateContent(prompt);
+        rawText = result.response.text();
+        break outer;
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e);
+        lastError = msg;
+        if (isModelNotFoundError(msg)) {
+          // This model doesn't exist for this key/project — try next model immediately
+          break;
+        }
+        if (isTransientError(msg) && attempt < 2) {
+          const m = msg.match(/retry in (\d+(\.\d+)?)s/i);
+          const waitMs = m ? Math.ceil(parseFloat(m[1]) * 1000) : 1200 * (attempt + 1) + Math.random() * 500;
+          await new Promise((r) => setTimeout(r, waitMs));
+          continue;
+        }
+        if (isTransientError(msg)) {
+          // Exhausted retries for this model — try next fallback model if any
+          break;
+        }
+        throw new Error(`extractProfile: Gemini failed: ${msg.slice(0, 800)}`);
       }
-      // Friendly quota message
-      if (isQuota) throw new Error(`Quota exceeded (free tier 20/min for ${MODEL_ID}). Please retry in a few seconds or use the guided form — it works offline and needs no API key.`);
-      throw new Error(`extractProfile: Gemini failed: ${msg.slice(0, 800)}`);
     }
   }
-  if (!rawText) throw new Error('extractProfile: Gemini failed: no response');
+  if (!rawText) {
+    const hint = lastError?.toLowerCase().includes('503') || lastError?.toLowerCase().includes('overloaded') || lastError?.toLowerCase().includes('high demand')
+      ? 'The AI service is busy (high demand). Please wait 10–15 seconds and try again, or use the guided form below — it works offline and is the primary path.'
+      : lastError?.includes('429') || lastError?.toLowerCase().includes('quota')
+        ? `Quota exceeded (free tier 20/min for ${MODEL_ID}). Please retry in a few seconds or use the guided form — it works offline and needs no API key.`
+        : `Gemini failed: ${(lastError ?? 'no response').slice(0, 700)} — try the guided form below (works offline).`;
+    throw new Error(hint);
+  }
   let parsed: unknown;
   try {
     parsed = JSON.parse(rawText);
@@ -259,49 +278,6 @@ export async function extractFromDocuments(input: {
     throw new Error('DEMO_MODE is on and document extraction has no fixture. Add "extract-documents:__fallback__" to data/llm.fixtures.json.');
   }
 
-  const client = getGeminiClient();
-  const model = client.getGenerativeModel({
-    model: MODEL_ID,
-    generationConfig: {
-      temperature: 0,
-      responseMimeType: 'application/json',
-      responseSchema: {
-        type: SchemaType.OBJECT,
-        properties: {
-          name: { type: SchemaType.STRING, nullable: true },
-          age: { type: SchemaType.NUMBER, nullable: true },
-          gender: { type: SchemaType.STRING, format: 'enum', enum: ['FEMALE', 'MALE', 'OTHER', 'UNDISCLOSED'], nullable: true },
-          category: { type: SchemaType.STRING, format: 'enum', enum: ['SC', 'ST', 'OBC', 'GENERAL', 'UNKNOWN'], nullable: true },
-          annual_family_income: { type: SchemaType.NUMBER, nullable: true },
-          state: { type: SchemaType.STRING, nullable: true },
-          district: { type: SchemaType.STRING, nullable: true },
-          tehsil: { type: SchemaType.STRING, nullable: true },
-          village: { type: SchemaType.STRING, nullable: true },
-          lat: { type: SchemaType.NUMBER, nullable: true },
-          lng: { type: SchemaType.NUMBER, nullable: true },
-          intent: { type: SchemaType.STRING, format: 'enum', enum: ['LIVELIHOOD', 'EDUCATION', 'UNKNOWN'], nullable: true },
-          purpose: { type: SchemaType.STRING, nullable: true },
-          project_cost: { type: SchemaType.NUMBER, nullable: true },
-          own_funds_available: { type: SchemaType.NUMBER, nullable: true },
-          education: {
-            type: SchemaType.OBJECT,
-            nullable: true,
-            properties: {
-              admission_confirmed: { type: SchemaType.BOOLEAN, nullable: true },
-              study_location: { type: SchemaType.STRING, format: 'enum', enum: ['INDIA', 'ABROAD'], nullable: true },
-            },
-          },
-          documents_available: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING } },
-          preferred_language: { type: SchemaType.STRING, nullable: true },
-          requested_tenure_months: { type: SchemaType.NUMBER, nullable: true },
-          requested_moratorium_months: { type: SchemaType.NUMBER, nullable: true },
-          notes: { type: SchemaType.STRING, nullable: true },
-        },
-        required: ['gender', 'category', 'intent', 'documents_available'],
-      },
-    },
-  });
-
   const docList = input.requiredDocCodes.join(', ') || 'any';
   const instruction = `${EXTRACT_INSTRUCTION}\n\nYou are given ${input.files.length} document file(s) for the confirmed loan. Required docs for this loan: ${docList}. Extract only what is visible in the files. For documents_available, list only the doc codes from the required list that you can verify (e.g. AADHAAR if Aadhaar number is visible, CASTE_CERT if caste certificate is visible). Do not guess beyond the files.`;
 
@@ -311,26 +287,83 @@ export async function extractFromDocuments(input: {
     if (f.docCodeHint) parts.push({ text: `File ${f.name} is claimed to be ${f.docCodeHint}.` });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const docSchema: any = {
+    type: SchemaType.OBJECT,
+    properties: {
+      name: { type: SchemaType.STRING, nullable: true },
+      age: { type: SchemaType.NUMBER, nullable: true },
+      gender: { type: SchemaType.STRING, format: 'enum', enum: ['FEMALE', 'MALE', 'OTHER', 'UNDISCLOSED'], nullable: true },
+      category: { type: SchemaType.STRING, format: 'enum', enum: ['SC', 'ST', 'OBC', 'GENERAL', 'UNKNOWN'], nullable: true },
+      annual_family_income: { type: SchemaType.NUMBER, nullable: true },
+      state: { type: SchemaType.STRING, nullable: true },
+      district: { type: SchemaType.STRING, nullable: true },
+      tehsil: { type: SchemaType.STRING, nullable: true },
+      village: { type: SchemaType.STRING, nullable: true },
+      lat: { type: SchemaType.NUMBER, nullable: true },
+      lng: { type: SchemaType.NUMBER, nullable: true },
+      intent: { type: SchemaType.STRING, format: 'enum', enum: ['LIVELIHOOD', 'EDUCATION', 'UNKNOWN'], nullable: true },
+      purpose: { type: SchemaType.STRING, nullable: true },
+      project_cost: { type: SchemaType.NUMBER, nullable: true },
+      own_funds_available: { type: SchemaType.NUMBER, nullable: true },
+      education: {
+        type: SchemaType.OBJECT,
+        nullable: true,
+        properties: {
+          admission_confirmed: { type: SchemaType.BOOLEAN, nullable: true },
+          study_location: { type: SchemaType.STRING, format: 'enum', enum: ['INDIA', 'ABROAD'], nullable: true },
+        },
+      },
+      documents_available: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING } },
+      preferred_language: { type: SchemaType.STRING, nullable: true },
+      requested_tenure_months: { type: SchemaType.NUMBER, nullable: true },
+      requested_moratorium_months: { type: SchemaType.NUMBER, nullable: true },
+      notes: { type: SchemaType.STRING, nullable: true },
+    },
+    required: ['gender', 'category', 'intent', 'documents_available'],
+  };
+
+  const modelsToTryDocs = [MODEL_ID, ...FALLBACK_MODELS.filter((m) => m !== MODEL_ID)];
   let rawText: string | undefined;
-  for (let attempt = 0; attempt < 3; attempt++) {
-    try {
-      const result = await model.generateContent(parts as never);
-      rawText = result.response.text();
-      break;
-    } catch (e) {
-      const msg = e instanceof Error ? e.message : String(e);
-      const isQuota = msg.includes('429') || msg.toLowerCase().includes('quota');
-      if (isQuota && attempt < 2) {
-        const m = msg.match(/retry in (\d+(\.\d+)?)s/i);
-        const waitMs = m ? Math.ceil(parseFloat(m[1]) * 1000) : 1500 * (attempt + 1);
-        await new Promise((r) => setTimeout(r, waitMs));
-        continue;
+  let lastErrorDoc: string | undefined;
+  outerDoc: for (const modelId of modelsToTryDocs) {
+    const client = getGeminiClient();
+    const model = client.getGenerativeModel({
+      model: modelId,
+      generationConfig: {
+        temperature: 0,
+        responseMimeType: 'application/json',
+        responseSchema: docSchema,
+      },
+    });
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const result = await model.generateContent(parts as never);
+        rawText = result.response.text();
+        break outerDoc;
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e);
+        lastErrorDoc = msg;
+        if (isModelNotFoundError(msg)) break;
+        if (isTransientError(msg) && attempt < 2) {
+          const m = msg.match(/retry in (\d+(\.\d+)?)s/i);
+          const waitMs = m ? Math.ceil(parseFloat(m[1]) * 1000) : 1200 * (attempt + 1) + Math.random() * 500;
+          await new Promise((r) => setTimeout(r, waitMs));
+          continue;
+        }
+        if (isTransientError(msg)) break;
+        throw new Error(`extractFromDocuments: Gemini failed: ${msg.slice(0, 800)}`);
       }
-      if (isQuota) throw new Error(`Quota exceeded (free tier 20/min for ${MODEL_ID}). Please retry or use the guided form.`);
-      throw new Error(`extractFromDocuments: Gemini failed: ${msg.slice(0, 800)}`);
     }
   }
-  if (!rawText) throw new Error('extractFromDocuments: Gemini failed: no response');
+  if (!rawText) {
+    const hint = lastErrorDoc?.toLowerCase().includes('503') || lastErrorDoc?.toLowerCase().includes('overloaded') || lastErrorDoc?.toLowerCase().includes('high demand')
+      ? 'The AI service is busy (high demand). Please wait 10–15 seconds and try again, or use the guided form below — it works offline.'
+      : lastErrorDoc?.includes('429') || lastErrorDoc?.toLowerCase().includes('quota')
+        ? `Quota exceeded (free tier 20/min for ${MODEL_ID}). Please retry or use the guided form.`
+        : `Gemini failed: ${(lastErrorDoc ?? 'no response').slice(0, 700)} — try the guided form (works offline).`;
+    throw new Error(hint);
+  }
   let parsed: unknown;
   try {
     parsed = JSON.parse(rawText);

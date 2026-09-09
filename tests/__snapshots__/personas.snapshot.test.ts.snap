@@ -3,327 +3,487 @@
 exports[`the engine digest > is stable against the seed alone 1`] = `
 "P01  recommended=none
   MICRO  INDETERMINATE   fail=0 unknown=1 rem=1 figures=n/a
-  TERM   NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  TERM   NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
 P02  recommended=none
   MICRO  INDETERMINATE   fail=0 unknown=1 rem=1 figures=n/a
-  TERM   NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  TERM   NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
 P03  recommended=none
   MICRO  NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
-  TERM   NOT_ELIGIBLE    fail=2 unknown=2 rem=4 figures=n/a
+  TERM   NOT_ELIGIBLE    fail=3 unknown=1 rem=4 figures=n/a
   EDU    NOT_ELIGIBLE    fail=2 unknown=2 rem=4 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
 P04  recommended=none
   MICRO  INDETERMINATE   fail=0 unknown=1 rem=1 figures=n/a
-  TERM   NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  TERM   NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
 P05  recommended=none
   MICRO  NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
-  TERM   INDETERMINATE   fail=0 unknown=2 rem=2 figures=n/a
+  TERM   INDETERMINATE   fail=0 unknown=1 rem=1 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
 P06  recommended=none
   MICRO  NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
-  TERM   INDETERMINATE   fail=0 unknown=2 rem=2 figures=n/a
+  TERM   NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
 P07  recommended=none
   MICRO  NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
-  TERM   NOT_ELIGIBLE    fail=2 unknown=2 rem=4 figures=n/a
+  TERM   NOT_ELIGIBLE    fail=3 unknown=1 rem=4 figures=n/a
   EDU    NOT_ELIGIBLE    fail=2 unknown=2 rem=4 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
 P08  recommended=none
   MICRO  NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
-  TERM   NOT_ELIGIBLE    fail=2 unknown=2 rem=4 figures=n/a
+  TERM   NOT_ELIGIBLE    fail=3 unknown=1 rem=4 figures=n/a
   EDU    NOT_ELIGIBLE    fail=2 unknown=2 rem=4 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
 P09  recommended=none
   MICRO  NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
-  TERM   NOT_ELIGIBLE    fail=3 unknown=2 rem=5 figures=n/a
+  TERM   NOT_ELIGIBLE    fail=4 unknown=1 rem=5 figures=n/a
   EDU    NOT_ELIGIBLE    fail=3 unknown=2 rem=5 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=3 unknown=1 rem=4 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=3 unknown=1 rem=4 figures=n/a
 P10  recommended=none
   MICRO  NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
-  TERM   NOT_ELIGIBLE    fail=3 unknown=2 rem=5 figures=n/a
+  TERM   NOT_ELIGIBLE    fail=4 unknown=1 rem=5 figures=n/a
   EDU    NOT_ELIGIBLE    fail=3 unknown=2 rem=5 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=3 unknown=1 rem=4 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=3 unknown=1 rem=4 figures=n/a
 P11  recommended=none
   MICRO  INDETERMINATE   fail=0 unknown=2 rem=2 figures=n/a
-  TERM   NOT_ELIGIBLE    fail=1 unknown=3 rem=4 figures=n/a
+  TERM   NOT_ELIGIBLE    fail=2 unknown=2 rem=4 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=3 rem=4 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
 P12  recommended=none
   MICRO  INDETERMINATE   fail=0 unknown=1 rem=1 figures=n/a
-  TERM   NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  TERM   NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
 P13  recommended=none
   MICRO  INDETERMINATE   fail=0 unknown=1 rem=1 figures=n/a
-  TERM   NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  TERM   NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
 P14  recommended=none
   MICRO  INDETERMINATE   fail=0 unknown=1 rem=1 figures=n/a
-  TERM   NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  TERM   NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
 P15  recommended=none
   MICRO  NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
-  TERM   NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  TERM   NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
 P16  recommended=none
   MICRO  INDETERMINATE   fail=0 unknown=2 rem=2 figures=n/a
-  TERM   INDETERMINATE   fail=0 unknown=3 rem=3 figures=n/a
+  TERM   NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
   EDU    INDETERMINATE   fail=0 unknown=3 rem=3 figures=n/a
+  AMY    INDETERMINATE   fail=0 unknown=2 rem=2 figures=n/a
+  UNY    INDETERMINATE   fail=0 unknown=2 rem=2 figures=n/a
 P17  recommended=none
   MICRO  INDETERMINATE   fail=0 unknown=2 rem=2 figures=n/a
   TERM   NOT_ELIGIBLE    fail=1 unknown=3 rem=4 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
 P18  recommended=none
   MICRO  INDETERMINATE   fail=0 unknown=2 rem=2 figures=n/a
-  TERM   NOT_ELIGIBLE    fail=1 unknown=3 rem=4 figures=n/a
+  TERM   NOT_ELIGIBLE    fail=2 unknown=2 rem=4 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=3 rem=4 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
 P19  recommended=none
   MICRO  INDETERMINATE   fail=0 unknown=1 rem=1 figures=n/a
-  TERM   NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  TERM   NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
 P20  recommended=none
   MICRO  INDETERMINATE   fail=0 unknown=1 rem=1 figures=n/a
-  TERM   NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  TERM   NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
 P21  recommended=none
   MICRO  INDETERMINATE   fail=0 unknown=1 rem=1 figures=n/a
-  TERM   NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  TERM   NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
 P22  recommended=none
   MICRO  INDETERMINATE   fail=0 unknown=1 rem=1 figures=n/a
-  TERM   NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  TERM   NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
 P23  recommended=none
   MICRO  INDETERMINATE   fail=0 unknown=1 rem=1 figures=n/a
-  TERM   NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  TERM   NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
 P24  recommended=none
   MICRO  INDETERMINATE   fail=0 unknown=1 rem=1 figures=n/a
-  TERM   NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  TERM   NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
 P25  recommended=none
   MICRO  INDETERMINATE   fail=0 unknown=1 rem=1 figures=n/a
-  TERM   NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  TERM   NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
 P26  recommended=none
   MICRO  INDETERMINATE   fail=0 unknown=1 rem=1 figures=n/a
-  TERM   NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  TERM   NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
 P27  recommended=none
   MICRO  INDETERMINATE   fail=0 unknown=1 rem=1 figures=n/a
-  TERM   NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  TERM   NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
 P28  recommended=none
   MICRO  NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
-  TERM   INDETERMINATE   fail=0 unknown=2 rem=2 figures=n/a
+  TERM   INDETERMINATE   fail=0 unknown=1 rem=1 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
 P29  recommended=none
   MICRO  NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
-  TERM   INDETERMINATE   fail=0 unknown=2 rem=2 figures=n/a
+  TERM   INDETERMINATE   fail=0 unknown=1 rem=1 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
 P30  recommended=none
   MICRO  NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
-  TERM   INDETERMINATE   fail=0 unknown=2 rem=2 figures=n/a
+  TERM   INDETERMINATE   fail=0 unknown=1 rem=1 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
 P31  recommended=none
   MICRO  NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
-  TERM   INDETERMINATE   fail=0 unknown=2 rem=2 figures=n/a
+  TERM   INDETERMINATE   fail=0 unknown=1 rem=1 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
 P32  recommended=none
   MICRO  NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
-  TERM   INDETERMINATE   fail=0 unknown=2 rem=2 figures=n/a
+  TERM   INDETERMINATE   fail=0 unknown=1 rem=1 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
 P33  recommended=none
   MICRO  NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
-  TERM   INDETERMINATE   fail=0 unknown=2 rem=2 figures=n/a
+  TERM   INDETERMINATE   fail=0 unknown=1 rem=1 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
 P34  recommended=none
   MICRO  NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
-  TERM   INDETERMINATE   fail=0 unknown=2 rem=2 figures=n/a
+  TERM   INDETERMINATE   fail=0 unknown=1 rem=1 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
 P35  recommended=none
   MICRO  NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
-  TERM   NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  TERM   NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
 P36  recommended=none
   MICRO  NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
-  TERM   NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  TERM   NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
   EDU    INDETERMINATE   fail=0 unknown=1 rem=1 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
 P37  recommended=none
   MICRO  NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
-  TERM   NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  TERM   NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
   EDU    INDETERMINATE   fail=0 unknown=1 rem=1 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
 P38  recommended=none
   MICRO  NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
-  TERM   NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  TERM   NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
 P39  recommended=none
   MICRO  NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
-  TERM   NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  TERM   NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
   EDU    INDETERMINATE   fail=0 unknown=2 rem=2 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
 P40  recommended=none
   MICRO  NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
-  TERM   NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
-  EDU    INDETERMINATE   fail=0 unknown=1 rem=1 figures=n/a"
+  TERM   NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  EDU    INDETERMINATE   fail=0 unknown=1 rem=1 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a"
 `;
 
 exports[`the engine digest > is stable with the demo overlay applied 1`] = `
 "P01  recommended=MICRO
-  MICRO  ELIGIBLE        fail=0 unknown=0 rem=0 loan=85000 own=5000 subsidy=10000 rate=8 emi=1794 outflow=107608 rows=66 bind=GROSS partners=4/15 nearest=SCA_MH_PUNE_001 healthiest=MFI_MH_PUNE_005 docs=0/6 ready=true
+  MICRO  ELIGIBLE        fail=0 unknown=0 rem=0 loan=90000 own=10000 subsidy=0 rate=6.5 emi=3034 outflow=100137 rows=36 bind=GROSS partners=4/15 nearest=SCA_MH_PUNE_001 healthiest=MFI_MH_PUNE_005 docs=0/6 ready=true
   TERM   NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
 P02  recommended=MICRO
-  MICRO  ELIGIBLE        fail=0 unknown=0 rem=0 loan=76500 own=4500 subsidy=9000 rate=8 emi=1614 outflow=96858 rows=66 bind=GROSS partners=4/15 nearest=SCA_MH_NAGPUR_002 healthiest=MFI_MH_PUNE_005 docs=0/6 ready=true
+  MICRO  ELIGIBLE        fail=0 unknown=0 rem=0 loan=81000 own=9000 subsidy=0 rate=6.5 emi=2731 outflow=90124 rows=36 bind=GROSS partners=4/15 nearest=SCA_MH_NAGPUR_002 healthiest=MFI_MH_PUNE_005 docs=0/6 ready=true
   TERM   NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
 P03  recommended=none
   MICRO  NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
   TERM   NOT_ELIGIBLE    fail=3 unknown=0 rem=3 figures=n/a
   EDU    NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
 P04  recommended=MICRO
-  MICRO  ELIGIBLE        fail=0 unknown=0 rem=0 loan=123000 own=7000 subsidy=10000 rate=8 emi=2595 outflow=155731 rows=66 bind=GROSS partners=4/15 nearest=MFI_MH_MUMBAI_006 healthiest=MFI_MH_PUNE_005 docs=0/6 ready=true
+  MICRO  ELIGIBLE        fail=0 unknown=0 rem=0 loan=125000 own=14000 subsidy=0 rate=6.5 emi=4214 outflow=139077 rows=36 bind=MAX_LOAN partners=4/15 nearest=MFI_MH_MUMBAI_006 healthiest=MFI_MH_PUNE_005 docs=0/6 ready=true
   TERM   NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
 P05  recommended=TERM
   MICRO  NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
-  TERM   ELIGIBLE        fail=0 unknown=0 rem=0 loan=126001 own=14000 subsidy=0 rate=8 emi=2044 outflow=171669 rows=90 bind=GROSS partners=3/15 nearest=RRB_MH_SOLAPUR_004 healthiest=SCA_MH_PUNE_001 docs=0/9 ready=true
+  TERM   ELIGIBLE        fail=0 unknown=0 rem=0 loan=126001 own=14000 subsidy=0 rate=8 emi=2161 outflow=168600 rows=84 bind=GROSS partners=3/15 nearest=RRB_MH_SOLAPUR_004 healthiest=SCA_MH_PUNE_001 docs=0/9 ready=true
   EDU    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
 P06  recommended=none
   MICRO  NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
   TERM   NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
 P07  recommended=none
   MICRO  NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
   TERM   NOT_ELIGIBLE    fail=3 unknown=0 rem=3 figures=n/a
   EDU    NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
 P08  recommended=none
   MICRO  NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
   TERM   NOT_ELIGIBLE    fail=3 unknown=0 rem=3 figures=n/a
   EDU    NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
 P09  recommended=none
   MICRO  NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
   TERM   NOT_ELIGIBLE    fail=4 unknown=0 rem=4 figures=n/a
   EDU    NOT_ELIGIBLE    fail=3 unknown=1 rem=4 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=3 unknown=0 rem=3 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=3 unknown=0 rem=3 figures=n/a
 P10  recommended=none
   MICRO  NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
   TERM   NOT_ELIGIBLE    fail=4 unknown=0 rem=4 figures=n/a
   EDU    NOT_ELIGIBLE    fail=3 unknown=1 rem=4 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=3 unknown=0 rem=3 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=3 unknown=0 rem=3 figures=n/a
 P11  recommended=none
   MICRO  INDETERMINATE   fail=0 unknown=1 rem=1 figures=n/a
   TERM   NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
 P12  recommended=none
   MICRO  NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
   TERM   NOT_ELIGIBLE    fail=3 unknown=0 rem=3 figures=n/a
   EDU    NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
 P13  recommended=none
   MICRO  NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
   TERM   NOT_ELIGIBLE    fail=3 unknown=0 rem=3 figures=n/a
   EDU    NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
 P14  recommended=none
   MICRO  INDETERMINATE   fail=0 unknown=1 rem=1 figures=n/a
   TERM   NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
 P15  recommended=none
   MICRO  NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
   TERM   NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
 P16  recommended=none
   MICRO  INDETERMINATE   fail=0 unknown=1 rem=1 figures=n/a
   TERM   NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
   EDU    INDETERMINATE   fail=0 unknown=2 rem=2 figures=n/a
+  AMY    INDETERMINATE   fail=0 unknown=1 rem=1 figures=n/a
+  UNY    INDETERMINATE   fail=0 unknown=1 rem=1 figures=n/a
 P17  recommended=none
   MICRO  INDETERMINATE   fail=0 unknown=1 rem=1 figures=n/a
   TERM   NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
 P18  recommended=none
   MICRO  INDETERMINATE   fail=0 unknown=1 rem=1 figures=n/a
   TERM   NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
 P19  recommended=MICRO
-  MICRO  ELIGIBLE        fail=0 unknown=0 rem=0 loan=6800 own=400 subsidy=800 rate=8 emi=143 outflow=8617 rows=66 bind=GROSS partners=0/15 nearest=none healthiest=none docs=0/6 ready=true
+  MICRO  ELIGIBLE        fail=0 unknown=0 rem=0 loan=7200 own=800 subsidy=0 rate=6.5 emi=243 outflow=8010 rows=36 bind=GROSS partners=0/15 nearest=none healthiest=none docs=0/6 ready=true
   TERM   NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
 P20  recommended=MICRO
-  MICRO  ELIGIBLE        fail=0 unknown=0 rem=0 loan=80750 own=4750 subsidy=9500 rate=8 emi=1704 outflow=102235 rows=66 bind=GROSS partners=0/15 nearest=none healthiest=none docs=0/6 ready=true
+  MICRO  ELIGIBLE        fail=0 unknown=0 rem=0 loan=85500 own=9500 subsidy=0 rate=6.5 emi=2883 outflow=95129 rows=36 bind=GROSS partners=0/15 nearest=none healthiest=none docs=0/6 ready=true
   TERM   NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
 P21  recommended=MICRO
-  MICRO  ELIGIBLE        fail=0 unknown=0 rem=0 loan=104000 own=6000 subsidy=10000 rate=8 emi=2195 outflow=131662 rows=66 bind=GROSS partners=0/15 nearest=none healthiest=none docs=0/6 ready=true
+  MICRO  ELIGIBLE        fail=0 unknown=0 rem=0 loan=108000 own=12000 subsidy=0 rate=6.5 emi=3641 outflow=120165 rows=36 bind=GROSS partners=0/15 nearest=none healthiest=none docs=0/6 ready=true
   TERM   NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
 P22  recommended=MICRO
-  MICRO  ELIGIBLE        fail=0 unknown=0 rem=0 loan=121100 own=6900 subsidy=10000 rate=8 emi=2555 outflow=153323 rows=66 bind=GROSS partners=4/15 nearest=MFI_MH_MUMBAI_006 healthiest=MFI_MH_PUNE_005 docs=0/6 ready=true
+  MICRO  ELIGIBLE        fail=0 unknown=0 rem=0 loan=124200 own=13800 subsidy=0 rate=6.5 emi=4188 outflow=138185 rows=36 bind=GROSS partners=4/15 nearest=MFI_MH_MUMBAI_006 healthiest=MFI_MH_PUNE_005 docs=0/6 ready=true
   TERM   NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
 P23  recommended=MICRO
-  MICRO  ELIGIBLE        fail=0 unknown=0 rem=0 loan=51000 own=3000 subsidy=6000 rate=8 emi=1076 outflow=64570 rows=66 bind=GROSS partners=2/15 nearest=MFI_KA_HUBBALLI_009 healthiest=SCA_KA_BENGALURU_007 docs=0/6 ready=true
+  MICRO  ELIGIBLE        fail=0 unknown=0 rem=0 loan=54000 own=6000 subsidy=0 rate=6.5 emi=1821 outflow=60082 rows=36 bind=GROSS partners=2/15 nearest=MFI_KA_HUBBALLI_009 healthiest=SCA_KA_BENGALURU_007 docs=0/6 ready=true
   TERM   NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
 P24  recommended=MICRO
-  MICRO  ELIGIBLE        fail=0 unknown=0 rem=0 loan=38250 own=2250 subsidy=4500 rate=8 emi=807 outflow=48428 rows=66 bind=GROSS partners=2/15 nearest=MFI_TN_MADURAI_013 healthiest=MFI_TN_MADURAI_013 docs=0/6 ready=true
+  MICRO  ELIGIBLE        fail=0 unknown=0 rem=0 loan=40500 own=4500 subsidy=0 rate=6.5 emi=1365 outflow=45065 rows=36 bind=GROSS partners=2/15 nearest=MFI_TN_MADURAI_013 healthiest=MFI_TN_MADURAI_013 docs=0/6 ready=true
   TERM   NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
 P25  recommended=MICRO
-  MICRO  ELIGIBLE        fail=0 unknown=0 rem=0 loan=108750 own=6250 subsidy=10000 rate=8 emi=2249 outflow=134975 rows=63 bind=GROSS partners=4/15 nearest=SCA_MH_NAGPUR_002 healthiest=MFI_MH_PUNE_005 docs=0/6 ready=true
+  MICRO  ELIGIBLE        fail=0 unknown=0 rem=0 loan=112500 own=12500 subsidy=0 rate=6.5 emi=3793 outflow=125166 rows=36 bind=GROSS partners=4/15 nearest=SCA_MH_NAGPUR_002 healthiest=MFI_MH_PUNE_005 docs=0/6 ready=true
   TERM   NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
 P26  recommended=MICRO
-  MICRO  ELIGIBLE        fail=0 unknown=0 rem=0 loan=113500 own=6500 subsidy=10000 rate=8 emi=2492 outflow=149545 rows=72 bind=GROSS partners=4/15 nearest=MFI_MH_PUNE_005 healthiest=MFI_MH_PUNE_005 docs=0/6 ready=true
+  MICRO  ELIGIBLE        fail=0 unknown=0 rem=0 loan=117000 own=13000 subsidy=0 rate=6.5 emi=3945 outflow=130174 rows=36 bind=GROSS partners=4/15 nearest=MFI_MH_PUNE_005 healthiest=MFI_MH_PUNE_005 docs=0/6 ready=true
   TERM   NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
 P27  recommended=MICRO
-  MICRO  ELIGIBLE        fail=0 unknown=0 rem=0 loan=63750 own=3750 subsidy=7500 rate=8 emi=1319 outflow=79117 rows=63 bind=GROSS partners=2/15 nearest=MFI_TN_MADURAI_013 healthiest=MFI_TN_MADURAI_013 docs=0/6 ready=true
+  MICRO  ELIGIBLE        fail=0 unknown=0 rem=0 loan=67500 own=7500 subsidy=0 rate=6.5 emi=2276 outflow=75101 rows=36 bind=GROSS partners=2/15 nearest=MFI_TN_MADURAI_013 healthiest=MFI_TN_MADURAI_013 docs=0/6 ready=true
   TERM   NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
 P28  recommended=TERM
   MICRO  NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
-  TERM   ELIGIBLE        fail=0 unknown=0 rem=0 loan=450000 own=50000 subsidy=0 rate=8 emi=7299 outflow=613119 rows=90 bind=GROSS partners=4/15 nearest=RRB_MH_SOLAPUR_004 healthiest=PSB_MH_NASHIK_003 docs=0/9 ready=true
+  TERM   ELIGIBLE        fail=0 unknown=0 rem=0 loan=450000 own=50000 subsidy=0 rate=8 emi=7719 outflow=602093 rows=84 bind=GROSS partners=4/15 nearest=RRB_MH_SOLAPUR_004 healthiest=PSB_MH_NASHIK_003 docs=0/9 ready=true
   EDU    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
 P29  recommended=TERM
   MICRO  NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
-  TERM   ELIGIBLE        fail=0 unknown=0 rem=0 loan=540000 own=60000 subsidy=0 rate=10 emi=9422 outflow=791488 rows=90 bind=GROSS partners=4/15 nearest=PSB_MH_NASHIK_003 healthiest=PSB_MH_NASHIK_003 docs=0/9 ready=true
+  TERM   ELIGIBLE        fail=0 unknown=0 rem=0 loan=540000 own=60000 subsidy=0 rate=8 emi=9263 outflow=722512 rows=84 bind=GROSS partners=4/15 nearest=PSB_MH_NASHIK_003 healthiest=PSB_MH_NASHIK_003 docs=0/9 ready=true
   EDU    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
 P30  recommended=TERM
   MICRO  NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
-  TERM   ELIGIBLE        fail=0 unknown=0 rem=0 loan=2250000 own=250000 subsidy=0 rate=12 emi=42162 outflow=3541632 rows=90 bind=GROSS partners=1/15 nearest=SCA_TN_CHENNAI_012 healthiest=SCA_TN_CHENNAI_012 docs=0/9 ready=true
+  TERM   ELIGIBLE        fail=0 unknown=0 rem=0 loan=2250000 own=250000 subsidy=0 rate=8 emi=38596 outflow=3010443 rows=84 bind=GROSS partners=1/15 nearest=SCA_TN_CHENNAI_012 healthiest=SCA_TN_CHENNAI_012 docs=0/9 ready=true
   EDU    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
 P31  recommended=TERM
   MICRO  NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
-  TERM   ELIGIBLE        fail=0 unknown=0 rem=0 loan=4500000 own=500000 subsidy=0 rate=12 emi=84324 outflow=7083257 rows=90 bind=GROSS partners=0/15 nearest=none healthiest=none docs=0/9 ready=true
+  TERM   ELIGIBLE        fail=0 unknown=0 rem=0 loan=4500000 own=500000 subsidy=0 rate=8 emi=77191 outflow=6020915 rows=84 bind=GROSS partners=0/15 nearest=none healthiest=none docs=0/9 ready=true
   EDU    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
 P32  recommended=TERM
   MICRO  NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
-  TERM   ELIGIBLE        fail=0 unknown=0 rem=0 loan=360000 own=40000 subsidy=0 rate=8 emi=5839 outflow=490507 rows=90 bind=GROSS partners=2/15 nearest=SCA_RJ_JAIPUR_015 healthiest=PSB_MP_BHOPAL_014 docs=0/9 ready=true
+  TERM   ELIGIBLE        fail=0 unknown=0 rem=0 loan=360000 own=40000 subsidy=0 rate=8 emi=6175 outflow=481679 rows=84 bind=GROSS partners=2/15 nearest=SCA_RJ_JAIPUR_015 healthiest=PSB_MP_BHOPAL_014 docs=0/9 ready=true
   EDU    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
 P33  recommended=TERM
   MICRO  NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
-  TERM   ELIGIBLE        fail=0 unknown=0 rem=0 loan=270000 own=30000 subsidy=0 rate=8 emi=4379 outflow=367888 rows=90 bind=GROSS partners=1/15 nearest=PSB_MP_BHOPAL_014 healthiest=PSB_MP_BHOPAL_014 docs=1/9 ready=false
+  TERM   ELIGIBLE        fail=0 unknown=0 rem=0 loan=270000 own=30000 subsidy=0 rate=8 emi=4631 outflow=361264 rows=84 bind=GROSS partners=1/15 nearest=PSB_MP_BHOPAL_014 healthiest=PSB_MP_BHOPAL_014 docs=1/9 ready=false
   EDU    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
 P34  recommended=TERM
   MICRO  NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
-  TERM   ELIGIBLE        fail=0 unknown=0 rem=0 loan=630000 own=70000 subsidy=0 rate=10 emi=10993 outflow=923376 rows=90 bind=GROSS partners=2/15 nearest=RRB_UP_VARANASI_011 healthiest=RRB_UP_VARANASI_011 docs=0/9 ready=true
+  TERM   ELIGIBLE        fail=0 unknown=0 rem=0 loan=630000 own=70000 subsidy=0 rate=8 emi=10807 outflow=842922 rows=84 bind=GROSS partners=2/15 nearest=RRB_UP_VARANASI_011 healthiest=RRB_UP_VARANASI_011 docs=0/9 ready=true
   EDU    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
 P35  recommended=none
   MICRO  NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
   TERM   NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
 P36  recommended=EDU
   MICRO  NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
   TERM   NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
-  EDU    ELIGIBLE        fail=0 unknown=0 rem=0 loan=720000 own=0 subsidy=0 rate=9 emi=9121 outflow=1094450 rows=132 bind=LOAN_PCT_CAP partners=2/15 nearest=SCA_KA_BENGALURU_007 healthiest=SCA_KA_BENGALURU_007 docs=1/9 ready=false
+  EDU    ELIGIBLE        fail=0 unknown=0 rem=0 loan=720000 own=0 subsidy=0 rate=6.5 emi=7214 outflow=1038786 rows=156 bind=LOAN_PCT_CAP partners=2/15 nearest=SCA_KA_BENGALURU_007 healthiest=SCA_KA_BENGALURU_007 docs=1/9 ready=false
+  AMY    NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
 P37  recommended=EDU
   MICRO  NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
   TERM   NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
-  EDU    ELIGIBLE        fail=0 unknown=0 rem=0 loan=2700000 own=0 subsidy=0 rate=11 emi=37193 outflow=4463060 rows=132 bind=LOAN_PCT_CAP partners=1/15 nearest=SCA_TN_CHENNAI_012 healthiest=SCA_TN_CHENNAI_012 docs=1/9 ready=false
+  EDU    ELIGIBLE        fail=0 unknown=0 rem=0 loan=2700000 own=0 subsidy=0 rate=6.5 emi=27052 outflow=3895462 rows=156 bind=LOAN_PCT_CAP partners=1/15 nearest=SCA_TN_CHENNAI_012 healthiest=SCA_TN_CHENNAI_012 docs=1/9 ready=false
+  AMY    NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
 P38  recommended=none
   MICRO  NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
   TERM   NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
   EDU    NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
 P39  recommended=none
   MICRO  NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
   TERM   NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
   EDU    INDETERMINATE   fail=0 unknown=1 rem=1 figures=n/a
+  AMY    NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
 P40  recommended=EDU
   MICRO  NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
   TERM   NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
-  EDU    ELIGIBLE        fail=0 unknown=0 rem=0 loan=450000 own=0 subsidy=0 rate=9 emi=5700 outflow=684071 rows=132 bind=LOAN_PCT_CAP partners=1/15 nearest=PSB_MP_BHOPAL_014 healthiest=PSB_MP_BHOPAL_014 docs=4/9 ready=false"
+  EDU    ELIGIBLE        fail=0 unknown=0 rem=0 loan=450000 own=0 subsidy=0 rate=6.5 emi=4509 outflow=649220 rows=156 bind=LOAN_PCT_CAP partners=1/15 nearest=PSB_MP_BHOPAL_014 healthiest=PSB_MP_BHOPAL_014 docs=4/9 ready=false
+  AMY    NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a"
 `;
 
 exports[`the persona CLI > prints a stable detail view for P19 1`] = `
@@ -343,11 +503,11 @@ Applicant: age 47, SC, income 84,000, Pune (Maharashtra), purpose PLACEHOLDER_pe
     [pass] PURPOSE_ELIGIBLE                 The stated purpose is covered by this scheme.
     [pass] AGE_WITHIN_RANGE                 Age 47 is within the permitted range of 18-60.
     cost 8,000 → eligible 8,000 (SCHEME)
-    subsidy 800 (FRONT)  margin 5.0% = 400
-    gross 6,800 → LOAN 6,800  limited by GROSS  (below scheme minimum 10,000)
-    rate 8%  moratorium 6m (CAPITALISED)  repayment 60m
-    EMI 143  total interest 1,817  total outflow 8,617
-    schedule: 66 rows, closing balance 0
+    subsidy 0 (BACK)  margin 10.0% = 800
+    gross 7,200 → LOAN 7,200  limited by GROSS  (below scheme minimum 10,000)
+    rate 6.5%  moratorium 3m (CAPITALISED)  repayment 33m
+    EMI 243  total interest 810  total outflow 8,010
+    schedule: 36 rows, closing balance 0
     partners: 0 eligible, 15 excluded
       excluded SCA_MH_PUNE_001        LOAN_BELOW_MIN_TICKET
       excluded SCA_MH_NAGPUR_002      LOAN_BELOW_MIN_TICKET
@@ -401,17 +561,41 @@ Applicant: age 47, SC, income 84,000, Pune (Maharashtra), purpose PLACEHOLDER_pe
       PROVIDE_DATA       We need applicant.education.admission_confirmed before we can decide.
       CHANGE_CATEGORICAL This scheme covers: PLACEHOLDER_professional_course_india, PLACEHOLDER_professional_course_abroad.
 
+  ── AMY ─────────────────────────────────────────────────────────
+  status: NOT_ELIGIBLE
+    [pass] INCOME_WITHIN_CAP                Annual family income of 84000 is within the ceiling of 500000.
+    [pass] CATEGORY_SC                      Recorded category is SC, which this scheme is reserved for.
+    [pass] CASTE_CERT_AVAILABLE             Caste certificate is available.
+    [pass] INCOME_PROOF_AVAILABLE           Income certificate is available.
+    [pass] PROJECT_COST_WITHIN_UNIT_COST    Project cost of 8000 is within the ceiling of 140000.
+    [FAIL] PURPOSE_ELIGIBLE                 The stated purpose is not covered by this scheme.
+    [pass] AGE_WITHIN_RANGE                 Age 47 is within the permitted range of 18-60.
+    remediation:
+      CHANGE_CATEGORICAL This scheme covers: PLACEHOLDER_micro_business, PLACEHOLDER_small_trade.
+
+  ── UNY ─────────────────────────────────────────────────────────
+  status: NOT_ELIGIBLE
+    [pass] INCOME_WITHIN_CAP                Annual family income of 84000 is within the ceiling of 500000.
+    [pass] CATEGORY_SC                      Recorded category is SC, which this scheme is reserved for.
+    [pass] CASTE_CERT_AVAILABLE             Caste certificate is available.
+    [pass] INCOME_PROOF_AVAILABLE           Income certificate is available.
+    [pass] PROJECT_COST_WITHIN_UNIT_COST    Project cost of 8000 is within the ceiling of 500000.
+    [FAIL] PURPOSE_ELIGIBLE                 The stated purpose is not covered by this scheme.
+    [pass] AGE_WITHIN_RANGE                 Age 47 is within the permitted range of 18-60.
+    remediation:
+      CHANGE_CATEGORICAL This scheme covers: PLACEHOLDER_micro_enterprise_5lakh, PLACEHOLDER_small_manufacturing_5lakh.
+
   recommended: MICRO"
 `;
 
 exports[`the persona CLI > prints a stable summary table for all 40 personas 1`] = `
 "ID   Persona                                       MICRO TERM  EDU   Rec          Loan      EMI  Rate  Ptnr   Docs
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-P01  Tailoring unit, Pune — the happy path         YES   no    no    MICRO      85,000    1,794    8%     4    6/6
-P02  Grocery kiosk, Nagpur — income exactly at the…YES   no    no    MICRO      76,500    1,614    8%     4    6/6
+P01  Tailoring unit, Pune — the happy path         YES   no    no    MICRO      90,000    3,034  6.5%     4    6/6
+P02  Grocery kiosk, Nagpur — income exactly at the…YES   no    no    MICRO      81,000    2,731  6.5%     4    6/6
 P03  Grocery kiosk, Nagpur — one rupee over the capno    no    no    —               —        —     —     —      —
-P04  Mobile repair bench, Mumbai — project cost ex…YES   no    no    MICRO    1,23,000    2,595    8%     4    6/6
-P05  Small dal mill, Solapur — project cost one ru…no    YES   no    TERM     1,26,001    2,044    8%     3    9/9
+P04  Mobile repair bench, Mumbai — project cost ex…YES   no    no    MICRO    1,25,000    4,214  6.5%     4    6/6
+P05  Small dal mill, Solapur — project cost one ru…no    YES   no    TERM     1,26,001    2,161    8%     3    9/9
 P06  Small dal mill, Solapur — sitting in the gap …no    no    no    —               —        —     —     —      —
 P07  Vegetable cart, Lucknow — no caste certificat…no    no    no    —               —        —     —     —      —
 P08  Vegetable cart, Lucknow — no income certifica…no    no    no    —               —        —     —     —      —
@@ -425,28 +609,28 @@ P15  Bar licence enquiry, Pune — an excluded activ…no    no    no    —    
 P16  Undecided applicant, Indore — knows the budge…?     no    ?     —               —        —     —     —      —
 P17  Tea stall plan, Varanasi — no costing yet     ?     no    no    —               —        —     —     —      —
 P18  Daily-wage household, Madurai — income not qu…?     no    no    —               —        —     —     —      —
-P19  Handcart top-up, Pune — a project too small f…YES   no    no    MICRO       6,800      143    8%     0    6/6
-P20  Snack unit, Bhopal — eligible, but no micro l…YES   no    no    MICRO      80,750    1,704    8%     0    6/6
-P21  Poultry shed, Raipur — a state the registry d…YES   no    no    MICRO    1,04,000    2,195    8%     0    6/6
-P22  Xerox and stationery shop, Mumbai — four part…YES   no    no    MICRO    1,21,100    2,555    8%     4    6/6
-P23  Weaving loom, Dharwad — Karnataka micro appli…YES   no    no    MICRO      51,000    1,076    8%     2    6/6
-P24  Flower vending, Madurai — Tamil Nadu micro ap…YES   no    no    MICRO      38,250      807    8%     2    6/6
-P25  Beauty parlour, Nagpur — asks for the shortes…YES   no    no    MICRO    1,08,750    2,249    8%     4    6/6
-P26  Seasonal jaggery unit, Ahmednagar — asks for …YES   no    no    MICRO    1,13,500    2,492    8%     4    6/6
-P27  Cycle repair shop, Coimbatore — wants no mora…YES   no    no    MICRO      63,750    1,319    8%     2    6/6
-P28  Goods auto, Solapur — term loan in the lowest…no    YES   no    TERM     4,50,000    7,299    8%     4    9/9
-P29  Dairy unit, Nashik — term loan in the middle …no    YES   no    TERM     5,40,000    9,422   10%     4    9/9
-P30  Printing press, Chennai — term loan in the to…no    YES   no    TERM    22,50,000   42,162   12%     1    9/9
-P31  Cold storage, Jaipur — a loan larger than any…no    YES   no    TERM    45,00,000   84,324   12%     0    9/9
-P32  Marble polishing unit, Jaipur — served by an …no    YES   no    TERM     3,60,000    5,839    8%     2    9/9
-P33  Tent house, Jodhpur — under the state agency'…no    YES   no    TERM     2,70,000    4,379    8%     1    8/9
-P34  Rice hulling, Gorakhpur — regional rural bank…no    YES   no    TERM     6,30,000   10,993   10%     2    9/9
+P19  Handcart top-up, Pune — a project too small f…YES   no    no    MICRO       7,200      243  6.5%     0    6/6
+P20  Snack unit, Bhopal — eligible, but no micro l…YES   no    no    MICRO      85,500    2,883  6.5%     0    6/6
+P21  Poultry shed, Raipur — a state the registry d…YES   no    no    MICRO    1,08,000    3,641  6.5%     0    6/6
+P22  Xerox and stationery shop, Mumbai — four part…YES   no    no    MICRO    1,24,200    4,188  6.5%     4    6/6
+P23  Weaving loom, Dharwad — Karnataka micro appli…YES   no    no    MICRO      54,000    1,821  6.5%     2    6/6
+P24  Flower vending, Madurai — Tamil Nadu micro ap…YES   no    no    MICRO      40,500    1,365  6.5%     2    6/6
+P25  Beauty parlour, Nagpur — asks for the shortes…YES   no    no    MICRO    1,12,500    3,793  6.5%     4    6/6
+P26  Seasonal jaggery unit, Ahmednagar — asks for …YES   no    no    MICRO    1,17,000    3,945  6.5%     4    6/6
+P27  Cycle repair shop, Coimbatore — wants no mora…YES   no    no    MICRO      67,500    2,276  6.5%     2    6/6
+P28  Goods auto, Solapur — term loan in the lowest…no    YES   no    TERM     4,50,000    7,719    8%     4    9/9
+P29  Dairy unit, Nashik — term loan in the middle …no    YES   no    TERM     5,40,000    9,263    8%     4    9/9
+P30  Printing press, Chennai — term loan in the to…no    YES   no    TERM    22,50,000   38,596    8%     1    9/9
+P31  Cold storage, Jaipur — a loan larger than any…no    YES   no    TERM    45,00,000   77,191    8%     0    9/9
+P32  Marble polishing unit, Jaipur — served by an …no    YES   no    TERM     3,60,000    6,175    8%     2    9/9
+P33  Tent house, Jodhpur — under the state agency'…no    YES   no    TERM     2,70,000    4,631    8%     1    8/9
+P34  Rice hulling, Gorakhpur — regional rural bank…no    YES   no    TERM     6,30,000   10,807    8%     2    9/9
 P35  Plastics factory, Bengaluru — above the schem…no    no    no    —               —        —     —     —      —
-P36  Engineering degree in Bengaluru — education l…no    no    YES   EDU      7,20,000    9,121    9%     2    8/9
-P37  Master's abroad — education loan, purpose-spe…no    no    YES   EDU     27,00,000   37,193   11%     1    8/9
+P36  Engineering degree in Bengaluru — education l…no    no    YES   EDU      7,20,000    7,214  6.5%     2    8/9
+P37  Master's abroad — education loan, purpose-spe…no    no    YES   EDU     27,00,000   27,052  6.5%     1    8/9
 P38  Awaiting counselling result, Nashik — admissi…no    no    no    —               —        —     —     —      —
 P39  Exploring options, Lucknow — admission status…no    no    ?     —               —        —     —     —      —
-P40  Nursing diploma, Bhopal — eligible, paperwork…no    no    YES   EDU      4,50,000    5,700    9%     1    5/9
+P40  Nursing diploma, Bhopal — eligible, paperwork…no    no    YES   EDU      4,50,000    4,509  6.5%     1    5/9
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 40 personas
   23 with at least one eligible scheme
@@ -469,7 +653,7 @@ P02  Grocery kiosk, Nagpur — income exactly at the…?     no    no    —    
 P03  Grocery kiosk, Nagpur — one rupee over the capno    no    no    —               —        —     —     —      —
 P04  Mobile repair bench, Mumbai — project cost ex…?     no    no    —               —        —     —     —      —
 P05  Small dal mill, Solapur — project cost one ru…no    ?     no    —               —        —     —     —      —
-P06  Small dal mill, Solapur — sitting in the gap …no    ?     no    —               —        —     —     —      —
+P06  Small dal mill, Solapur — sitting in the gap …no    no    no    —               —        —     —     —      —
 P07  Vegetable cart, Lucknow — no caste certificat…no    no    no    —               —        —     —     —      —
 P08  Vegetable cart, Lucknow — no income certifica…no    no    no    —               —        —     —     —      —
 P09  First-time applicant, Gorakhpur — no paperwor…no    no    no    —               —        —     —     —      —
@@ -479,7 +663,7 @@ P12  School-leaver, Kolhapur — below the age floor ?     no    no    —      
 P13  Retired weaver, Kalaburagi — above the age ce…?     no    no    —               —        —     —     —      —
 P14  Phone enquiry, Mysuru — age not given         ?     no    no    —               —        —     —     —      —
 P15  Bar licence enquiry, Pune — an excluded activ…no    no    no    —               —        —     —     —      —
-P16  Undecided applicant, Indore — knows the budge…?     ?     ?     —               —        —     —     —      —
+P16  Undecided applicant, Indore — knows the budge…?     no    ?     —               —        —     —     —      —
 P17  Tea stall plan, Varanasi — no costing yet     ?     no    no    —               —        —     —     —      —
 P18  Daily-wage household, Madurai — income not qu…?     no    no    —               —        —     —     —      —
 P19  Handcart top-up, Pune — a project too small f…?     no    no    —               —        —     —     —      —
