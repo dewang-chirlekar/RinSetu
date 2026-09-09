@@ -289,7 +289,18 @@ All code phases (3–9) are done. The remaining work is **non-code** (see §5):
 6. **Demo hardening (Phase 9):** **✓ done 2026-09-07 — `DEMO_MODE=true` (`next.config.ts:4` `NEXT_PUBLIC_DEMO_MODE`, `layout.tsx:26` `window.__RINSETU_DEMO__`, `public/manifest.json:1` PWA, `DatasetBanner` `DEMO MODE` stamp, `PartnerMap` offline fallback) + `tests/dataset-db.parity.test.ts:38` now 2s probe + `DB unreachable, skipping parity check` (236+1 skipped wifi off). Full demo runs with wifi off.**
 7. **5 schemes + F2 + cascade/LLM harden (2026-09-10):** **✓ done — 5 schemes (MICRO/TERM/EDU/AMY 15% NBFC-MFI/UNY 13% Coop) + 41 personas P41 tailoring 90k proves F2 ranking (MICRO 6.5% > AMY 15%) + purpose flat deduped + cascade strict (`district`/`tehsil` disabled) + `paramsKey` + `lakh` fix + LLM 2.5-flash fallback + `ui.confirm` fix + health-csv guard + PartnerMap offline i18n.**
 
-**We are trying to do next:** **Phase 0 transcription** — take the **48 unverified (was 55) — 19 `demo_overlay` + 29 `placeholder` in `VERIFY.md:11` (5/5 schemes unverified)** and 11 open questions in `data/schemes.seed.json:1` and transcribe official guideline `source_url`/`source_date` per field, two-person diff, then `npm run verify:report`. Engine needs no logic change; `figures_authoritative` flips when citable. F2 now expects P41 multi. After that: Vercel deploy + rehearsal (§12).
+**We are trying to do next — stored for tomorrow 2026-09-11:**
+
+**Immediate (tomorrow morning, 2–3h):**
+- **Finish Phase 0 transcription:** fetch `Compendium 2024-05-15` and fill `margin_pct`, `subsidy`, `moratorium_interest_treatment` for `MICRO/TERM/AMY/UNY` (still `placeholder` `TODO(verify)`). Goal: `MICRO/TERM` → `verified:true` and demo `figures_authoritative` can flip for those 2. Two-person diff + `npm run verify:report`.
+- **LoanConfirmation choice — verify with you:** we made `P41` show **both `ELIGIBLE` radios** `src/components/LoanConfirmation.tsx:15` `MICRO 6.5%` vs `AMY 15%` (you flagged compulsion). Test `P41` and real manual entries where 2 schemes overlap.
+
+**Next (this week):**
+- **Save my applications:** wire `Application` `prisma/schema.prisma:47` — `POST /api/applications` on `See result` → `GET /applications` list, so manual form isn't lost if you lose the link `src/lib/applicant-params.ts:122`.
+- **Deploy:** `Vercel` + `Supabase` prod, `DEMO_MODE` rehearsal `docs/ROADMAP.md:391` 4-min script, record video.
+- **Polish:** Lighthouse a11y, replace `PLACEHOLDER_*` with real `indicative-activities` flat list (you asked purpose should be generic, not scheme-picked — done `ApplyForm.tsx:59`), `ui.upload` fix done.
+
+After that: Vercel deploy + rehearsal (§12).
 
 **Two constraints still apply.** Do not edit `src/core/` from the UI side — if the UI
 needs something the core does not expose, that is a core change with its own tests, in

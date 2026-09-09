@@ -68,12 +68,18 @@ Dataset: **5 schemes** (MICRO, TERM, EDU, **AMY Aajeevika 15%** + **UNY Udyam Ni
 
 **Demo hardening — `DEMO_MODE=true`** (Phase 9, 2026-09-07): `src/llm/client.ts:18` `DEMO_MODE` flag → `src/llm/extract.ts:119` fixture cache `data/llm.fixtures.json:1` (`extract:<lowercased>` + `__fallback__`), `src/llm/explain.ts:49` deterministic prose fallback, `src/components/DatasetBanner.tsx:1` `DEMO MODE` stamp, `src/components/PartnerMap.tsx:48` offline fallback (no `tile.openstreetmap.org` fetch, shows ranked codes), `src/app/layout.tsx:26` `window.__RINSETU_DEMO__` + `next.config.ts:4` `NEXT_PUBLIC_DEMO_MODE`, `public/manifest.json:1` PWA manifest, `FreeTextIntake.tsx:88` hint. Full demo runs with wifi off: `DEMO_MODE=true npm run dev` + `npm run personas` + `/apply` free-text `I want to start a tailoring unit…` → `/result` → `/personas`. `tests/dataset-db.parity.test.ts:38` now skips on unreachable DB (236+1) so gate stays green offline.
 
-### What is not yet built (next)
+### What is not yet built — what we will do next
 
-- **Phase 0 verification** — **48 unverified figures** (`VERIFY.md:11` 19 `demo_overlay` + 29 `placeholder`, 0 `ps_text` after 09.09.2026 NSFDC transcription: cost/loan caps, 6.5%/8%/15%/13% rates, tenure, moratorium windows now `official_guideline`), 11 open questions (`data/schemes.seed.json:194` — Q5 moratorium treatment, Q3 subsidy still `TODO(verify)`). Needs compendium for `margin_pct`, `subsidy`, `moratorium_interest_treatment`; engine is ready to ingest without logic change. Nothing on screen is a sanction until `figures_authoritative:true`.
-- Optional polish — Lighthouse a11y ≥90 pass, XLSX alongside CSV, voice/Bhashini, Vercel deploy.
+**Immediate (next 1–2 days) — you asked to store for tomorrow:**
+- **Phase 0 — finish transcription:** fetch `NSFDC Compendium 2024-05-15` `nsfdc.nic.in/UploadedFiles/.../1-4-1.pdf`, fill `margin_pct`, `subsidy_pct/cap/timing`, `moratorium_interest_treatment` for `MICRO/TERM/AMY/UNY` (now `placeholder` `TODO(verify)`), re-run `npm run verify:report` → aim for `MICRO/TERM` → `verified:true` and `figures_authoritative` flip for at least those 2. No code change, only `data/schemes.seed.json` values + `source_url/date`.
+- **Form choice fix (done, needs your review tomorrow):** `LoanConfirmation` now lets user **pick any `ELIGIBLE`**, not just recommended — `P41` shows `MICRO 6.5%` vs `AMY 15%` radios `src/components/LoanConfirmation.tsx:9` `src/app/result/page.tsx:257`. Test with `P41` and real manual entries where 2 schemes overlap (e.g., tailoring `90k`).
 
-We are at the **code-complete + real-data pause**: deterministic, UI, DB, LLM, i18n, admin, offline paths work **and 5 NSFDC schemes from `https://nsfdc.nic.in/scheme` are transcribed**; remaining `TODO(verify)` need compendium. See `docs/PROGRESS.md` §7–§8 and `docs/ROADMAP.md` §10–§14.
+**Next (3–5 days):**
+- **Save my applications:** wire `Application` `prisma/schema.prisma:47` — `POST /api/applications` on `See result` → `GET /applications` list + `/applications/[id]` view (DB already 5/15/15, no auth needed for demo, just cookie). So manual form isn't lost if you lose the link `src/lib/applicant-params.ts:122`.
+- **Deploy:** `Vercel` + `Supabase` prod env, `DEMO_MODE` rehearsal `docs/ROADMAP.md:391` 4-min script, record demo video.
+- **Polish:** Lighthouse a11y ≥90, XLSX alongside CSV, voice/Bhashini (optional), replace `PLACEHOLDER_petty_trade` with real `indicative-activities` flat list (you asked purpose should be generic, not scheme-picked — done `ApplyForm.tsx:59`).
+
+We are at **code-complete + real-data pause** `2026-09-10`: deterministic, UI, DB, LLM `2.5-flash` fallback, i18n 274 keys, admin, offline paths work **and 5 NSFDC schemes transcribed**; remaining `TODO(verify)` need compendium. See `docs/PROGRESS.md` §7–§8 and `docs/ROADMAP.md` §10–§14 for step-by-step.
 
 ---
 
