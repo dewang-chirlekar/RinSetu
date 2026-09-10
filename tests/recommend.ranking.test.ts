@@ -7,14 +7,12 @@
  * can reasonably ask why we put one scheme above another, and the answer has to
  * be the same every time.
  *
- * These tests call pickRecommended() directly. They have to: MICRO, TERM and EDU
- * in data/schemes.seed.json have disjoint eligible purposes AND mutually
- * exclusive project-cost predicates, so no applicant can be eligible for two of
- * them at once. That is recorded in data/personas.fixtures.json under
- * known_gaps_in_this_file, and it means the multi-scheme ranking path is
- * unreachable from the persona set. It is still reachable in production the
- * moment a real scheme master has overlapping eligibility, so it is tested here
- * rather than left to the day it matters.
+ * These tests call pickRecommended() directly. They have to: historically MICRO, TERM and EDU
+ * had disjoint eligible purposes AND mutually exclusive cost predicates, so no applicant
+ * could be eligible for two at once (see known_gaps). Since P41, MICRO and AMY share
+ * PLACEHOLDER_tailoring and the same 1.40L ceiling, so P41 is eligible for two at once
+ * and the ranking policy is now live on real data. The remaining coverage still tests
+ * pickRecommended directly for the isolated cases.
  */
 
 import { describe, expect, it } from 'vitest';
@@ -228,10 +226,9 @@ describe('against the real dataset', () => {
     }
   });
 
-  it('confirms no persona reaches the multi-scheme path, as the fixture file claims', () => {
-    // If this ever fails, it is good news: the dataset has gained overlapping
-    // eligibility and the persona set should grow a multi-eligible case. Update
-    // known_gaps_in_this_file at the same time.
+  it('confirms exactly one persona reaches the multi-scheme path (P41), as the fixture file claims', () => {
+    // P41 tailoring 90k is ELIGIBLE for both MICRO (6.5%) and AMY (15%) via shared tailoring purpose.
+    // This proves the ranking policy is live on real data. The remaining 40 stay single-eligible.
     const multi = personas.filter((persona) => {
       const result = recommend({
         applicant: persona.applicant,
@@ -245,7 +242,7 @@ describe('against the real dataset', () => {
       });
       return result.schemes.filter((scheme) => scheme.status === 'ELIGIBLE').length > 1;
     });
-    expect(multi.map((persona) => persona.id)).toEqual([]);
+    expect(multi.map((persona) => persona.id)).toEqual(['P41']);
   });
 
   it('never quotes figures for a scheme the applicant cannot have', () => {

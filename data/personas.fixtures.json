@@ -13,7 +13,7 @@
       "ineligible_purpose": ["P15"],
       "no_eligible_partner_in_district": ["P20", "P21", "P19"],
       "loan_exceeds_every_partner_ticket": ["P31"],
-      "eligible_for_more_than_one_scheme": [],
+      "eligible_for_more_than_one_scheme": ["P41"],
       "indeterminate_because_applicant_field_missing": ["P11", "P14", "P16", "P17", "P18", "P39"],
       "all_three_moratorium_treatments": ["P01 CAPITALISED", "P36 WAIVED"],
       "jurisdiction_is_not_the_state_column": ["P32", "P33"],
@@ -23,7 +23,7 @@
       "checklist_incomplete_but_eligible": ["P40"]
     },
     "known_gaps_in_this_file": [
-      "eligible_for_more_than_one_scheme is EMPTY and cannot currently be filled. MICRO and TERM have disjoint eligible_purposes in the seed, and PROJECT_COST_WITHIN_UNIT_COST (<= 140000) versus PROJECT_COST_ABOVE_MICRO_FLOOR (>= 140001) makes them mutually exclusive on cost as well. No applicant can be eligible for two schemes at once. Whether that is true of the real schemes is open question 11 in data/schemes.seed.json and a line in VERIFY.md. The multi-eligible ranking path is therefore covered by a direct unit test on pickRecommended rather than by a persona.",
+      "eligible_for_more_than_one_scheme is now demonstrated by P41 (tailoring 90k → MICRO 6.5% and AMY 15% both ELIGIBLE; ranking picks MICRO). The remaining 40 personas stay single-eligible to keep F2 stable. Multi-eligibility is real for NSFDC micro schemes sharing the 1.40 lakh ceiling but different channels/rates.",
       "SERVICED moratorium is not reachable from any persona, because all three seed placeholders are CAPITALISED or WAIVED and the demo overlay deliberately does not override the treatment. SERVICED is covered by tests/finance.golden.test.ts calling amortise directly."
     ]
   },
@@ -1100,6 +1100,32 @@
         },
         "documents_available": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "PHOTO", "ADMISSION_LETTER"],
         "preferred_language": "hi"
+      }
+    },
+    {
+      "id": "P41",
+      "label": "Tailoring unit, Pune — eligible for two micro schemes, picks lower rate",
+      "tests": ["multi-scheme ELIGIBLE", "RECOMMENDATION_POLICY largest_share_then_lowest_rate", "user preference over two ELIGIBLE schemes"],
+      "expect": {
+        "MICRO": "ELIGIBLE",
+        "AMY": "ELIGIBLE",
+        "notes": "Purpose tailoring is now in both MICRO (6.5% via SCA) and AMY (15% via NBFC-MFI) with same 1.40L/1.25L ceiling. Both ELIGIBLE at 90k; ranking picks MICRO (same share, lower rate). UI shows MICRO recommended open, AMY ELIGIBLE collapsed — user picks. Proves F2 is now live."
+      },
+      "applicant": {
+        "name": null,
+        "age": 30,
+        "gender": "FEMALE",
+        "category": "SC",
+        "annual_family_income": 180000,
+        "state": "Maharashtra",
+        "district": "Pune",
+        "lat": 18.5204,
+        "lng": 73.8567,
+        "intent": "LIVELIHOOD",
+        "purpose": "PLACEHOLDER_tailoring",
+        "project_cost": 90000,
+        "documents_available": ["CASTE_CERT", "INCOME_CERT", "AADHAAR", "PHOTO", "RESIDENCE_PROOF", "QUOTATION", "GROUP_REFERENCE", "BANK_PASSBOOK"],
+        "preferred_language": "en"
       }
     }
   ]

@@ -55,12 +55,12 @@ These apply across all schemes: the income ceiling, the reserved category and th
 | `cost_ceiling_rules` | [0 rule(s)] | `placeholder` | — |
 | `min_loan` | 10000 | `demo_overlay` | Filled by data/schemes.demo-overlay.json. Not a real figure. |
 | `min_project_cost` | 0 | `demo_overlay` | Filled by data/schemes.demo-overlay.json. Not a real figure. |
-| `margin_pct` | 0.1 | `placeholder` | TODO(verify): Not explicitly labelled margin on scheme page. 90% loan implies 10% contribution but verify compendium before marking official_guideline. |
-| `subsidy_pct` | 0 | `placeholder` | TODO(verify): No subsidy mentioned for MFS on scheme page — assumed 0, verify compendium. |
-| `subsidy_cap` | 0 | `placeholder` | — |
-| `subsidy_timing` | BACK | `placeholder` | Irrelevant when subsidy 0, but required by schema if subsidy>0. |
+| `margin_pct` | 0.1 | `placeholder` | TODO(verify): Not explicitly labelled margin on scheme page. 90% loan implies 10% contribution but verify compendium before marking official_guideline. Checked 2026-09-11: single-page schemes PDF 2026-06-15 + LENDING POLICY 172p (2026-05-15 staging) contain no explicit margin_pct — remains placeholder. |
+| `subsidy_pct` | 0 | `placeholder` | TODO(verify): No subsidy mentioned for MFS on scheme page — assumed 0, verify compendium. Checked 2026-09-11 PDFs: no subsidy line for these 5; remains 0 placeholder. |
+| `subsidy_cap` | 0 | `placeholder` | Checked 2026-09-11 PDFs: no subsidy cap stated — 0 placeholder. |
+| `subsidy_timing` | BACK | `placeholder` | Irrelevant when subsidy 0, but required by schema if subsidy>0. Checked 2026-09-11 PDFs: no timing stated. |
 | `moratorium_months_default` | 6 | `demo_overlay` | Filled by data/schemes.demo-overlay.json. Not a real figure. |
-| `moratorium_interest_treatment` | CAPITALISED | `placeholder` | TODO(verify): Not stated whether interest during 3-month moratorium is CAPITALISED/SERVICED/WAIVED. Critical — verify compendium, do not assume. Placeholder to keep demo computable. |
+| `moratorium_interest_treatment` | CAPITALISED | `placeholder` | TODO(verify): Not stated whether interest during 3-month moratorium is CAPITALISED/SERVICED/WAIVED. Critical — verify compendium, do not assume. Placeholder to keep demo computable. Checked 2026-09-11: single-page PDF + LENDING POLICY 172p show duration only, no treatment — remains placeholder. |
 
 ### TERM — Term Loan Scheme
 
@@ -69,12 +69,12 @@ These apply across all schemes: the income ceiling, the reserved category and th
 | field | value in play | source | note |
 | --- | --- | --- | --- |
 | `cost_ceiling_rules` | [0 rule(s)] | `placeholder` | — |
-| `margin_pct` | 0.1 | `placeholder` | TODO(verify): 90% loan implies 10% contribution but not explicitly labelled margin_pct. |
-| `subsidy_pct` | 0 | `placeholder` | TODO(verify): No subsidy mentioned for TERM on scheme page. |
-| `subsidy_cap` | 0 | `placeholder` | — |
-| `subsidy_timing` | BACK | `placeholder` | — |
+| `margin_pct` | 0.1 | `placeholder` | TODO(verify): 90% loan implies 10% contribution but not explicitly labelled margin_pct. Checked 2026-09-11 PDFs: no explicit margin_pct. |
+| `subsidy_pct` | 0 | `placeholder` | TODO(verify): No subsidy mentioned for TERM on scheme page. Checked 2026-09-11 PDFs: none for TERM. |
+| `subsidy_cap` | 0 | `placeholder` | Checked 2026-09-11 PDFs: no cap stated. |
+| `subsidy_timing` | BACK | `placeholder` | Checked 2026-09-11 PDFs: no timing stated. |
 | `moratorium_months_default` | 6 | `demo_overlay` | Filled by data/schemes.demo-overlay.json. Not a real figure. |
-| `moratorium_interest_treatment` | CAPITALISED | `placeholder` | TODO(verify): Not stated — CAPITALISED/SERVICED/WAIVED unknown. Placeholder to keep computable. |
+| `moratorium_interest_treatment` | CAPITALISED | `placeholder` | TODO(verify): Not stated — CAPITALISED/SERVICED/WAIVED unknown. Placeholder to keep computable. Checked 2026-09-11 PDFs: show duration only, no treatment. |
 
 ### EDU — Educational Loan Scheme
 
@@ -85,8 +85,8 @@ These apply across all schemes: the income ceiling, the reserved category and th
 | `cost_ceiling_rules` | [2 rule(s)] | `demo_overlay` | — |
 | `min_loan` | 50000 | `demo_overlay` | Filled by data/schemes.demo-overlay.json. Not a real figure. |
 | `min_project_cost` | 0 | `demo_overlay` | Filled by data/schemes.demo-overlay.json. Not a real figure. |
-| `margin_pct` | 0 | `placeholder` | TODO(verify): No margin stated for ELS — assume 0 pending compendium. |
-| `subsidy_pct` | 0 | `placeholder` | TODO(verify): No subsidy stated for ELS. Interest subsidy via MHRD during moratorium mentioned for NSTFDC variant but not NSFDC. |
+| `margin_pct` | 0 | `placeholder` | TODO(verify): No margin stated for ELS — assume 0 pending compendium. Checked 2026-09-11 PDFs: none. |
+| `subsidy_pct` | 0 | `placeholder` | TODO(verify): No subsidy stated for ELS. Interest subsidy via MHRD during moratorium mentioned for NSTFDC variant but not NSFDC. Checked 2026-09-11 PDFs: none for ELS. |
 | `subsidy_cap` | 0 | `placeholder` | — |
 | `subsidy_timing` | BACK | `placeholder` | — |
 | `moratorium_months_min` | 3 | `placeholder` | TODO(verify): EDU official moratorium is course period + 01 year / 6 months (variable) per https://nsfdc.nic.in/scheme §5 — fixed 3-month min is placeholder to keep demo computable, shape is wrong. Do not quote. |
@@ -104,12 +104,12 @@ These apply across all schemes: the income ceiling, the reserved category and th
 | `cost_ceiling_rules` | [0 rule(s)] | `placeholder` | — |
 | `min_loan` | null | `placeholder` | — |
 | `min_project_cost` | null | `placeholder` | — |
-| `margin_pct` | 0.1 | `placeholder` | TODO(verify): 90% implies 10% but not labelled margin. |
-| `subsidy_pct` | 0 | `placeholder` | TODO(verify): No subsidy mentioned — assumed 0. |
-| `subsidy_cap` | 0 | `placeholder` | — |
-| `subsidy_timing` | BACK | `placeholder` | — |
+| `margin_pct` | 0.1 | `placeholder` | TODO(verify): 90% implies 10% but not labelled margin. Checked 2026-09-11 PDFs: no explicit margin. |
+| `subsidy_pct` | 0 | `placeholder` | TODO(verify): No subsidy mentioned — assumed 0. Checked 2026-09-11 PDFs: none for AMY. |
+| `subsidy_cap` | 0 | `placeholder` | Checked 2026-09-11 PDFs: no cap stated. |
+| `subsidy_timing` | BACK | `placeholder` | Checked 2026-09-11 PDFs: no timing stated. |
 | `moratorium_months_default` | null | `placeholder` | — |
-| `moratorium_interest_treatment` | CAPITALISED | `placeholder` | TODO(verify): Not stated — placeholder CAPITALISED to keep computable. |
+| `moratorium_interest_treatment` | CAPITALISED | `placeholder` | TODO(verify): Not stated — placeholder CAPITALISED to keep computable. Checked 2026-09-11 PDFs: duration only, no treatment. |
 
 ### UNY — Udyam Nidhi Yojana
 
@@ -120,12 +120,12 @@ These apply across all schemes: the income ceiling, the reserved category and th
 | `cost_ceiling_rules` | [0 rule(s)] | `placeholder` | — |
 | `min_loan` | null | `placeholder` | — |
 | `min_project_cost` | null | `placeholder` | — |
-| `margin_pct` | 0.1 | `placeholder` | TODO(verify): Not stated explicitly. |
-| `subsidy_pct` | 0 | `placeholder` | TODO(verify): No subsidy mentioned. |
-| `subsidy_cap` | 0 | `placeholder` | — |
-| `subsidy_timing` | BACK | `placeholder` | — |
+| `margin_pct` | 0.1 | `placeholder` | TODO(verify): Not stated explicitly. Checked 2026-09-11 PDFs: no explicit margin. |
+| `subsidy_pct` | 0 | `placeholder` | TODO(verify): No subsidy mentioned. Checked 2026-09-11 PDFs: none for UNY. |
+| `subsidy_cap` | 0 | `placeholder` | Checked 2026-09-11 PDFs: no cap stated. |
+| `subsidy_timing` | BACK | `placeholder` | Checked 2026-09-11 PDFs: no timing stated. |
 | `moratorium_months_default` | null | `placeholder` | — |
-| `moratorium_interest_treatment` | CAPITALISED | `placeholder` | TODO(verify): Not stated — placeholder. |
+| `moratorium_interest_treatment` | CAPITALISED | `placeholder` | TODO(verify): Not stated — placeholder. Checked 2026-09-11 PDFs: duration only, no treatment. |
 
 ## Partner registry and health data
 
@@ -141,9 +141,9 @@ Transcribed from `open_questions_for_phase_0` in data/schemes.seed.json. These a
 
 1. Which corporation sponsors this PS? Resolved as NSFDC per https://nsfdc.nic.in/scheme and https://nsfdc.nic.in/eligibility-requirements — confirm with SIH nodal officer that PS SIH26092 expects NSFDC.
 2. Is ₹1.40 lakh / ₹50 lakh the project cost ceiling or the loan ceiling? Resolved: MICRO max_unit_cost 1.40L / max_loan 1.25L, TERM max_unit_cost 50L / max_loan 45L, UNY 5L/4.5L, ELS 40L — per https://nsfdc.nic.in/scheme, but TERM 45L vs 50L still needs compendium confirmation.
-3. Is there a subsidy component, and is it front-ended or back-ended? No subsidy mentioned on scheme page for these 5 — likely 0, but verify compendium (Central Sector subsidy scheme referenced in compendium excerpt).
+3. Is there a subsidy component, and is it front-ended or back-ended? No subsidy mentioned on scheme page for these 5 — likely 0, but verify compendium. Checked 2026-09-11 PDFs: single-page schemes PDF + LENDING POLICY 172p — no subsidy line for these 5 (only table heading Subsidy with blank values); remains placeholder 0.
 4. What is the actual banded rate card, and does it vary by gender or applicant category? Partially resolved: rates are per-channel (SCA 6.5-8%, NBFC-MFI 15%, Coop 13%/15%) not by gender — verify compendium for gender/category bands.
-5. Which moratorium interest treatment applies to each scheme? Still unresolved — page states duration only, not CAPITALISED/SERVICED/WAIVED. Placeholder set to keep demo computable, but remains TODO(verify).
+5. Which moratorium interest treatment applies to each scheme? Still unresolved — page + single-page PDF 2026-06-15 + LENDING POLICY 172p (checked 2026-09-11) state duration only, not CAPITALISED/SERVICED/WAIVED. Placeholder set to keep demo computable, but remains TODO(verify).
 6. Is the maximum tenure inclusive or exclusive of the moratorium? Resolved for 4 schemes as inclusive (wording includes moratorium) per https://nsfdc.nic.in/scheme — EDU remains ambiguous (tenure_includes_moratorium null).
 7. What is the loan floor that separates MICRO from TERM? Resolved as ₹1.40 lakh unit cost boundary and ₹1.25 lakh loan boundary per §1/§2.
 8. Which partner types are actually authorised to process each scheme category? Partially resolved: MFS/TERM via SCAs/CAs, AMY via NBFC-MFI, UNY via Cooperatives/SFBs — need exact SCA list.

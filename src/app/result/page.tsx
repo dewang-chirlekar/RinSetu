@@ -21,8 +21,8 @@
 
 import { ZodError } from 'zod';
 import { getLocale } from 'next-intl/server';
-import { recommend } from '@/core/recommend';
-import type { ApplicantProfile, SchemeSpec } from '@/core/types';
+import { pickRecommended, recommend } from '@/core/recommend';
+import type { ApplicantProfile, SchemeSpec, SchemeType } from '@/core/types';
 import { loadBundle, loadPersonas } from '@/lib/dataset';
 import { isEmptyParams, parseApplicantParams, applicantToParams } from '@/lib/applicant-params';
 import { humanisePurpose, longDateTime, rupees } from '@/lib/format';
@@ -183,10 +183,25 @@ export default async function ResultPage({
     generatedAt: new Date().toISOString(),
   });
 
-  const recommended = result.schemes.find(
-    (entry) => entry.scheme_code === result.recommended_scheme_code,
-  );
-  const others = result.schemes.filter((entry) => entry !== recommended);
+  // Intent-aware filtering — LIVELIHOOD sees only MICRO/TERM schemes, EDUCATION sees only EDUCATION.
+  // UNKNOWN (no intent chosen) keeps the old behaviour of showing all 5. This removes the
+  // "education loan in business results" noise without touching the deterministic core
+  // (recommend() still evaluates every scheme — we only thin the view).
+  function visibleForIntent(type: SchemeType, intent: ApplicantProfile['intent']): boolean {
+    if (intent === 'UNKNOWN') return true;
+    if (intent === 'EDUCATION') return type === 'EDUCATION';
+    return type !== 'EDUCATION'; // LIVELIHOOD => MICRO or TERM
+  }
+  const visibleSchemes = result.schemes.filter((s) => visibleForIntent(s.scheme_type, applicant.intent));
+  // Re-derive the recommendation among the visible family so a livelihood query cannot
+  // recommend an education scheme (or vice-versa). Falls back to null when none eligible.
+  const displayRecommendedCode = pickRecommended(visibleSchemes as never) as string | null;
+  const recommended = displayRecommendedCode
+    ? visibleSchemes.find((entry) => entry.scheme_code === displayRecommendedCode) ?? null
+    : null;
+  // If filtering hid the core's recommendation (e.g. only an EDU was eligible but intent is LIVELIHOOD),
+  // recommended stays null and the UI shows the "no eligible scheme in this category" copy.
+  const others = visibleSchemes.filter((entry) => entry !== recommended);
   const schemeByCode = new Map(bundle.dataset.schemes.map((scheme) => [scheme.code, scheme]));
   const editHref = `/apply?${applicantToParams(applicant).toString()}`;
   const packetHref = persona ? `/api/packet?persona=${persona.id}` : `/api/packet?${applicantToParams(applicant).toString()}`;
@@ -254,8 +269,19 @@ export default async function ResultPage({
               </a>
             </div>
           </div>
-          <ExplainPanel result={result} />
-          <LoanConfirmation recommendation={recommended} applicant={applicant} />
+          <ExplainPanel
+            result={{
+              ...result,
+              schemes: visibleSchemes,
+              recommended_scheme_code: displayRecommendedCode,
+            }}
+          />
+          <LoanConfirmation
+            recommendation={recommended}
+            applicant={applicant}
+            eligibleSchemes={visibleSchemes.filter((s) => s.status === 'ELIGIBLE')}
+            recommendedCode={displayRecommendedCode}
+          />
         </>
       ) : (
         <p className="border-hold bg-hold-soft text-ink mt-6 border-l-[3px] px-3.5 py-3 text-sm">

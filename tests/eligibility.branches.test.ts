@@ -49,9 +49,9 @@ function verdictsFor(code: PredicateCode) {
 }
 
 describe('the persona set exercises every predicate', () => {
-  it('produces at least one verdict for all 40 personas', () => {
-    expect(personas).toHaveLength(40);
-    expect(new Set(allVerdicts.map((entry) => entry.personaId)).size).toBe(40);
+  it('produces at least one verdict for all 41 personas', () => {
+    expect(personas).toHaveLength(41);
+    expect(new Set(allVerdicts.map((entry) => entry.personaId)).size).toBe(41);
   });
 
   it.each(PREDICATE_CODES)('%s is evaluated by at least one persona', (code) => {

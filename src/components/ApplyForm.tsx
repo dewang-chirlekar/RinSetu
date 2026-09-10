@@ -56,19 +56,16 @@ function enumOptions<T extends string>(values: readonly T[], keyPrefix: string, 
   ];
 }
 
-function purposeGroupsForIntent(schemes: SchemeSpec[], intent: string) {
+function purposeOptionsForIntent(schemes: SchemeSpec[], intent: string): Option[] {
   const filtered =
     intent === 'LIVELIHOOD'
       ? schemes.filter((s) => s.type !== 'EDUCATION')
       : intent === 'EDUCATION'
         ? schemes.filter((s) => s.type === 'EDUCATION')
         : schemes;
-  return filtered
-    .filter((scheme) => scheme.eligible_purposes.length > 0)
-    .map((scheme) => ({
-      label: scheme.name_i18n.en ?? scheme.code,
-      options: scheme.eligible_purposes.map((code) => ({ value: code, label: humanisePurpose(code) })),
-    }));
+  const all = filtered.flatMap((s) => s.eligible_purposes);
+  const deduped = [...new Set(all)];
+  return deduped.map((code) => ({ value: code, label: humanisePurpose(code) })).sort((a, b) => a.label.localeCompare(b.label));
 }
 
 function docCodesForIntent(
@@ -216,7 +213,7 @@ export function ApplyForm({
     return documentDefinitions.filter((d) => filteredDocCodes.has(d.code));
   }, [documentDefinitions, filteredDocCodes]);
 
-  const purposeGroups = useMemo(() => purposeGroupsForIntent(dataset.schemes, intent), [dataset.schemes, intent]);
+  const purposeOptions = useMemo(() => purposeOptionsForIntent(dataset.schemes, intent), [dataset.schemes, intent]);
   const purposeDisabled = jsEnabled && !hasIntent;
 
   // When intent flips, the previously selected purpose may no longer belong to
@@ -225,9 +222,9 @@ export function ApplyForm({
   const initialPurpose = first(initialParams, 'purpose');
   const purposeInFiltered = useMemo(() => {
     if (!hasIntent) return true;
-    const all = new Set(purposeGroups.flatMap((g) => g.options.map((o) => o.value)));
+    const all = new Set(purposeOptions.map((o) => o.value));
     return initialPurpose === '' || all.has(initialPurpose);
-  }, [hasIntent, purposeGroups, initialPurpose]);
+  }, [hasIntent, purposeOptions, initialPurpose]);
 
   // Force remount of inputs when extracted profile arrives via ?age=&... (FreeTextIntake)
   const formKey = JSON.stringify(initialParams);
@@ -328,14 +325,10 @@ export function ApplyForm({
             className="border-rule-strong bg-paper-edge text-ink focus:border-accent focus:outline-accent mt-1 block w-full border px-3 py-2.5 text-sm disabled:opacity-60"
           >
             <option value="">{translate('ui.apply.select_purpose')}</option>
-            {purposeGroups.map((group) => (
-              <optgroup key={group.label} label={group.label}>
-                {group.options.map((option) => (
-                  <option key={`${group.label}-${option.value}`} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </optgroup>
+            {purposeOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
             ))}
           </select>
           {purposeDisabled ? (

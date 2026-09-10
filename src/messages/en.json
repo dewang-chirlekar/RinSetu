@@ -562,6 +562,27 @@
       "village_hint": "Or type your village name.",
       "village_auto_hint": "Tip: typing your village or tehsil will auto-fill state and district."
     },
+    "confirm": {
+      "heading": "Confirm which loan you want",
+      "hint": "We have a recommendation. Confirm to see only the required files for that loan and upload them for extraction.",
+      "action": "Confirm {code}",
+      "no_docs": "No mandatory documents for this loan.",
+      "confirmed": "Confirmed {code} — upload required files",
+      "confirmed_hint": "Upload the files listed below. Gemini will extract the fields to auto-fill the form.",
+      "extracted_heading": "Extracted fields (verify, then re-apply)",
+      "reapply": "Re-apply with extracted data"
+    },
+    "upload": {
+      "heading": "Upload required documents for this loan",
+      "hint": "Only the mandatory documents for the confirmed loan are listed. Upload a clear photo or PDF for each.",
+      "only_required": "Only required files for this loan — extra files are ignored.",
+      "selected": "selected",
+      "no_file": "Select at least one file to extract.",
+      "extracted": "Extracted — see below. You can now re-apply with the filled fields.",
+      "extract_action": "Extract from documents",
+      "extracting": "Extracting…",
+      "gemini_note": "Gemini Flash reads your documents only to fill the application form — it never decides eligibility or amounts."
+    },
     "gender": {
       "FEMALE": "Female",
       "MALE": "Male",

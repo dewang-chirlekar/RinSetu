@@ -116,7 +116,7 @@ function digest(applyOverlay: boolean): string {
 describe('the persona CLI', () => {
   // The only test in the suite that spawns a process, hence the raised timeout.
   // Everything else in tests/ is pure and must stay under the 5s global limit.
-  it('prints a stable summary table for all 40 personas', { timeout: 30_000 }, () => {
+  it('prints a stable summary table for all 41 personas', { timeout: 30_000 }, () => {
     const output = runCli([]);
     expect(output).toMatchSnapshot();
   });
@@ -148,7 +148,7 @@ describe('the persona CLI', () => {
   it('prints one row per persona and no more', () => {
     const output = runCli([]);
     const ids = personas.map((persona) => persona.id);
-    expect(ids).toHaveLength(40);
+    expect(ids).toHaveLength(41);
     for (const id of ids) {
       // One occurrence, at the start of a line.
       const matches = output.split('\n').filter((line) => line.startsWith(id));

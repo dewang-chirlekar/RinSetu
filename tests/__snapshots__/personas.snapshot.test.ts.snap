@@ -240,6 +240,12 @@ P40  recommended=none
   TERM   NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
   EDU    INDETERMINATE   fail=0 unknown=1 rem=1 figures=n/a
   AMY    NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+P41  recommended=none
+  MICRO  INDETERMINATE   fail=0 unknown=1 rem=1 figures=n/a
+  TERM   NOT_ELIGIBLE    fail=2 unknown=1 rem=3 figures=n/a
+  EDU    NOT_ELIGIBLE    fail=1 unknown=2 rem=3 figures=n/a
+  AMY    INDETERMINATE   fail=0 unknown=1 rem=1 figures=n/a
   UNY    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a"
 `;
 
@@ -483,6 +489,12 @@ P40  recommended=EDU
   TERM   NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
   EDU    ELIGIBLE        fail=0 unknown=0 rem=0 loan=450000 own=0 subsidy=0 rate=6.5 emi=4509 outflow=649220 rows=156 bind=LOAN_PCT_CAP partners=1/15 nearest=PSB_MP_BHOPAL_014 healthiest=PSB_MP_BHOPAL_014 docs=4/9 ready=false
   AMY    NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
+  UNY    NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a
+P41  recommended=MICRO
+  MICRO  ELIGIBLE        fail=0 unknown=0 rem=0 loan=81000 own=9000 subsidy=0 rate=6.5 emi=2731 outflow=90124 rows=36 bind=GROSS partners=4/15 nearest=SCA_MH_PUNE_001 healthiest=MFI_MH_PUNE_005 docs=0/6 ready=true
+  TERM   NOT_ELIGIBLE    fail=2 unknown=0 rem=2 figures=n/a
+  EDU    NOT_ELIGIBLE    fail=1 unknown=1 rem=2 figures=n/a
+  AMY    ELIGIBLE        fail=0 unknown=0 rem=0 loan=81000 own=9000 subsidy=0 rate=15 emi=3125 outflow=103122 rows=36 bind=GROSS partners=2/15 nearest=MFI_MH_PUNE_005 healthiest=MFI_MH_PUNE_005 docs=0/6 ready=true
   UNY    NOT_ELIGIBLE    fail=1 unknown=0 rem=1 figures=n/a"
 `;
 
@@ -571,7 +583,7 @@ Applicant: age 47, SC, income 84,000, Pune (Maharashtra), purpose PLACEHOLDER_pe
     [FAIL] PURPOSE_ELIGIBLE                 The stated purpose is not covered by this scheme.
     [pass] AGE_WITHIN_RANGE                 Age 47 is within the permitted range of 18-60.
     remediation:
-      CHANGE_CATEGORICAL This scheme covers: PLACEHOLDER_micro_business, PLACEHOLDER_small_trade.
+      CHANGE_CATEGORICAL This scheme covers: PLACEHOLDER_micro_business, PLACEHOLDER_small_trade, PLACEHOLDER_tailoring.
 
   ── UNY ─────────────────────────────────────────────────────────
   status: NOT_ELIGIBLE
@@ -583,12 +595,12 @@ Applicant: age 47, SC, income 84,000, Pune (Maharashtra), purpose PLACEHOLDER_pe
     [FAIL] PURPOSE_ELIGIBLE                 The stated purpose is not covered by this scheme.
     [pass] AGE_WITHIN_RANGE                 Age 47 is within the permitted range of 18-60.
     remediation:
-      CHANGE_CATEGORICAL This scheme covers: PLACEHOLDER_micro_enterprise_5lakh, PLACEHOLDER_small_manufacturing_5lakh.
+      CHANGE_CATEGORICAL This scheme covers: PLACEHOLDER_micro_enterprise, PLACEHOLDER_small_manufacturing.
 
   recommended: MICRO"
 `;
 
-exports[`the persona CLI > prints a stable summary table for all 40 personas 1`] = `
+exports[`the persona CLI > prints a stable summary table for all 41 personas 1`] = `
 "ID   Persona                                       MICRO TERM  EDU   Rec          Loan      EMI  Rate  Ptnr   Docs
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 P01  Tailoring unit, Pune — the happy path         YES   no    no    MICRO      90,000    3,034  6.5%     4    6/6
@@ -631,9 +643,10 @@ P37  Master's abroad — education loan, purpose-spe…no    no    YES   EDU    
 P38  Awaiting counselling result, Nashik — admissi…no    no    no    —               —        —     —     —      —
 P39  Exploring options, Lucknow — admission status…no    no    ?     —               —        —     —     —      —
 P40  Nursing diploma, Bhopal — eligible, paperwork…no    no    YES   EDU      4,50,000    4,509  6.5%     1    5/9
+P41  Tailoring unit, Pune — eligible for two micro…YES   no    no    MICRO      81,000    2,731  6.5%     4    6/6
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-40 personas
-  23 with at least one eligible scheme
+41 personas
+  24 with at least one eligible scheme
   0 eligible but no figures (missing scheme parameters)
   4 eligible with zero capable partners
 
@@ -688,8 +701,9 @@ P37  Master's abroad — education loan, purpose-spe…no    no    ?     —    
 P38  Awaiting counselling result, Nashik — admissi…no    no    no    —               —        —     —     —      —
 P39  Exploring options, Lucknow — admission status…no    no    ?     —               —        —     —     —      —
 P40  Nursing diploma, Bhopal — eligible, paperwork…no    no    ?     —               —        —     —     —      —
+P41  Tailoring unit, Pune — eligible for two micro…?     no    no    —               —        —     —     —      —
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-40 personas
+41 personas
   0 with at least one eligible scheme
   0 eligible but no figures (missing scheme parameters)
   0 eligible with zero capable partners

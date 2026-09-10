@@ -10,7 +10,7 @@ RinSetu helps Scheduled Caste applicants understand which concessional-credit sc
 
 ---
 
-## Current state — 2026-09-10 (`13b111d` on `main` + 5 schemes, 41 personas, form + LLM hardening — pause for remaining guideline transcription)
+## Current state — 2026-09-11 (`13b111d` + intent-filter + Phase 0 check 2026-09-11 — no margin/subsidy/treatment in single-page PDF + 172p Lending Policy, stays placeholder)
 
 | gate | command | result |
 |---|---|---|
@@ -44,7 +44,7 @@ RinSetu helps Scheduled Caste applicants understand which concessional-credit sc
 237  total
 ```
 
-Dataset: **5 schemes** (MICRO, TERM, EDU, **AMY Aajeevika 15%** + **UNY Udyam Nidhi 13%** — all `verified: false`, from `https://nsfdc.nic.in/scheme` 09.09.2026: MICRO 1.40L/1.25L 6.5% 3y, TERM 50L/45L 8% 7y, EDU 40L 6.5% 12y, AMY 1.40L/1.25L 15% 3y via NBFC-MFI, UNY 5L/4.5L 13% 5y via Coop; overlap **P41 tailoring 90k → MICRO+AMY both ELIGIBLE, ranking picks MICRO** `F2` live), 15 fabricated partners on real city coordinates, 15 `SIMULATED` health rows (replaceable via `/admin/health-upload` CSV → `MIS_UPLOAD`), 274 i18n keys (`en`/`hi`/`mr`, + `amy/uny` + `free_text_retry` + `offline_*`), **41 persona fixtures** (P41 multi-eligible), `india-states-districts.json` (36 states/UTs, every district, MH 36×7–16 tehsils + 364 tehsils→villages, now till tehsil). Figures authoritative: **false** for two independent reasons (non-citable figures + demo overlay active).
+Dataset: **5 schemes** (MICRO, TERM, EDU, **AMY Aajeevika 15%** + **UNY Udyam Nidhi 13%** — all `verified: false`, from `https://nsfdc.nic.in/scheme` 09.09.2026: MICRO 1.40L/1.25L 6.5% 3y, TERM 50L/45L 8% 7y, EDU 40L 6.5% 12y, AMY 1.40L/1.25L 15% 3y via NBFC-MFI, UNY 5L/4.5L 13% 5y via Coop; overlap **P41 tailoring 90k → MICRO+AMY both ELIGIBLE, ranking picks MICRO** `F2` live; **checked 2026-09-11** single-page schemes PDF `2026-06-15` + LENDING POLICY 172p `2026-05-15` — no explicit `margin`/`subsidy`/`moratorium_interest_treatment` found, stays `placeholder TODO(verify)` per hard rule 1), 15 fabricated partners on real city coordinates, 15 `SIMULATED` health rows (replaceable via `/admin/health-upload` CSV → `MIS_UPLOAD`), 274 i18n keys (`en`/`hi`/`mr`, + `amy/uny` + `free_text_retry` + `offline_*` + intent-filter `result/page.tsx:180`), **41 persona fixtures** (P41 multi-eligible), `india-states-districts.json` (36 states/UTs, every district, MH 36×7–16 tehsils + 364 tehsils→villages, now till tehsil). Figures authoritative: **false** for two independent reasons (non-citable figures + demo overlay active).
 
 ### What's built
 

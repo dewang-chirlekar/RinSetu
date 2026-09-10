@@ -111,21 +111,27 @@ const FINDINGS: Finding[] = [
   },
   {
     id: 'F2',
-    title: 'No applicant can be eligible for two schemes at once',
+    title: 'One applicant (P41) is eligible for two schemes at once — the ranking policy is live',
     detail:
-      'The seed gives MICRO, TERM and EDU disjoint eligible_purposes, and the cost predicates ' +
-      '(PROJECT_COST_WITHIN_UNIT_COST versus PROJECT_COST_ABOVE_MICRO_FLOOR) are mutually exclusive. ' +
-      'So the ranking rule in src/core/recommend.ts (RECOMMENDATION_POLICY) never fires on real data ' +
-      'and is covered by a direct unit test instead of a persona. If the published guidelines do ' +
-      'overlap, that policy becomes visible to applicants and needs review before it ships. Open ' +
-      'question 11.',
+      'P41 tailoring 90k is ELIGIBLE for both MICRO (6.5% via SCA) and AMY (15% via NBFC-MFI) — they share PLACEHOLDER_tailoring and the same 1.40L/1.25L ceiling. The remaining 40 personas stay single-eligible to keep snapshots stable. Ranking in src/core/recommend.ts (RECOMMENDATION_POLICY: largest share → lower rate → code) now fires on real data via P41 and is visible in the UI (MICRO recommended, AMY ELIGIBLE collapsed). If more overlaps are added, review the policy copy in SchemeCard.tsx.',
     check: () => {
+      const expectedMulti = new Set(['P41']);
       for (const persona of personas) {
         const result = resultFor(persona.id);
         const eligible = result.schemes.filter((scheme) => scheme.status === 'ELIGIBLE');
-        if (eligible.length > 1) {
-          return `${persona.id} is now eligible for ${eligible.length} schemes — the ranking policy is live and needs review.`;
+        const isMulti = eligible.length > 1;
+        const shouldBeMulti = expectedMulti.has(persona.id);
+        if (isMulti && !shouldBeMulti) {
+          return `${persona.id} is now eligible for ${eligible.length} schemes — update expectedMulti in FINDINGS.F2 or fix the purpose overlap.`;
         }
+        if (!isMulti && shouldBeMulti) {
+          return `${persona.id} should be multi-eligible (${[...expectedMulti].join(', ')}) but is not — the overlap broke.`;
+        }
+      }
+      // Also prove ranking picks the cheaper: P41 should recommend MICRO (6.5% vs 15%)
+      const p41 = resultFor('P41');
+      if (p41.recommended_scheme_code !== 'MICRO') {
+        return `P41 should recommend MICRO (lower rate) but recommends ${p41.recommended_scheme_code} — ranking policy changed.`;
       }
       return null;
     },
