@@ -10,7 +10,7 @@ RinSetu helps Scheduled Caste applicants understand which concessional-credit sc
 
 ---
 
-## Current state — 2026-09-11 (`13b111d` + intent-filter + Phase 0 check 2026-09-11 — no margin/subsidy/treatment in single-page PDF + 172p Lending Policy, stays placeholder)
+## Current state — 2026-09-11 (`13b111d` + intent-filter + Phase 0 check 2026-09-11 — no margin/subsidy/treatment in single-page PDF + 172p Lending Policy, stays placeholder — deployed `rin-setu-git-main-dewang-chirlekars-projects.vercel.app` gated by Vercel Auth)
 
 | gate | command | result |
 |---|---|---|
@@ -28,6 +28,7 @@ RinSetu helps Scheduled Caste applicants understand which concessional-credit sc
 | i18n | `next-intl` + `hi`/`mr` 274 keys | **accurate** `hi`/`mr`, globe `LocaleSwitcher`, brand `RinSetu` locked, tab stays English, `amy/uny` + `free_text_retry` + `partner.map.offline_*` added |
 | admin | `ADMIN_PASSWORD` + `/admin/health-upload` | **done** — CSV `partner_code…as_of` → `PartnerHealth.data_origin=MIS_UPLOAD`, `src/lib/health-csv.ts:210` duplicate guard fixed (seen added even for invalid rows), template download, preview → apply |
 | demo | `DEMO_MODE=true` + `public/manifest.json:1` | **done** — `src/llm/extract.ts:119` fixture cache, `PartnerMap.tsx:48` offline fallback (now `offline_badge/title` i18n), `DatasetBanner.tsx:1` `DEMO MODE` banner, full demo with wifi off |
+| deploy | `Vercel` `rin-setu-git-main-dewang-chirlekars-projects.vercel.app` (gated) | **live 2026-09-11** — `next build` 15 routes, env `DATABASE_URL` pooler `6543` + `GEMINI_API_KEY` + `ADMIN_PASSWORD` + `DEMO_MODE=true`; DB already 5/15/15+53 via `npm run seed`; currently **Vercel Authentication gated** (SSO wall) — disable `Settings → Deployment Protection → Vercel Authentication` to go public |
 
 ```
  45  tests/eligibility.branches.test.ts
