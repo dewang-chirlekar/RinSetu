@@ -30,6 +30,7 @@ import { translate, type Locale } from '@/messages';
 import { DatasetBanner } from '@/components/DatasetBanner';
 import { ExplainPanel } from '@/components/ExplainPanel';
 import { LoanConfirmation } from '@/components/LoanConfirmation';
+import { SaveApplicationButton } from '@/components/SaveApplicationButton';
 import { SchemeCard } from '@/components/SchemeCard';
 import { FieldRow, PrimaryLink, SecondaryLink, Section } from '@/components/ui';
 
@@ -205,6 +206,7 @@ export default async function ResultPage({
   const schemeByCode = new Map(bundle.dataset.schemes.map((scheme) => [scheme.code, scheme]));
   const editHref = `/apply?${applicantToParams(applicant).toString()}`;
   const packetHref = persona ? `/api/packet?persona=${persona.id}` : `/api/packet?${applicantToParams(applicant).toString()}`;
+  const saveSearch = persona ? `?persona=${persona.id}` : `?${applicantToParams(applicant).toString()}`;
 
   return (
     <div>
@@ -276,6 +278,7 @@ export default async function ResultPage({
               recommended_scheme_code: displayRecommendedCode,
             }}
           />
+          <SaveApplicationButton search={saveSearch} schemeCode={displayRecommendedCode} />
           <LoanConfirmation
             recommendation={recommended}
             applicant={applicant}
@@ -284,9 +287,12 @@ export default async function ResultPage({
           />
         </>
       ) : (
-        <p className="border-hold bg-hold-soft text-ink mt-6 border-l-[3px] px-3.5 py-3 text-sm">
-          {t('recommendation.none')}
-        </p>
+        <>
+          <p className="border-hold bg-hold-soft text-ink mt-6 border-l-[3px] px-3.5 py-3 text-sm">
+            {t('recommendation.none')}
+          </p>
+          <SaveApplicationButton search={saveSearch} schemeCode={null} />
+        </>
       )}
 
       <Section title={t('ui.result.schemes_heading')}>

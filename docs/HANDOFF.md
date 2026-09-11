@@ -2,7 +2,7 @@
 
 **Read this before you change anything under `src/core/` or `src/app/`/`src/components/`.**
 
-[PROGRESS.md](PROGRESS.md) tells you *where the project stands* (now **2026-09-11** — `13b111d` + **5 schemes / 41 personas (P41 multi-eligible tailoring 90k MICRO+AMY)** + form cascade strict + purpose flat + **LLM fallback 2.5-flash → flash-latest** + `DEMO_MODE` fixture cache + i18n `ui.confirm` fix + health-csv `finalSeen` guard + **intent-filter `src/app/result/page.tsx:180` (EDU hidden from livelihood etc.)** + **Phase 0 check 2026-09-11 single-page PDF 2026-06-15 + 172p Lending Policy — no margin/subsidy/treatment found, stays placeholder** + **deploy `rin-setu-git-main-dewang-chirlekars-projects.vercel.app` (Vercel Auth gated)**, `npm run check` **11/237** green (236+1 skipped wifi off), `npm run build` **15 routes** `ƒ` all, `npm run personas` **41 rows / 24 eligible**, DB **5/15/15 +53 doc reqs**, `VERIFY.md` **48 unverified (10 demo_overlay + 38 placeholder, checked 2026-09-11)** , F2 now live via P41, `data/schemes.seed.json` + `src/lib/applicant-params.ts` + `src/components/ApplyForm.tsx` + `src/llm/client.ts` edits). This file tells you *how not to break it*. It is written for a model picking this up cold, and it concentrates on the three areas where I found and fixed subtle correctness bugs: the **EMI engine**, the **eligibility predicates**, and **partner matching** — plus, since `4a8eea7`, the **UI invariants** that keep the ledger honest (§6–7), and since 2026-09-05 the **DB parity** and **format pinning** (§5–6), and since 2026-09-06 the **form cascade + LLM 2.5-flash** (§5), and since 2026-09-07 the **admin CSV + DEMO_MODE + parity offline graceful** (§5, §8), and since 2026-09-10 the **5 schemes + P41 multi-eligible + cascade strict + purpose flat + LLM fallback** (§5, §7).
+[PROGRESS.md](PROGRESS.md) tells you *where the project stands* (now **2026-09-11** — `8cfdefc` + **5 schemes / 41 personas (P41 multi-eligible tailoring 90k MICRO+AMY)** + form cascade strict + purpose flat + **LLM fallback 2.5-flash → flash-latest** + `DEMO_MODE` fixture cache + i18n `ui.confirm` fix + health-csv `finalSeen` guard + **intent-filter `src/app/result/page.tsx:180` (EDU hidden from livelihood etc.)** + **Phase 0 check 2026-09-11 single-page PDF 2026-06-15 + 172p Lending Policy — no margin/subsidy/treatment found, stays placeholder** + **deploy `rin-setu-git-main-dewang-chirlekars-projects.vercel.app` (Vercel Auth gated)** + **Save my applications 2026-09-11 (`POST /api/applications` + `GET /applications` list/receipt, 18 routes, `src/lib/db.ts:1`)**, `npm run check` **11/237** green (236+1 skipped wifi off), `npm run build` **18 routes** `ƒ` all, `npm run personas` **41 rows / 24 eligible**, DB **5/15/15 +53 doc reqs + applications**, `VERIFY.md` **48 unverified (10 demo_overlay + 38 placeholder, checked 2026-09-11)** , F2 now live via P41, `data/schemes.seed.json` + `src/lib/applicant-params.ts` + `src/components/ApplyForm.tsx` + `src/llm/client.ts` + `src/lib/db.ts` edits). This file tells you *how not to break it*. It is written for a model picking this up cold, and it concentrates on the three areas where I found and fixed subtle correctness bugs: the **EMI engine**, the **eligibility predicates**, and **partner matching** — plus, since `4a8eea7`, the **UI invariants** that keep the ledger honest (§6–7), and since 2026-09-05 the **DB parity** and **format pinning** (§5–6), and since 2026-09-06 the **form cascade + LLM 2.5-flash** (§5), and since 2026-09-07 the **admin CSV + DEMO_MODE + parity offline graceful** (§5, §8), and since 2026-09-10 the **5 schemes + P41 multi-eligible + cascade strict + purpose flat + LLM fallback** (§5, §7), and since 2026-09-11 the **applications receipt (not re-priced)** (§8).
 
 The person you are working for does not write code. They cannot catch a wrong number by
 reading a diff. That is why the tests, the provenance machinery and the generated
@@ -583,7 +583,23 @@ own tests, in its own commit — not a field added in the component.
 
 ---
 
-## 8. Checklist before you say you're done
+## 8. Applications — the receipt that must never be re-priced
+
+`prisma/schema.prisma:367` `Application` stores `applicant` + `result` JSON (the whole `RecommendationResult` as written, including failing verdicts and provenance of every figure) plus `schemeCode`/`figuresAuthoritative`/`datasetLabel`/`language`. That is intentional: an application reopened in six months must show the numbers it was actually given, computed against the parameters in force that day, not silently re-priced against whatever `data/schemes.seed.json` says by then. The engine stays the source of truth for *new* computations; this column is the receipt.
+
+Rules that matter:
+
+- **Never recompute on display.** `src/app/applications/[id]/page.tsx:1` reads the stored `result` and renders it. Do not call `recommend()` again with the stored `applicant` — that would replace the receipt with a fresh computation and hide that the figures have changed. `applicantToParams(result)` → `/result`/`/api/packet` links are *re-open* affordances for comparison, not the display path.
+- **Store via `recommend()`, not client numbers.** `src/app/api/applications/route.ts:1` `POST` parses `search` (or `applicant`) with `parseApplicantParams`/`ApplicantProfileSchema`, then runs `recommend({ applicant, ...loadBundle(), generatedAt })` on the server. The client never sends a loan/EMI. Choosing a different `ELIGIBLE` (`LoanConfirmation` future wiring) is the only client choice that reaches the store, and it is validated as `ELIGIBLE` before being saved as `schemeCode`.
+- **DB access is through `src/lib/db.ts:1`.** `getPrisma()` singletons the `PrismaPg` pool (`ssl:{rejectUnauthorized:false}`) and `isDbUnreachableError()` maps connect errors to 503/skip, matching `prisma/seed.ts:53` and `tests/dataset-db.parity.test.ts:38`. Do not `new PrismaClient()` elsewhere, do not `$disconnect()` the singleton in an API route (the pool stays warm), and handle `!hasDatabaseUrl()` with an empty state (`needs_db_*` i18n) so the app still works offline except for saving.
+- **No auth for the demo** is intentional (`route.ts:1` comment) — one-click save keeps the demo flow. A real deployment would scope by cookie/JWT and add `DELETE`. Keep the list capped at 100, ordered `createdAt desc`.
+- **Navigation:** `src/app/layout.tsx:51` nav `Saved` (`ui.nav.applications`) and `SaveApplicationButton.tsx:1` on `/result` (disabled 503 when DB missing). `result/page.tsx:180` `saveSearch` handles `?persona=Pxx` and `applicantToParams` cases.
+
+If you need to change what is stored, that is a schema change with a migration, not a silent addition to the JSON. And if you add `partnerCode` selection, validate the partner exists and handles the scheme type — otherwise you save a file that the hard filters would have excluded.
+
+---
+
+## 9. Checklist before you say you're done
 
 - [ ] `npm run check` exits 0, with **≥237 tests** (wifi on: 237 passed, wifi off: 236 passed +1 skipped `DB unreachable, skipping parity check`, was 230 at `b9f34ba`, 237 at 2026-09-05 core-hardened, 2026-09-07 offline-graceful).
 - [ ] No new number in `src/core/` or in `data/*.json` that you cannot cite. If you added
@@ -600,7 +616,7 @@ own tests, in its own commit — not a field added in the component.
 - [ ] You did not fill in the `describe.todo` block in `finance.golden.test.ts`.
 - [ ] Anything you assumed is stated explicitly in your reply to the user.
 
-## 9. When you are unsure
+## 10. When you are unsure
 
 The user does not code and is relying on you to be honest rather than confident. So:
 

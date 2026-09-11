@@ -125,6 +125,12 @@ Eligibility is `category C` only — purpose is not grouped by scheme. Since 202
 
 Since 2026-09-10 `district` is **disabled until `state`** and `tehsil` until `district` when JS is on (`jsEnabled` guard); with JS off all options show (graceful degradation). This is load-bearing for 360px: showing every district/tehsil in one `<select>` overflows the viewport and hides the `"select state first"` / `"select district first"` (`district_need_state` / `tehsil_need_district`) hint that prevents a wrong-jurisdiction submission. If you restore the old behaviour (show all districts when no state), the partner jurisdiction filter later does the right thing, so **no test fails** — the form just becomes unusable on a small phone and an applicant can pick a tehsil that doesn't belong to the chosen district (auto-detect in `handleTehsilChange` then silently corrects `state`). Don't remove the `jsEnabled && !selectedState` guard or the `disabled` prop, and keep the hints.
 
+### A9. Re-pricing a saved receipt — re-running the engine on display
+
+**Where:** `src/app/applications/[id]/page.tsx:1` reading `Application.result` + `src/app/api/applications/route.ts:1` storing via `recommend()`
+
+A saved application stores the whole `RecommendationResult` as JSON (`prisma/schema.prisma:367` `result` + `applicant` + `figuresAuthoritative`/`datasetLabel`). The display page **must not** call `recommend()` again with the stored `applicant` — that would silently re-price the file against whatever `data/schemes.seed.json` says by then and hide that the scheme parameters have changed. The receipt is the point. If you need a comparison with current parameters, add a separate `Re-apply with current figures` link (already via `applicantToParams` → `/result`), but never replace the stored display. Likewise, storing must go through `recommend()` on the server (never trust client-sent `loan`/`emi`), and `schemeCode` must be validated as `ELIGIBLE` before saving — otherwise you can save a file the hard filters would have excluded. No test fails if you re-priced, because the engine is pure and would produce a valid new result — the bug is that the user would see a different rupee amount with no indication it changed.
+
 ---
 
 ## Part B — Caught, only by a snapshot that can be regenerated away

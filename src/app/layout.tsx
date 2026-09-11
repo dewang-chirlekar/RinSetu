@@ -55,6 +55,9 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
                 <a href="/personas" className="text-accent hover:underline">
                   {t('ui.nav.personas', undefined, locale as never)}
                 </a>
+                <a href="/applications" className="text-accent hover:underline">
+                  {t('ui.nav.applications', undefined, locale as never)}
+                </a>
                 <LocaleSwitcher />
               </nav>
             </div>

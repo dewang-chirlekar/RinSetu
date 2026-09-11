@@ -436,7 +436,8 @@
     },
     "nav": {
       "apply": "नवीन अर्ज",
-      "personas": "चाचणी प्रकरणे"
+      "personas": "चाचणी प्रकरणे",
+      "applications": "Saved"
     },
     "footer": {
       "build": "समस्या SIH26092 साठी स्मार्ट इंडिया हॅकेथॉन 2026 प्रोटोटाइप. पात्रता, कर्ज आणि हप्त्याचे आकडे नियत कोडमधून येतात, भाषेच्या मॉडेलमधून नाहीत.",
@@ -606,6 +607,30 @@
       "open": "निकाल उघडा",
       "open_form": "फॉर्ममध्ये लोड करा",
       "outcome_heading": "निकाल"
+    },
+    "applications": {
+      "heading": "Saved applications",
+      "lede": "Every saved file shows the numbers it was actually given — stored at save time, not re-priced later.",
+      "count": "{count} saved",
+      "empty_heading": "No saved applications yet",
+      "empty_detail": "Fill the form and see a result — then save it here.",
+      "open": "Open",
+      "open_result": "Open in result view",
+      "saved_at": "Saved {date}",
+      "needs_db_heading": "Saving needs a database",
+      "needs_db_detail": "This build runs without a database — the engine still works, but saving needs DATABASE_URL.",
+      "save_heading": "Save this application",
+      "save_detail": "Keep this result so you can reopen it later, even if you lose the link.",
+      "save_action": "Save application",
+      "saving": "Saving…",
+      "save_done": "Saved — open in saved list",
+      "save_error": "Could not save",
+      "reapply": "Reopen in result",
+      "copy_link": "Copy share link",
+      "copied": "Copied",
+      "not_found_heading": "Application not found",
+      "not_found_detail": "No saved application with this ID.",
+      "back_to_list": "Back to saved"
     }
   }
 }

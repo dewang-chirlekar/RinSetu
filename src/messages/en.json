@@ -436,7 +436,8 @@
     },
     "nav": {
       "apply": "New application",
-      "personas": "Test cases"
+      "personas": "Test cases",
+      "applications": "Saved"
     },
     "footer": {
       "build": "A Smart India Hackathon 2026 prototype for problem statement SIH26092. Eligibility, loan and instalment figures are computed by deterministic code, not by a language model.",
@@ -636,6 +637,30 @@
       "open": "Open result",
       "open_form": "Load into the form",
       "outcome_heading": "Outcome"
+    },
+    "applications": {
+      "heading": "Saved applications",
+      "lede": "Every saved file shows the numbers it was actually given — stored at save time, not re-priced later. So a form you filled last week can be reopened even if you lost the link.",
+      "count": "{count} saved",
+      "empty_heading": "No saved applications yet",
+      "empty_detail": "Fill the form and see a result — then save it here. The link will not be lost if you close the tab.",
+      "open": "Open",
+      "open_result": "Open in result view",
+      "saved_at": "Saved {date}",
+      "needs_db_heading": "Saving needs a database",
+      "needs_db_detail": "This build runs without a database — the engine and the demo still work, but saving needs DATABASE_URL (Supabase) set. Set it and save again; your link still works in the meantime.",
+      "save_heading": "Save this application",
+      "save_detail": "Keep this result so you can reopen it later, even if you lose the link. Nothing is re-computed — the stored file shows exactly what you saw.",
+      "save_action": "Save application",
+      "saving": "Saving…",
+      "save_done": "Saved — open in saved list",
+      "save_error": "Could not save",
+      "reapply": "Reopen in result",
+      "copy_link": "Copy share link",
+      "copied": "Copied",
+      "not_found_heading": "Application not found",
+      "not_found_detail": "No saved application with this ID. It may have been removed or the link is wrong.",
+      "back_to_list": "Back to saved"
     },
     "admin": {
       "health_upload": {
