@@ -660,7 +660,12 @@
       "copied": "Copied",
       "not_found_heading": "Application not found",
       "not_found_detail": "No saved application with this ID. It may have been removed or the link is wrong.",
-      "back_to_list": "Back to saved"
+      "back_to_list": "Back to saved",
+      "delete": "Delete",
+      "delete_confirm": "Delete this saved application? This cannot be undone.",
+      "deleting": "Deleting…",
+      "deleted": "Deleted",
+      "delete_error": "Could not delete"
     },
     "admin": {
       "health_upload": {

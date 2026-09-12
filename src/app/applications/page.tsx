@@ -10,6 +10,7 @@ import { getLocale } from 'next-intl/server';
 import { translate, type Locale } from '@/messages';
 import { getPrisma, hasDatabaseUrl, isDbUnreachableError } from '@/lib/db';
 import { longDateTime } from '@/lib/format';
+import { DeleteApplicationButton } from '@/components/DeleteApplicationButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -128,10 +129,11 @@ export default async function ApplicationsPage() {
                 <p className="text-ink-3 mt-1 text-xs leading-relaxed">
                   {[sub, applicant.purpose ? applicant.purpose : null, applicant.project_cost != null ? `₹${Number(applicant.project_cost).toLocaleString('en-IN')}` : null].filter(Boolean).join(' · ')}
                 </p>
-                <div className="mt-2 flex gap-3 text-xs">
+                <div className="mt-2 flex flex-wrap items-center gap-3 text-xs">
                   <a href={`/applications/${r.id}`} className="text-accent hover:underline">
                     {t('ui.applications.open')}
                   </a>
+                  <DeleteApplicationButton id={r.id} compact />
                 </div>
               </li>
             );

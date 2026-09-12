@@ -29,7 +29,7 @@ import { humanisePurpose, longDateTime, rupees } from '@/lib/format';
 import { translate, type Locale } from '@/messages';
 import { DatasetBanner } from '@/components/DatasetBanner';
 import { ExplainPanel } from '@/components/ExplainPanel';
-import { LoanConfirmation } from '@/components/LoanConfirmation';
+import { ResultActions } from '@/components/ResultActions';
 import { SaveApplicationButton } from '@/components/SaveApplicationButton';
 import { SchemeCard } from '@/components/SchemeCard';
 import { FieldRow, PrimaryLink, SecondaryLink, Section } from '@/components/ui';
@@ -278,12 +278,12 @@ export default async function ResultPage({
               recommended_scheme_code: displayRecommendedCode,
             }}
           />
-          <SaveApplicationButton search={saveSearch} schemeCode={displayRecommendedCode} />
-          <LoanConfirmation
+          <ResultActions
             recommendation={recommended}
             applicant={applicant}
             eligibleSchemes={visibleSchemes.filter((s) => s.status === 'ELIGIBLE')}
             recommendedCode={displayRecommendedCode}
+            saveSearch={saveSearch}
           />
         </>
       ) : (

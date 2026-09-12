@@ -11,14 +11,21 @@ export function LoanConfirmation({
   applicant,
   eligibleSchemes,
   recommendedCode,
+  chosenCode: chosenCodeProp,
+  onChosenChange,
 }: {
   recommendation: SchemeRecommendation;
   applicant: ApplicantProfile;
   eligibleSchemes?: SchemeRecommendation[];
   recommendedCode?: string | null;
+  chosenCode?: string | null;
+  onChosenChange?: (code: string) => void;
 }) {
   const choices = eligibleSchemes && eligibleSchemes.length > 0 ? eligibleSchemes : [recommendation];
-  const [chosenCode, setChosenCode] = useState<string>(recommendation.scheme_code);
+  const [internalChosen, setInternalChosen] = useState<string>(recommendation.scheme_code);
+  const isControlled = chosenCodeProp !== undefined && onChosenChange !== undefined;
+  const chosenCode = isControlled ? (chosenCodeProp as string) : internalChosen;
+  const setChosenCode = isControlled ? onChosenChange! : setInternalChosen;
   const chosen = choices.find((c) => c.scheme_code === chosenCode) ?? recommendation;
   const [confirmed, setConfirmed] = useState(false);
   const [extracted, setExtracted] = useState<Record<string, unknown> | null>(null);

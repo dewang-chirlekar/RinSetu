@@ -14,6 +14,7 @@ import { loadBundle } from '@/lib/dataset';
 import { humanisePurpose, longDateTime, rupees } from '@/lib/format';
 import { SchemeCard } from '@/components/SchemeCard';
 import { DatasetBanner } from '@/components/DatasetBanner';
+import { DeleteApplicationButton } from '@/components/DeleteApplicationButton';
 import { FieldRow, SecondaryLink, Section } from '@/components/ui';
 import type { ApplicantProfile, RecommendationResult, SchemeSpec } from '@/core/types';
 
@@ -144,12 +145,13 @@ export default async function ApplicationDetailPage({ params }: { params: Promis
     <div>
       <DatasetBanner dataset={datasetForBanner} />
 
-      <div className="mt-3 flex flex-wrap gap-2">
+      <div className="mt-3 flex flex-wrap items-center gap-2">
         <SecondaryLink href="/applications">{t('ui.applications.back_to_list')}</SecondaryLink>
         <SecondaryLink href={editHref}>{t('ui.result.edit')}</SecondaryLink>
         <a href={reapplyHref} className="border-rule text-ink inline-flex items-center border bg-white px-3 py-1.5 text-xs hover:bg-[var(--paper-sunk)]">
           {t('ui.applications.reapply')}
         </a>
+        <DeleteApplicationButton id={row.id} />
       </div>
 
       <div className="mt-4 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">

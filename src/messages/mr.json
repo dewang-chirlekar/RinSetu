@@ -630,7 +630,12 @@
       "copied": "Copied",
       "not_found_heading": "Application not found",
       "not_found_detail": "No saved application with this ID.",
-      "back_to_list": "Back to saved"
+      "back_to_list": "Back to saved",
+      "delete": "हटवा",
+      "delete_confirm": "हे जतन केलेले अर्ज हटवायचे का? हे परत येणार नाही.",
+      "deleting": "हटवत आहे…",
+      "deleted": "हटवले",
+      "delete_error": "हटवता आले नाही"
     }
   }
 }
