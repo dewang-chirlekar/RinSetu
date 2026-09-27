@@ -1,6 +1,6 @@
 # RinSetu
 
-**AI-assisted concessional credit scheme matching and assessment platform — SIH 2026, SIH26092**
+**AI-assisted concessional credit scheme matching and assessment platform : SIH 2026, SIH26092**
 
 RinSetu helps Scheduled Caste applicants understand which concessional-credit schemes they may qualify for, why they qualify or do not qualify, what the financial outcome looks like under that scheme's own rules, which documents are required, and which Channel Partner can actually take the file.
 
