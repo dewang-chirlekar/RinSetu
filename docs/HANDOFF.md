@@ -502,11 +502,16 @@ way around. Concrete rules the baseline follows — keep them:
   comes from `recommend()`/`computeLoan()`; the UI formats and labels only. If a number
   is not on `LoanComputation` or `SchemeSpec`, add it to the engine with a test — do
   not derive it in the UI.
-- **GET, not client state.** `/apply` submits with `method="get"` to `/result`; the query
-  string is the `ApplicantProfile` via `src/lib/applicant-params.ts` + Zod. This is
-  why the flow works with JS disabled and why `/result?persona=P01` is shareable.
-  Do not replace it with `useState`/`useEffect` form state.
-- **Intent sync via `paramsKey` (2026-09-10 fix).** `src/components/ApplyForm.tsx:127` uses `paramsKey = JSON.stringify(initialParams)` and `useEffect(() => { const next = JSON.parse(paramsKey)...; setIntent(prev => next !== prev ? next : prev) }, [paramsKey])` — only syncs when the URL actually carries a different intent. Don't add `intent` to the dep array; that reverts the user's in-flight dropdown pick to `''` (see `FRAGILE.md`).
+- **POST + HttpOnly cookie, not client state.** `/apply` submits with `method="post"`
+  to `/api/intake`; the route validates the body with `src/lib/intake-params.ts` +
+  `ApplicantProfileSchema`, stores the profile in the `rinsetu_profile` HttpOnly
+  cookie, and 303-redirects to `/result` (or `/apply` / `/api/packet` via the
+  allow-listed `next` field). No personal data appears in the URL, browser history,
+  server logs or Referer headers. This is why the flow still works with JS disabled.
+  Legacy query strings are parsed for old links, and `/result?persona=P01` remains
+  shareable because a fixture contains no real user data. Do not replace this with
+  `useState`/`useEffect` form state, and do not put the profile back in a link.
+- **Intent sync via `paramsKey` (2026-09-10 fix).** `src/components/ApplyForm.tsx:127` uses `paramsKey = JSON.stringify(initialParams)` and `useEffect(() => { const next = JSON.parse(paramsKey)...; setIntent(prev => next !== prev ? next : prev) }, [paramsKey])` — only syncs when `initialParams` (cookie, persona or legacy query) actually carries a different intent. Don't add `intent` to the dep array; that reverts the user's in-flight dropdown pick to `''` (see `FRAGILE.md`).
 - **Lakh/thousand parsing.** `src/lib/applicant-params.ts:42` `num()` now parses `"5 lakh"` → `500000` and `"90 thousand"` → `90000` (strips `₹ ,` and lowercases), handling LLM-extracted `project_cost` strings and manual `?project_cost=5%20lakh` URLs. Blank → `null`, never `0`.
 - **Blanks mean unknown.** Every input can be left blank; blank → empty string →
   `null` → Zod default (`UNKNOWN`/`UNDISCLOSED`). Never add `required`.
@@ -609,7 +614,7 @@ If you need to change what is stored, that is a schema change with a migration, 
 - [ ] No hardcoded user-facing English in `src/core/` or in components — message keys only
       (`src/messages/en.json`; `translate()` throws on missing key).
 - [ ] No arithmetic in `src/components/` or `src/app/` — only formatting of engine output.
-- [ ] GET-based intake still works with JS disabled (`/apply` → `/result` query string).
+- [ ] POST-based intake still works with JS disabled (`/apply` → `POST /api/intake` → `/result`) and the URL contains no name, age, income, caste or district.
 - [ ] Every figure that has a `provenance` renders it; `DatasetBanner` is on every
       result/personas page and `figures_authoritative` is false.
 - [ ] Any new core logic has tests **in the same change**, not "later".

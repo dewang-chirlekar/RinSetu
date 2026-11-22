@@ -25,7 +25,7 @@ export function ResultActions({
   applicant: ApplicantProfile;
   eligibleSchemes: SchemeRecommendation[];
   recommendedCode: string | null;
-  saveSearch: string;
+  saveSearch?: string;
 }) {
   const fallback = recommendation.scheme_code;
   const [chosenCode, setChosenCode] = useState<string>(recommendedCode ?? fallback);

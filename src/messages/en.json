@@ -529,6 +529,7 @@
       "free_text_retry": "Try again",
       "free_text_retry_in": "Retry in {seconds}s",
       "free_text_guided_fallback": "or use the guided form below — it works offline, no AI needed.",
+      "free_text_save_error": "Could not save the extracted details. Please fill the form below.",
       "free_text_demo_active": "DEMO MODE: fixture cache active, no API key needed.",
       "free_text_missing_prefix": "We got some fields — please also fill:",
       "free_text_missing_hint": "Review the form below and complete the missing fields before seeing the result.",

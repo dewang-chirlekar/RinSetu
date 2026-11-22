@@ -52,6 +52,22 @@ function AnswerSummary({ applicant, locale }: { applicant: ApplicantProfile; loc
   );
 }
 
+/**
+ * A saved receipt already contains the full profile, but the detail page must
+ * not copy it back into a URL. These hidden fields POST to /api/intake, which
+ * revalidates the profile, stores it in the HttpOnly cookie and redirects to
+ * the requested page.
+ */
+function ApplicantFields({ applicant }: { applicant: ApplicantProfile }) {
+  return (
+    <>
+      {[...applicantToParams(applicant).entries()].map(([name, value], index) => (
+        <input key={`${name}-${index}`} type="hidden" name={name} value={value} />
+      ))}
+    </>
+  );
+}
+
 export default async function ApplicationDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const locale = (await getLocale()) as Locale;
@@ -127,8 +143,6 @@ export default async function ApplicationDetailPage({ params }: { params: Promis
   const schemeByCode = new Map(bundle.dataset.schemes.map((s) => [s.code, s]));
   const recommended = result.schemes.find((s) => s.scheme_code === result.recommended_scheme_code) ?? null;
   const others = result.schemes.filter((s) => s !== recommended);
-  const editHref = `/apply?${applicantToParams(applicant).toString()}`;
-  const reapplyHref = `/result?${applicantToParams(applicant).toString()}`;
 
   // Build a tiny dataset banner from stored fields (label + authoritative flag).
   // Full provenance lives inside result.schemes[*].computation.rate_provenance etc.
@@ -147,10 +161,25 @@ export default async function ApplicationDetailPage({ params }: { params: Promis
 
       <div className="mt-3 flex flex-wrap items-center gap-2">
         <SecondaryLink href="/applications">{t('ui.applications.back_to_list')}</SecondaryLink>
-        <SecondaryLink href={editHref}>{t('ui.result.edit')}</SecondaryLink>
-        <a href={reapplyHref} className="border-rule text-ink inline-flex items-center border bg-white px-3 py-1.5 text-xs hover:bg-[var(--paper-sunk)]">
-          {t('ui.applications.reapply')}
-        </a>
+        <form action="/api/intake" method="post">
+          <input type="hidden" name="next" value="/apply" />
+          <ApplicantFields applicant={applicant} />
+          <button
+            type="submit"
+            className="border-rule-strong text-ink hover:bg-paper-sunk inline-flex items-center justify-center border px-4 py-2.5 text-sm font-medium"
+          >
+            {t('ui.result.edit')}
+          </button>
+        </form>
+        <form action="/api/intake" method="post">
+          <ApplicantFields applicant={applicant} />
+          <button
+            type="submit"
+            className="border-rule text-ink inline-flex items-center border bg-white px-3 py-1.5 text-xs hover:bg-[var(--paper-sunk)]"
+          >
+            {t('ui.applications.reapply')}
+          </button>
+        </form>
         <DeleteApplicationButton id={row.id} />
       </div>
 
@@ -175,14 +204,16 @@ export default async function ApplicationDetailPage({ params }: { params: Promis
             <h3 className="text-ink font-serif text-sm font-semibold">{t('ui.result.download_packet')}</h3>
             <p className="text-ink-2 mt-1 text-xs leading-relaxed">{t('ui.result.download_packet_detail')}</p>
             <div className="mt-3">
-              <a
-                href={`/api/packet?${applicantToParams(applicant).toString()}`}
-                className="bg-accent text-paper inline-flex items-center px-4 py-2 text-sm font-medium"
-                target="_blank"
-                rel="noopener"
-              >
-                {t('ui.result.download_packet')}
-              </a>
+              <form action="/api/intake" method="post" target="_blank">
+                <input type="hidden" name="next" value="/api/packet" />
+                <ApplicantFields applicant={applicant} />
+                <button
+                  type="submit"
+                  className="bg-accent text-paper inline-flex items-center px-4 py-2 text-sm font-medium"
+                >
+                  {t('ui.result.download_packet')}
+                </button>
+              </form>
             </div>
           </div>
         </>

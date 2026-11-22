@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { translate } from '@/messages';
-import { applicantToParams } from '@/lib/applicant-params';
 
 export function FreeTextIntake() {
   const router = useRouter();
@@ -57,8 +56,19 @@ export function FreeTextIntake() {
         }
         throw new Error(errMsg);
       }
+      // Store the extracted profile in the HttpOnly intake cookie first. The
+      // form then reads it on refresh, so the extracted name, income, caste and
+      // district never appear in the URL.
+      const saved = await fetch('/api/intake', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ applicant: payload }),
+      });
+      if (!saved.ok) {
+        throw new Error(translate('ui.apply.free_text_save_error'));
+      }
+
       // Fill the guided form and stay on /apply — user reviews, fills missing fields, then clicks "See the result"
-      const params = applicantToParams(payload as never);
       // Check what's still missing and nudge the user (LLM asks for more info)
       const missing: string[] = [];
       if (payload.name == null) missing.push(translate('ui.apply.name'));
@@ -75,10 +85,10 @@ export function FreeTextIntake() {
       } else {
         setInfo(translate('ui.apply.free_text_filled'));
       }
-      // Use replace to stay on /apply and avoid adding a new history entry for each extract
-      router.replace(`/apply?${params.toString()}`);
-      // Also dispatch an event so the form can update without a full navigation (progressive enhancement)
-      window.dispatchEvent(new CustomEvent('rinsetu:extracted', { detail: payload }));
+      // Refresh the same page so the server component reads the cookie and
+      // remounts the form with the extracted values. No query string involved.
+      router.replace('/apply');
+      router.refresh();
     } catch (e) {
       // fetch can reject with an Event on abort/navigation — don't show "[object Event]"
       const raw = e instanceof Error ? e.message : typeof e === 'object' && e !== null && 'type' in (e as Record<string, unknown>) ? `Network error (${String((e as { type?: string }).type)}) — please retry` : String(e);

@@ -17,8 +17,11 @@
  *     activity" as purposes, or "project report, shop licence" as documents, is
  *     noise that makes a low-end-phone user trust the form less. Filtering by
  *     intent is the cheapest win for comprehensibility.
- *   - The form submits with GET to /result so the result is a shareable plain URL
- *     and works with JS disabled. Progressive disclosure is *enhancement*: when
+ *   - The form submits with POST to /api/intake so the applicant's answers never
+ *     appear in the URL, browser history, server logs or Referer headers. The
+ *     route validates the profile, stores it in an HttpOnly cookie and redirects
+ *     to /result. A plain form post means this still works with JS disabled.
+ *     Progressive disclosure is *enhancement*: when
  *     JS is off every section is visible (in the new order). When JS is on we
  *     hide the intent-dependent sections until an intent is chosen. That is why
  *     jsEnabled starts false and flips true in an effect — the server HTML has
@@ -119,7 +122,7 @@ export function ApplyForm({
   const initialIntent = first(initialParams, 'intent');
   const [intent, setIntent] = useState(initialIntent);
 
-  // When FreeTextIntake extracts and does router.replace('/apply?...'), initialParams changes.
+  // When FreeTextIntake stores a profile and refreshes /apply, initialParams changes.
   // Sync intent so progressive disclosure and purpose filtering update without a full remount.
   // FIX: only watch the serialized params, not local intent — otherwise picking intent from
   // the dropdown is immediately reverted to the URL value (''), see FRAGILE.
@@ -226,11 +229,12 @@ export function ApplyForm({
     return initialPurpose === '' || all.has(initialPurpose);
   }, [hasIntent, purposeOptions, initialPurpose]);
 
-  // Force remount of inputs when extracted profile arrives via ?age=&... (FreeTextIntake)
+  // Force remount of inputs when the profile changes (free-text intake or the
+  // HttpOnly cookie restored by /apply). No personal data is in the URL.
   const formKey = JSON.stringify(initialParams);
 
   return (
-    <form key={formKey} action="/result" method="get" className="pb-8">
+    <form key={formKey} action="/api/intake" method="post" className="pb-8">
       {/* Step progress — visible only when JS is on */}
       {jsEnabled ? (
         <div className="border-rule bg-paper-edge/50 -mx-4 mb-2 flex items-center gap-1.5 border-y px-4 py-2 sm:mx-0 sm:rounded sm:border" role="progressbar" aria-valuenow={hasIntent ? 3 : 1} aria-valuemin={1} aria-valuemax={3} aria-label={translate('ui.apply.progress_choose')}>

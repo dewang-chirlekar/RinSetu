@@ -2,6 +2,8 @@
  * src/app/api/applications/route.ts
  *
  * POST /api/applications  { search?: string, applicant?: ApplicantProfile, schemeCode?: string, partnerCode?: string, language?: string } -> { id }
+ * When neither `applicant` nor `search` is supplied, the profile is read from
+ * the HttpOnly intake cookie, so the result page can save without a PII URL.
  * GET  /api/applications  -> { applications: { id, schemeCode, partnerCode, applicantName, createdAt, figuresAuthoritative, datasetLabel, status }[] }
  *
  * Stores the whole RecommendationResult as the receipt (Application.result) so
@@ -19,6 +21,7 @@ import { ApplicantProfileSchema } from '@/core/types';
 import { recommend } from '@/core/recommend';
 import { loadBundle, loadPersonas } from '@/lib/dataset';
 import { parseApplicantParams } from '@/lib/applicant-params';
+import { readProfileCookie } from '@/lib/intake-session';
 import { getPrisma, isDbUnreachableError, hasDatabaseUrl } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
@@ -76,10 +79,19 @@ export async function POST(request: Request) {
   try {
     if (rawApplicant !== undefined) {
       applicant = ApplicantProfileSchema.parse(rawApplicant);
-    } else if (search !== undefined) {
+    } else if (search !== undefined && search.trim() !== '') {
       applicant = parseSearchToApplicant(search);
     } else {
-      return NextResponse.json({ error: 'Provide `search` (query string) or `applicant` object' }, { status: 400 });
+      // The guided form saves the current result. New submissions have no query
+      // string, so the cookie written by POST /api/intake is the profile.
+      const cookieProfile = await readProfileCookie();
+      if (!cookieProfile) {
+        return NextResponse.json(
+          { error: 'Provide `search` or `applicant`, or submit the guided form in this browser first.' },
+          { status: 400 },
+        );
+      }
+      applicant = cookieProfile;
     }
   } catch (e) {
     const msg = e instanceof z.ZodError ? e.message : e instanceof Error ? e.message : String(e);

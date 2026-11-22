@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { translate } from '@/messages';
 
-export function SaveApplicationButton({ search, schemeCode }: { search: string; schemeCode?: string | null }) {
+export function SaveApplicationButton({ search, schemeCode }: { search?: string; schemeCode?: string | null }) {
   const [state, setState] = useState<'idle' | 'saving' | 'done' | 'error'>('idle');
   const [id, setId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -15,7 +15,9 @@ export function SaveApplicationButton({ search, schemeCode }: { search: string; 
       const res = await fetch('/api/applications', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ search, schemeCode: schemeCode ?? null }),
+        // New submissions have no search string: the API reads the HttpOnly
+        // intake cookie. Persona results still pass ?persona=.
+        body: JSON.stringify({ ...(search ? { search } : {}), schemeCode: schemeCode ?? null }),
       });
       const data = (await res.json()) as { id?: string; error?: string };
       if (!res.ok) throw new Error(data.error ?? `Save failed (${res.status})`);

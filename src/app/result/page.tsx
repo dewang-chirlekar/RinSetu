@@ -3,18 +3,19 @@
  *
  * The whole answer, on one URL.
  *
- * Reads answers out of the query string, runs the real engine, and renders every
- * scheme. Nothing is computed on this page — `recommend()` produces the result and
- * this file arranges it. That separation is what lets the same numbers be asserted
- * in tests without a browser.
+ * Reads the validated applicant profile out of the HttpOnly cookie written by
+ * POST /api/intake, runs the real engine, and renders every scheme. Legacy
+ * query-string links still parse for backwards compatibility, and ?persona=P01
+ * still runs a committed fixture. New submissions never put personal details in
+ * the URL.
  *
  * Three states other than the happy path, all of them deliberate:
  *
- *   - No answers at all → point back at the form. Not an error.
- *   - A query string the form could not have produced (a hand-edited `age=999`)
- *     → say the link is unreadable rather than parse around it. Zod throws here on
- *     purpose; catching it and substituting a default would silently answer a
- *     question the applicant never asked.
+ *   - No profile and no answers → point back at the form. Not an error.
+ *   - Input the form could not have produced (a hand-edited cookie or an old
+ *     `age=999` link) → say the link is unreadable rather than parse around it.
+ *     Zod throws here on purpose; catching it and substituting a default would
+ *     silently answer a question the applicant never asked.
  *   - `?persona=P01` → run a committed fixture instead, labelled as a test case so
  *     nobody mistakes a fixture for a real applicant.
  */
@@ -24,7 +25,8 @@ import { getLocale } from 'next-intl/server';
 import { pickRecommended, recommend } from '@/core/recommend';
 import type { ApplicantProfile, SchemeSpec, SchemeType } from '@/core/types';
 import { loadBundle, loadPersonas } from '@/lib/dataset';
-import { isEmptyParams, parseApplicantParams, applicantToParams } from '@/lib/applicant-params';
+import { parseApplicantParams } from '@/lib/applicant-params';
+import { readProfileCookie } from '@/lib/intake-session';
 import { humanisePurpose, longDateTime, rupees } from '@/lib/format';
 import { translate, type Locale } from '@/messages';
 import { DatasetBanner } from '@/components/DatasetBanner';
@@ -149,32 +151,48 @@ export default async function ResultPage({
   const t = (key: string, values?: Record<string, string | number | null | undefined>) =>
     translate(key, values, locale);
 
-  if (isEmptyParams(params)) {
-    return (
-      <Notice heading={t('ui.result.empty_heading')} detail={t('ui.result.empty_detail')}>
-        <PrimaryLink href="/apply">{t('ui.nav.apply')}</PrimaryLink>
-        <SecondaryLink href="/personas">{t('ui.nav.personas')}</SecondaryLink>
-      </Notice>
-    );
-  }
+  const emptyNotice = (
+    <Notice heading={t('ui.result.empty_heading')} detail={t('ui.result.empty_detail')}>
+      <PrimaryLink href="/apply">{t('ui.nav.apply')}</PrimaryLink>
+      <SecondaryLink href="/personas">{t('ui.nav.personas')}</SecondaryLink>
+    </Notice>
+  );
+
+  const invalidNotice = (
+    <Notice heading={t('ui.result.invalid_heading')} detail={t('ui.result.invalid_detail')}>
+      <PrimaryLink href="/apply">{t('ui.nav.apply')}</PrimaryLink>
+    </Notice>
+  );
+
+  // The intake route sends malformed form posts here instead of echoing values
+  // back into a URL. No profile was stored in that case.
+  if (one(params, 'invalid')) return invalidNotice;
 
   const personaId = one(params, 'persona');
   const persona = personaId ? loadPersonas().find((entry) => entry.id === personaId) : undefined;
 
+  // New submissions arrive with no query string at all; the profile is in the
+  // HttpOnly cookie. ?persona= and old PII links still take precedence so an
+  // already-shared fixture or legacy URL keeps working.
+  const hasExplicitParams = Object.keys(params).some((key) => key !== 'persona');
+  const cookieProfile = persona || hasExplicitParams ? null : await readProfileCookie();
+
+  if (!persona && !hasExplicitParams && !cookieProfile) return emptyNotice;
+
   let applicant: ApplicantProfile;
   if (persona) {
     applicant = persona.applicant;
-  } else {
+  } else if (hasExplicitParams) {
     try {
       applicant = parseApplicantParams(params);
     } catch (error) {
       if (!(error instanceof ZodError)) throw error;
-      return (
-        <Notice heading={t('ui.result.invalid_heading')} detail={t('ui.result.invalid_detail')}>
-          <PrimaryLink href="/apply">{t('ui.nav.apply')}</PrimaryLink>
-        </Notice>
-      );
+      return invalidNotice;
     }
+  } else if (cookieProfile) {
+    applicant = cookieProfile;
+  } else {
+    return emptyNotice;
   }
 
   const bundle = loadBundle();
@@ -204,9 +222,11 @@ export default async function ResultPage({
   // recommended stays null and the UI shows the "no eligible scheme in this category" copy.
   const others = visibleSchemes.filter((entry) => entry !== recommended);
   const schemeByCode = new Map(bundle.dataset.schemes.map((scheme) => [scheme.code, scheme]));
-  const editHref = `/apply?${applicantToParams(applicant).toString()}`;
-  const packetHref = persona ? `/api/packet?persona=${persona.id}` : `/api/packet?${applicantToParams(applicant).toString()}`;
-  const saveSearch = persona ? `?persona=${persona.id}` : `?${applicantToParams(applicant).toString()}`;
+  // New submissions carry nothing but the HttpOnly cookie, so these links stay
+  // opaque. Persona links keep ?persona= because the fixture is not real data.
+  const editHref = persona ? `/apply?persona=${encodeURIComponent(persona.id)}` : '/apply';
+  const packetHref = persona ? `/api/packet?persona=${encodeURIComponent(persona.id)}` : '/api/packet';
+  const saveSearch = persona ? `?persona=${encodeURIComponent(persona.id)}` : '';
 
   return (
     <div>

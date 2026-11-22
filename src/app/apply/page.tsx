@@ -3,13 +3,18 @@
  *
  * Server wrapper for the progressive intake form. Loads the dataset (the only
  * place the JSON is read) and hands it to the client component that handles
- * disclosure. The form still submits with GET to /result so the result is a
- * plain URL and works with JS disabled — see src/components/ApplyForm.tsx for
- * the no-JS fallback.
+ * disclosure. The form posts to /api/intake, which stores the validated profile
+ * in an HttpOnly cookie and redirects to /result; no personal data is placed in
+ * the URL. This page reads that cookie back when the user clicks "Edit", and
+ * accepts ?persona=P01 so a fixture can be opened in the form without dumping
+ * the fixture's fields into the query string.
  */
 
 import { getLocale } from 'next-intl/server';
-import { loadBundle } from '@/lib/dataset';
+import { loadBundle, loadPersonas } from '@/lib/dataset';
+import { isEmptyParams } from '@/lib/applicant-params';
+import { readProfileCookie } from '@/lib/intake-session';
+import { profileToParams } from '@/lib/intake-params';
 import { translate, type Locale } from '@/messages';
 import { ApplyForm } from '@/components/ApplyForm';
 import { FreeTextIntake } from '@/components/FreeTextIntake';
@@ -23,6 +28,25 @@ export default async function ApplyPage({ searchParams }: { searchParams: Promis
   const t = (key: string, values?: Record<string, string | number | null | undefined>) =>
     translate(key, values, locale);
   const { dataset, partners, documentDefinitions, documentRequirements } = loadBundle();
+
+  const personaId = Array.isArray(params.persona) ? params.persona[0] : params.persona;
+  const persona = personaId ? loadPersonas().find((entry) => entry.id === personaId) : undefined;
+
+  // Precedence: an explicit persona, then a legacy PII query string (old links
+  // still work), then the HttpOnly cookie written by the POST intake. New
+  // submissions only ever take the cookie path.
+  const legacyParams = { ...params };
+  delete legacyParams.persona;
+  const hasLegacyParams = !isEmptyParams(legacyParams);
+  const cookieProfile = persona || hasLegacyParams ? null : await readProfileCookie();
+
+  const initialParams = persona
+    ? profileToParams(persona.applicant)
+    : hasLegacyParams
+      ? legacyParams
+      : cookieProfile
+        ? profileToParams(cookieProfile)
+        : {};
 
   return (
     <div>
@@ -38,7 +62,7 @@ export default async function ApplyPage({ searchParams }: { searchParams: Promis
         partners={partners}
         documentDefinitions={documentDefinitions}
         documentRequirements={documentRequirements}
-        initialParams={params}
+        initialParams={initialParams}
       />
     </div>
   );

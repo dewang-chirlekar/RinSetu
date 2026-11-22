@@ -90,8 +90,9 @@ export function LoanConfirmation({
     setExtracted(patch);
   }
 
-  // Build a link to re-apply with extracted fields merged
-  let reapplyHref: string | null = null;
+  // Build a form body, not a link: re-applying with extracted fields must not
+  // put the applicant's name, income or documents back into the URL.
+  let reapplyParams: URLSearchParams | null = null;
   if (extracted) {
     const merged = { ...applicant, ...extracted } as ApplicantProfile;
     // Ensure documents_available is merged correctly
@@ -100,8 +101,7 @@ export function LoanConfirmation({
       ...((extracted.documents_available as string[]) ?? []),
     ]);
     (merged as Record<string, unknown>).documents_available = [...docs];
-    const params = applicantToParams(merged as never);
-    reapplyHref = `/result?${params.toString()}`;
+    reapplyParams = applicantToParams(merged as never);
   }
 
   return (
@@ -117,10 +117,18 @@ export function LoanConfirmation({
         <div className="border-rule bg-paper-edge mt-3 border p-3">
           <p className="text-ink text-xs font-medium">{translate('ui.confirm.extracted_heading')}</p>
           <pre className="bg-paper-sunk text-ink-3 mt-2 overflow-auto p-2 text-[0.6875rem]">{JSON.stringify(extracted, null, 2)}</pre>
-          {reapplyHref ? (
-            <a href={reapplyHref} className="bg-accent text-paper mt-3 inline-flex items-center px-4 py-2 text-sm font-medium">
-              {translate('ui.confirm.reapply')}
-            </a>
+          {reapplyParams ? (
+            <form action="/api/intake" method="post" className="mt-3">
+              {[...reapplyParams.entries()].map(([name, value], index) => (
+                <input key={`${name}-${index}`} type="hidden" name={name} value={value} />
+              ))}
+              <button
+                type="submit"
+                className="bg-accent text-paper inline-flex items-center px-4 py-2 text-sm font-medium"
+              >
+                {translate('ui.confirm.reapply')}
+              </button>
+            </form>
           ) : null}
         </div>
       ) : null}

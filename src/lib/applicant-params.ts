@@ -3,15 +3,19 @@
  *
  * URL query string ⇄ ApplicantProfile.
  *
- * The intake form submits with GET, so a result page is a plain URL: shareable,
- * bookmarkable, reloadable, and it needs no client-side JavaScript at all. That
- * last property is the reason for the choice — CLAUDE.md hard rule 10 says the
- * target user is on a low-end phone, and hard rule 5 says every feature must work
- * with the LLM disabled. A GET form satisfies both by construction.
+ * The primary intake path is now a POST to /api/intake, which stores the
+ * validated profile in an HttpOnly cookie and redirects to /result. That keeps
+ * the applicant's name, income, caste, age and district out of the URL, browser
+ * history, server logs and Referer headers.
  *
- * This is a trust boundary: query strings are user input. Nothing leaves this
- * file without going through ApplicantProfileSchema, the same Zod schema that
- * guards LLM extraction output.
+ * This file remains the bridge for three narrower jobs:
+ *   - parsing old shared links that still contain a query string
+ *   - the ?persona=P01 fixture links, which carry no real user data
+ *   - hidden form fields that POST a profile to /api/intake without a URL
+ *
+ * It is still a trust boundary: query strings and form bodies are user input.
+ * Nothing leaves this file without going through ApplicantProfileSchema, the
+ * same Zod schema that guards LLM extraction output.
  *
  * The empty-string rule is the subtle part. An HTML input the user left blank
  * submits '', and '' must become null (UNKNOWN), never 0. A zero income would
@@ -125,9 +129,9 @@ export function isEmptyParams(params: RawParams): boolean {
 }
 
 /**
- * Rebuilds a query string from a profile. Used by the persona explorer so
- * 'open this case in the form' lands on a pre-filled intake page — the same
- * round trip a reviewer would want to do by hand.
+ * Rebuilds a query string from a profile. New code uses this to render hidden
+ * form fields, not links: the fields are POSTed to /api/intake. The persona
+ * explorer uses ?persona=P01 instead, so even fixture fields stay out of the URL.
  */
 export function applicantToParams(applicant: ApplicantProfile): URLSearchParams {
   const params = new URLSearchParams();

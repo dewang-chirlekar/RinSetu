@@ -14,7 +14,6 @@
 import { getLocale } from 'next-intl/server';
 import { recommend } from '@/core/recommend';
 import type { SchemeRecommendation } from '@/core/types';
-import { applicantToParams } from '@/lib/applicant-params';
 import { loadBundle, loadPersonas, type Persona } from '@/lib/dataset';
 import { rupees } from '@/lib/format';
 import { translate, type Locale } from '@/messages';
@@ -70,10 +69,7 @@ function PersonaRow({
         <a href={`/result?persona=${persona.id}`} className="text-accent hover:underline">
           {translate('ui.personas.open')}
         </a>
-        <a
-          href={`/apply?${applicantToParams(persona.applicant).toString()}`}
-          className="text-accent hover:underline"
-        >
+        <a href={`/apply?persona=${encodeURIComponent(persona.id)}`} className="text-accent hover:underline">
           {translate('ui.personas.open_form')}
         </a>
       </div>

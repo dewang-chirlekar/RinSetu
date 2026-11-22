@@ -1,11 +1,16 @@
 /**
  * src/app/api/packet/route.ts
  *
+ * GET /api/packet
  * GET /api/packet?persona=P01
- * GET /api/packet?age=25&category=SC&... (same query as /result)
+ * GET /api/packet?age=25&category=SC&... (legacy query, still parsed)
  *
  * Returns application/pdf — the pre-filled packet. No new numbers: reuses
  * recommend() output, then renders PacketDocument via @react-pdf/renderer.
+ *
+ * New submissions carry the profile in the HttpOnly intake cookie, so the
+ * normal packet link is the bare /api/packet URL. Legacy query strings are
+ * still accepted for old links, and persona ids remain shareable.
  */
 
 import { ZodError } from 'zod';
@@ -14,6 +19,7 @@ import { renderToBuffer } from '@react-pdf/renderer';
 import { recommend } from '@/core/recommend';
 import { loadBundle, loadPersonas } from '@/lib/dataset';
 import { parseApplicantParams } from '@/lib/applicant-params';
+import { readProfileCookie } from '@/lib/intake-session';
 import { PacketDocument } from '@/lib/packet';
 import React from 'react';
 
@@ -29,35 +35,41 @@ function one(params: RawParams, key: string): string | null {
 
 export async function GET(request: Request): Promise<Response> {
   const url = new URL(request.url);
-  const params: RawParams = Object.fromEntries(url.searchParams.entries()) as RawParams;
-  // URLSearchParams loses duplicate keys — acceptable for this form (no arrays)
 
-  const personaId = one(params, 'persona');
+  // Reconstruct RawParams with proper array handling for the legacy shape.
+  const raw: RawParams = {};
+  for (const [k, v] of url.searchParams.entries()) {
+    if (raw[k] == null) raw[k] = v;
+    else if (Array.isArray(raw[k])) (raw[k] as string[]).push(v);
+    else raw[k] = [raw[k] as string, v];
+  }
+
+  const personaId = one(raw, 'persona');
   const persona = personaId ? loadPersonas().find((e) => e.id === personaId) : undefined;
+  const hasExplicitParams = Object.keys(raw).some((key) => key !== 'persona');
 
   let applicant;
   if (persona) {
     applicant = persona.applicant;
-  } else {
-    // Reconstruct RawParams with proper array handling for Next's searchParams shape
-    const raw: RawParams = {};
-    for (const [k, v] of url.searchParams.entries()) {
-      if (raw[k] == null) raw[k] = v;
-      else if (Array.isArray(raw[k])) (raw[k] as string[]).push(v);
-      else raw[k] = [raw[k] as string, v];
-    }
-    // Empty packet -> 400
-    if (Object.keys(raw).length === 0 || (Object.keys(raw).length === 1 && raw.persona != null && !persona)) {
-      return new Response('Missing applicant data. Use ?persona=P01 or the guided form query.', { status: 400 });
-    }
+  } else if (hasExplicitParams) {
+    // Legacy links only. New links never contain personal details.
     try {
-      applicant = parseApplicantParams(raw as Record<string, string | string[] | undefined> as never);
+      applicant = parseApplicantParams(raw);
     } catch (e) {
       if (e instanceof ZodError) {
         return new Response(`Invalid applicant data: ${e.message}`, { status: 400 });
       }
       throw e;
     }
+  } else {
+    const cookieProfile = await readProfileCookie();
+    if (!cookieProfile) {
+      return new Response(
+        'Missing applicant data. Submit the guided form, use ?persona=P01, or open this link in the browser that filled the form.',
+        { status: 400 },
+      );
+    }
+    applicant = cookieProfile;
   }
 
   const bundle = loadBundle();
