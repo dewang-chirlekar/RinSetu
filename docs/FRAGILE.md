@@ -131,6 +131,18 @@ Since 2026-09-10 `district` is **disabled until `state`** and `tehsil` until `di
 
 A saved application stores the whole `RecommendationResult` as JSON (`prisma/schema.prisma:367` `result` + `applicant` + `figuresAuthoritative`/`datasetLabel`). The display page **must not** call `recommend()` again with the stored `applicant` — that would silently re-price the file against whatever `data/schemes.seed.json` says by then and hide that the scheme parameters have changed. The receipt is the point. If you need a comparison with current parameters, add a separate `Re-apply with current figures` link (already via `applicantToParams` → `/result`), but never replace the stored display. Likewise, storing must go through `recommend()` on the server (never trust client-sent `loan`/`emi`), and `schemeCode` must be validated as `ELIGIBLE` before saving — otherwise you can save a file the hard filters would have excluded. No test fails if you re-priced, because the engine is pure and would produce a valid new result — the bug is that the user would see a different rupee amount with no indication it changed.
 
+### A10. Chosen-code wiring — Save must store what the user picked, not just `pickRecommended`
+
+**Where:** `src/components/ResultActions.tsx:1` + `src/components/LoanConfirmation.tsx:1` + `src/app/result/page.tsx:281` + `src/app/api/applications/route.ts:1`
+
+P41 is ELIGIBLE for both MICRO (6.5%) and AMY (15%) via shared `PLACEHOLDER_tailoring`; `pickRecommended` picks MICRO (largest share tied → lower rate). Before `90ee675` the Save button always stored `recommended_scheme_code` (`pickRecommended` result) even when the user had radio-selected AMY in `LoanConfirmation`. Fix: `ResultActions.tsx:1` lifts `chosenCode` (`useState` + `useEffect` sync when `recommendedCode` actually changes) and threads it to both `SaveApplicationButton schemeCode` and `LoanConfirmation chosenCode/onChosenChange`; `LoanConfirmation` is now controllable (props present → controlled, else internal fallback). Deleting the lift or letting Save read `result.recommended_scheme_code` directly silently reverts P41's AMY pick to MICRO on save; no test fails because saving still produces a valid receipt — just for the wrong scheme. Likewise, adding a new ELIGIBLE scheme without keeping `eligibleSchemes` list in `ResultActions` hides the radio, so the user cannot pick it.
+
+### A11. Delete is final — no soft-delete, confirm step is load-bearing
+
+**Where:** `src/app/api/applications/[id]/route.ts:1` + `src/components/DeleteApplicationButton.tsx:1` + `src/app/applications/page.tsx:136` + `src/app/applications/[id]/page.tsx:154`
+
+`DELETE /api/applications/[id]` does `getPrisma().application.delete({where:{id}})` — Prisma `P2025` means 404, `isDbUnreachableError` means 503, missing `DATABASE_URL` also 503. `DeleteApplicationButton` has `idle→confirm→deleting→idle/error` with `ui.applications.delete_confirm` + `delete`/`deleting`/`delete_error` keys and `aria-label`. List uses `compact` (small white button), detail uses full (`border-fail`). Detail delete does `window.location.href='/applications'` after success (otherwise `router.refresh()` would render a 404 inside the detail layout). Removing the `confirm` step or making delete a `GET` silently enables one-click data loss; wiring delete as a plain `<a href>` would be a CSRF vector. No test covers delete yet — the safety net is `npm run personas` + manual `POST → GET → DELETE → GET 404` verification (see `docs/PROGRESS.md` 2026-09-12).
+
 ---
 
 ## Part B — Caught, only by a snapshot that can be regenerated away
@@ -277,8 +289,8 @@ thing an editor or an auto-formatter does without being asked.
 - **`VERIFY.md`** is produced by a command and checked for freshness. Hand-editing it
   makes the check fail.
 - **`TEST-RECORD.md`** is a snapshot of one moment, not a live readout. It will keep
-  saying "237 passing" long after something has broken (updated 2026-09-05). Do not treat it as current, and
-  never edit it to look green.
+   saying "237 passing" long after something has broken (updated 2026-09-12 for 19 routes + delete). Do not treat it as current, and
+   never edit it to look green.
 
 ---
 

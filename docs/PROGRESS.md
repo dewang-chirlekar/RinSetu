@@ -1,7 +1,7 @@
 # PROGRESS.md — where RinSetu stands
 
 Written at the end of Phases 1–2, updated after the Phase 3–6 baseline landed
-(`4a8eea7` + `5eb1b1e`), refreshed 2026-08-31 at `bd12a83` on `main`, DB connected 2026-09-05, core hardened 2026-09-05, Maps 2026-09-05, PDF 2026-09-05, i18n 2026-09-05, form till tehsil + LLM 3.6-flash 2026-09-06, **admin health upload 2026-09-07, demo hardening 2026-09-07, parity offline-fix 2026-09-07, 5 schemes + F2 P41 + cascade/LLM harden 2026-09-10 at `13b111d` — code-complete pause for guideline transcription, intent-filter `result/page.tsx:180` 2026-09-11, Phase 0 check 2026-09-11 (single-page PDF + 172p Lending Policy — no margin/subsidy/treatment found, stays placeholder), deployed 2026-09-11 `rin-setu-git-main-dewang-chirlekars-projects.vercel.app` (Vercel Auth gated — toggle `Settings → Deployment Protection → Disable` to go public), Save my applications 2026-09-11 (`POST /api/applications` + `GET /applications` list/receipt, 18 routes, `src/lib/db.ts:1` `SaveApplicationButton.tsx:1`), see §2**.
+(`4a8eea7` + `5eb1b1e`), refreshed 2026-08-31 at `bd12a83` on `main`, DB connected 2026-09-05, core hardened 2026-09-05, Maps 2026-09-05, PDF 2026-09-05, i18n 2026-09-05, form till tehsil + LLM 3.6-flash 2026-09-06, **admin health upload 2026-09-07, demo hardening 2026-09-07, parity offline-fix 2026-09-07, 5 schemes + F2 P41 + cascade/LLM harden 2026-09-10 at `13b111d` — code-complete pause for guideline transcription, intent-filter `result/page.tsx:180` 2026-09-11, Phase 0 check 2026-09-11 (single-page PDF + 172p Lending Policy — no margin/subsidy/treatment found, stays placeholder), deployed 2026-09-11 `rin-setu-git-main-dewang-chirlekars-projects.vercel.app` (Vercel Auth gated — toggle `Settings → Deployment Protection → Disable` to go public), Save my applications 2026-09-11 (`POST /api/applications` + `GET /applications` list/receipt, 18 routes, `src/lib/db.ts:1` `SaveApplicationButton.tsx:1`), **Delete + chosen-scheme wiring 2026-09-12 `90ee675` (19 routes, `ResultActions` + `DELETE /api/applications/[id]` + `DeleteApplicationButton`), see §2**.
 Everything below was verified by running it, not remembered. If you have no
 context on this project, read this file top to bottom, then read `CLAUDE.md`,
 then run the one command in [§8](#8-the-exact-command-to-continue).
@@ -39,6 +39,8 @@ then run the one command in [§8](#8-the-exact-command-to-continue).
 > **2026-09-11 deploy:** `https://rin-setu-git-main-dewang-chirlekars-projects.vercel.app/` live on Vercel (`git@github.com:dewang-chirlekar/RinSetu.git` `main`, `next build` 15 routes, env `DATABASE_URL` pooler `6543` + `GEMINI_API_KEY` + `ADMIN_PASSWORD=rinsetu-admin` + `DEMO_MODE=true` → `NEXT_PUBLIC_DEMO_MODE`). DB already seeded 5/15/15+53 via `npm run seed` — Vercel just reads Supabase. **Currently gated by Vercel Authentication** (SSO login wall on all routes, verified `2026-09-11` — `/`, `/apply`, `/result?persona=P41` redirect to `vercel.com/sso-api`). To go public: `Vercel → Project → Settings → Deployment Protection → Vercel Authentication → Disable` (or `Only Preview Deployments`). No rebuild needed. Leave gated for now per user.
 >
 > **2026-09-11 Save my applications:** `src/lib/db.ts:1` singleton `getPrisma()` (`PrismaPg` pool `ssl:{rejectUnauthorized:false}`, `hasDatabaseUrl()`/`isDbUnreachableError()` 503 graceful) + `src/app/api/applications/route.ts:1` `POST` (`search`/`applicant`→`parseApplicantParams`→`recommend()`→`Application` `prisma/schema.prisma:367` `applicant`+`result` JSON receipt + `schemeCode`/`figuresAuthoritative`/`datasetLabel`/`language`, 201 `{id}`) + `GET` (100 latest) + `src/app/applications/page.tsx:1` ledger list (empty `needs_db_*` + 503 fallback) + `src/app/applications/[id]/page.tsx:1` receipt view (never re-priced, `DatasetBanner` from stored `figuresAuthoritative`/`datasetLabel`, `applicantToParams`→`/result`/`/api/packet`), `SaveApplicationButton.tsx:1` on `/result` (disabled 503 when `DATABASE_URL` missing), `layout.tsx:51` nav `Saved`, `en.json`+`hi`/`mr` 297 keys (`ui.applications.*` 22+`nav.applications`). Verified `POST ?persona=P19 →201` `GET →2` (then `deleteMany`→0 clean), `npm run check` 11/237 green, `npm run build` **18 routes** (`ƒ /api/applications` `ƒ /applications` `ƒ /applications/[id]`).
+>
+> **2026-09-12 Delete + chosen-scheme wiring (`90ee675`):** `ResultActions.tsx:1` lifts `chosenCode` so `SaveApplicationButton` stores the user-picked ELIGIBLE scheme (P41 MICRO 6.5% vs AMY 15%) not just the engine recommendation — `LoanConfirmation.tsx:1` now controllable (`chosenCode`/`onChosenChange`, internal fallback when uncontrolled). **`DELETE /api/applications/[id]`** `src/app/api/applications/[id]/route.ts:1` (503 when `DATABASE_URL` missing/`isDbUnreachableError`, 404 on Prisma `P2025`/`record to delete does not exist`, also `GET /api/applications/[id]` for curl/tests) + **`DeleteApplicationButton.tsx:1`** (confirm→deleting→idle, `ui.applications.delete`/`delete_confirm`/`deleting`/`delete_error` 5 keys `en`/`hi`/`mr`, `compact` on list, full on detail, `window.location.href='/applications'` after detail delete). `src/app/result/page.tsx:281` now uses `<ResultActions>` (replaces separate `SaveApplicationButton`+`LoanConfirmation`), `applications/page.tsx:136` + `applications/[id]/page.tsx:154` both render `DeleteApplicationButton`. Verified 2026-09-12: `npm run check` **11/237** green, `npm run build` **19 routes** (`ƒ /api/applications/[id]` new, First Load 103 kB), no `src/core/` change, i18n now **304 doc keys / 498 leaves** (27 `ui.applications` incl. delete).
 
 ---
 
@@ -58,9 +60,9 @@ The whole project is organised around one idea: **the numbers have to be defensi
 A plausible-looking invented interest rate is the worst possible outcome, worse than no
 number at all. Almost every design decision recorded below follows from that.
 
-## 2. Current state: green — 2026-09-11 Save my applications + code-complete
+## 2. Current state: green — 2026-09-12 Save+Delete + chosen wiring + code-complete
 
-Verified 2026-09-11 from `rinsetu/` at `8cfdefc` on `main` + Save my applications ( `POST /api/applications` + `GET /applications` list/receipt, 18 routes, `src/lib/db.ts:1` `SaveApplicationButton.tsx:1` — wiring `prisma/schema.prisma:367` receipt) on top of 5 schemes (MICRO, TERM, EDU, AMY 15% NBFC-MFI, UNY 13% Coop), 41 personas (P41 tailoring 90k MICRO+AMY multi-eligible ranking picks MICRO — F2 live), purpose flat, cascade strict, LLM 2.5-flash fallback + health-csv guard + `ui.confirm` fix (`/result?persona=P41` 200) — **see §5/§7**:
+Verified 2026-09-12 from `rinsetu/` at `90ee675` on `main` + Save my applications (`POST /api/applications` + `GET /applications` list/receipt, 18 routes) + **Delete + chosen wiring 2026-09-12 (`ResultActions` lifts `chosenCode` so P41 Save stores MICRO vs AMY correctly, `DELETE /api/applications/[id]` + `DeleteApplicationButton`, 19 routes, `src/lib/db.ts:1` `SaveApplicationButton.tsx:1`+`DeleteApplicationButton.tsx:1`)** on top of 5 schemes (MICRO, TERM, EDU, AMY 15% NBFC-MFI, UNY 13% Coop), 41 personas (P41 tailoring 90k MICRO+AMY multi-eligible ranking picks MICRO — F2 live), purpose flat, cascade strict, LLM 2.5-flash fallback + health-csv guard + `ui.confirm` fix (`/result?persona=P41` 200) — **see §5/§7**:
 
 | check | command | result |
 | --- | --- | --- |
@@ -71,13 +73,13 @@ Verified 2026-09-11 from `rinsetu/` at `8cfdefc` on `main` + Save my application
 | VERIFY.md freshness | `npm run check:verify` | up to date |
 | tests | `npm run test` | **11 files, 237 tests** (wifi on: 237 passed, wifi off: 236 passed +1 skipped via `DB unreachable, skipping parity check`) |
 | demo CLI | `npm run personas` | prints **41 rows (24 eligible, 0 no figures)**, EMI column populated (also `DEMO_MODE=true` offline) — **P41** tailoring 90k proves F2 multi-eligible ranking |
-| dev server | `npm run dev` | renders `/`, `/apply` (flat purpose, cascade strict, globe), `/result` (map+PDF+explain+Save, **P41 now 200**), `/personas`, `/applications`, `/admin/health-upload` + `/api/extract`+`/api/applications` (**2.5-flash → flash-latest** 429/503 `Retry-After` or `DEMO_MODE` fixture) |
-| prod build | `npm run build` | compiled, **18 routes** (`ƒ /api/extract`, `ƒ /api/extract-documents`, `ƒ /api/explain`, `ƒ /api/packet`, `ƒ /api/applications`, `ƒ /applications`, `ƒ /applications/[id]`, `ƒ /api/admin/*`×5, `ƒ /admin/health-upload`, `ƒ /apply` 12.9kB), First Load JS 103 kB |
-| db | `DATABASE_URL` (pooler 6543) + `npm run seed` + `dataset-db` + `db.ts` | **connected + parity verified** — `20260905144514_init` applied, **5/15/15 +53 doc reqs + applications** + `src/lib/dataset-db.ts` JSON↔DB deep-equal (2s probe, offline graceful) + `src/lib/db.ts:1` singleton `getPrisma()`/`isDbUnreachableError` 503 graceful |
-| llm | `GEMINI_API_KEY` + `gemini-2.5-flash` + `DEMO_MODE` fixture | **2.5-flash → flash-latest** fallback (was 3.6-flash, 1.5 404) with **429/503 retry + `Retry-After`** + `data/llm.fixtures.json:1` 7 fixtures (`extract:<lowercased>` + `__fallback__`), `src/llm/` 3 files + `FreeTextIntake`/`DocumentUpload`/`LoanConfirmation`/`SaveApplicationButton`/`ExplainPanel`, `DEMO MODE` banner |
-| i18n | `next-intl` + `hi`/`mr` 297 keys + `india-states-districts.json` | **accurate** `hi`/`mr` + globe `LocaleSwitcher`, `RinSetu` locked, form till tehsil (36×7–16), tab English, **PartnerMap offline + applications `ui.applications.*` 22 keys added** |
+| dev server | `npm run dev` | renders `/`, `/apply` (flat purpose, cascade strict, globe), `/result` (map+PDF+explain+Save+Delete, **P41 now 200**), `/personas`, `/applications`, `/admin/health-upload` + `/api/extract`+`/api/applications`+`/api/applications/[id]` (**2.5-flash → flash-latest** 429/503 `Retry-After` or `DEMO_MODE` fixture) |
+| prod build | `npm run build` | compiled, **19 routes** (`ƒ /api/extract`, `ƒ /api/extract-documents`, `ƒ /api/explain`, `ƒ /api/packet`, `ƒ /api/applications`, `ƒ /api/applications/[id]`, `ƒ /applications`, `ƒ /applications/[id]`, `ƒ /api/admin/*`×5, `ƒ /admin/health-upload`, `ƒ /apply` 12.9kB), First Load JS 103 kB |
+| db | `DATABASE_URL` (pooler 6543) + `npm run seed` + `dataset-db` + `db.ts` | **connected + parity verified** — `20260905144514_init` applied, **5/15/15 +53 doc reqs + applications** + `src/lib/dataset-db.ts` JSON↔DB deep-equal (2s probe, offline graceful) + `src/lib/db.ts:1` singleton `getPrisma()`/`isDbUnreachableError` 503 graceful (now also `DELETE`/`GET /api/applications/[id]` 503/404 via `P2025`) |
+| llm | `GEMINI_API_KEY` + `gemini-2.5-flash` + `DEMO_MODE` fixture | **2.5-flash → flash-latest** fallback (was 3.6-flash, 1.5 404) with **429/503 retry + `Retry-After`** + `data/llm.fixtures.json:1` 7 fixtures (`extract:<lowercased>` + `__fallback__`), `src/llm/` 3 files + `FreeTextIntake`/`DocumentUpload`/`LoanConfirmation`/`SaveApplicationButton`+`DeleteApplicationButton`+`ResultActions`/`ExplainPanel`, `DEMO MODE` banner |
+| i18n | `next-intl` + `hi`/`mr` **304 doc keys / 498 leaves** + `india-states-districts.json` | **accurate** `hi`/`mr` + globe `LocaleSwitcher`, `RinSetu` locked, form till tehsil (36×7–16), tab English, **PartnerMap offline + applications `ui.applications.*` 27 keys incl. delete** |
 | admin | `ADMIN_PASSWORD` + `/admin/health-upload` | **done** — `rinsetu-admin` default, `health-csv.ts` quoted split + **duplicate guard fixed** (`finalSeen`), `MIS_UPLOAD` forced, preview → apply upsert |
-| applications | `DATABASE_URL` + `/applications` | **done 2026-09-11** — `POST /api/applications` (`search`→`recommend()`→ receipt `prisma/schema.prisma:367` `result` JSON + `figuresAuthoritative`/`datasetLabel`) + `GET /applications` list + `GET /applications/[id]` receipt view (never re-priced), `SaveApplicationButton.tsx:1` on `/result` |
+| applications | `DATABASE_URL` + `/applications` | **done 2026-09-11 + wired 2026-09-12** — `POST /api/applications` (`search`→`recommend()`→ receipt `prisma/schema.prisma:367` `result` JSON + `schemeCode`/`figuresAuthoritative`/`datasetLabel`) + `GET /applications` list + `GET /applications/[id]` receipt view (never re-priced) + **`DELETE /api/applications/[id]`** (503/404 `P2025`) + `SaveApplicationButton.tsx:1` + `DeleteApplicationButton.tsx:1` + `ResultActions.tsx:1` (lifts `chosenCode`) on `/result` |
 | demo | `DEMO_MODE=true` + `public/manifest.json:1` | **done** — `PartnerMap` offline fallback (no tiles, shows codes), full demo with wifi off |
 
 Per-file test counts (they should only ever go up):
@@ -97,7 +99,7 @@ Per-file test counts (they should only ever go up):
 237  total
 ```
 
-Git: `main` at `13b111d` (was `3f4939e`/`bd12a83`, 5 commits ahead of `9f6bffc` — `6737439 initialize RinSetu project` → `4a8eea7 built frontend` → `5eb1b1e landing page ui changes` → `b9f34ba Update README.md` → `bd12a83 handoff & progress(frontend)` → … → `13b111d`). Working tree with 5 schemes + P41 + cascade/LLM/i18n/health-csv edits (uncommitted, see §2). After this refresh: this file updated — commit before continuing. Earlier drafts claimed "nothing is committed" — that was true at the Phase 1–2 gate, no longer.
+Git: `main` at `90ee675` (was `13b111d`/`8cfdefc`/`6736f53` — `6737439 initialize RinSetu project` → `4a8eea7 built frontend` → `5eb1b1e landing page ui changes` → `b9f34ba Update README.md` → `bd12a83 handoff & progress(frontend)` → … → `13b111d` → `f8f32f9` intent-filter+Phase0 → `8cfdefc` deploy gated → `6736f53` Save → `90ee675` Delete+chosen). Verified 2026-09-12: `npm run check` 11/237 green, `npm run build` 19 routes, Server `DATABASE_URL` pooled 6543. Working tree clean at `90ee675`. Earlier drafts claimed "nothing is committed" — true at Phase 1–2 gate, no longer.
 
 ---
 
@@ -161,9 +163,9 @@ Two mechanisms here carry a lot of weight (now enforced in *both* loaders, `data
 - **`figures_authoritative` is false for two independent reasons** — any non-citable figure in play, *and* unconditionally whenever the demo overlay is applied. It cannot be forced true. `dataset-db.ts:1` derives the same way and detects `demo_overlay` in provenance.
 - **`AGE_WITHIN_RANGE` format is pinned.** `predicates.ts:132` writes `"min-max"` and `remediation.ts:94` parses `split('-')` — `tests/eligibility.age-format.test.ts:1` (6 tests, new 2026-09-05) fails if either side changes (`docs/FRAGILE.md:56` A3).
 
-### 3.3 Messages — `src/messages/` (i18n 2026-09-05, accurate 2026-09-05, harden 2026-09-10)
+### 3.3 Messages — `src/messages/` (i18n 2026-09-05, accurate 2026-09-05, harden 2026-09-10, **delete 2026-09-12**)
 
-`en.json` holds **265 keys** (258 +5 `partner.map.*` +2 `ui.result.download_packet*` + **2026-09-10 `partner.map.offline*` + `ui.confirm.*` fix — missing keys that broke `/result?persona=P41` now restored**), `hi.json` + `mr.json` same keys (UI `hi`/`mr` human-written via Gemini-class LLM, scheme names/amounts/`₹`/`RinSetu` kept English per glossary do-not-translate — `hi` 2 English left `_README`/`currency_symbol`, `mr` 0 after fixes). `index.ts:1` now `en`/`hi`/`mr` (`CATALOGUES`), `src/i18n.ts:1` (`getRequestConfig` cookie `locale` + Accept-Language) via `next-intl/plugin` (`next.config.ts:1`), `src/lib/locale.ts:1` + `LocaleSwitcher.tsx:1` (globe `lucide-react` `h-7 w-7` → dropdown `English/हिन्दी/मराठी`, cookie, `NextIntlClientProvider` in `layout.tsx:1` with `html lang={locale}` but `generateMetadata` hardcodes `'en'` so tab stays English). Client `translate` auto-detects `document.cookie` (`index.ts:48`), server sets `globalThis.__RINSETU_LOCALE__` after `await getLocale()` (`layout.tsx:27`, `result/page.tsx:143`, `apply/page.tsx:17`, `page.tsx:66`). Still throws on missing key; `tests/messages.coverage.test.ts` still closes the loop (added `partner.map.`).
+`en.json` holds **304 doc keys / 498 leaves** (258 +5 `partner.map.*` +2 `ui.result.download_packet*` + **2026-09-10 `partner.map.offline*` + `ui.confirm.*` fix — missing keys that broke `/result?persona=P41` now restored** + **2026-09-11 `ui.applications.*` 22 keys** + **2026-09-12 `ui.applications.delete*` 5 keys** = 27 `ui.applications`), `hi.json` + `mr.json` same keys (UI `hi`/`mr` human-written via Gemini-class LLM, scheme names/amounts/`₹`/`RinSetu` kept English per glossary do-not-translate — `hi` 2 English left `_README`/`currency_symbol`, `mr` 0 after fixes). `index.ts:1` now `en`/`hi`/`mr` (`CATALOGUES`), `src/i18n.ts:1` (`getRequestConfig` cookie `locale` + Accept-Language) via `next-intl/plugin` (`next.config.ts:1`), `src/lib/locale.ts:1` + `LocaleSwitcher.tsx:1` (globe `lucide-react` `h-7 w-7` → dropdown `English/हिन्दी/मराठी`, cookie, `NextIntlClientProvider` in `layout.tsx:1` with `html lang={locale}` but `generateMetadata` hardcodes `'en'` so tab stays English). Client `translate` auto-detects `document.cookie` (`index.ts:48`), server sets `globalThis.__RINSETU_LOCALE__` after `await getLocale()` (`layout.tsx:27`, `result/page.tsx:143`, `apply/page.tsx:17`, `page.tsx:66`). Still throws on missing key; `tests/messages.coverage.test.ts` still closes the loop (added `partner.map.`). Verified `npx tsx -e "allMessageKeys().length"` → **498**, `ui.applications` 27.
 
 ### 3.4 Tooling
 
@@ -239,13 +241,14 @@ We are building **RinSetu end-to-end, then transcribing real guidelines**. All c
 - **Multilingual + form harden — ✓ done 2026-09-05–10** — `next-intl` + `hi.json`/`mr.json` (265 keys + **PartnerMap offline `partner.map.offline*` i18n keys added 2026-09-10**, accurate `hi`/`mr` via Gemini-class LLM, `hi` 2 left `mr` 0, brand `RinSetu` lock, tab stays `en`, **missing `ui.confirm.*` keys fixed 2026-09-10 — `/result?persona=P41` now 200 was 500**), `src/i18n.ts:1` + `LocaleSwitcher` (globe), `layout`/`result`/`apply`/`personas`/`packet` locale-aware, form till tehsil (36 MH×7–16, `village` removed, auto-detect `tehsil→district→state`, **purpose flat deduped**, **cascade strict `district` disabled until `state`, `tehsil` disabled until `district`, `paramsKey` intent-sync + `lakh`/`thousand` fix**).**
 - **Admin health-data upload — ✓ done 2026-09-07–10** — `/admin/health-upload` (`src/app/admin/health-upload/page.tsx:1` + `src/components/AdminHealthUpload.tsx:1` + `AdminLogin.tsx:1`) + `src/lib/admin-auth.ts:1` (`ADMIN_PASSWORD` → `sha256` cookie `rinsetu_admin` 8h, default `rinsetu-admin`) + `src/lib/health-csv.ts:1` (quoted split, `npa_pct` 0..100, forced `MIS_UPLOAD`, **duplicate guard `finalSeen` fixed 2026-09-10 — valid > invalid**) + 5 APIs (`/api/admin/login|logout|health-preview|health-apply|health-template`), template CSV, preview (valid/invalid per line) → apply upsert `(partnerCode,asOf)`. `PartnerHealth.data_origin` still `SIMULATED` until first CSV; `PartnerPanel.tsx:1` already renders `DataOriginBadge`.
 - **`DEMO_MODE` fixture cache + offline hardening — ✓ done 2026-09-07** — `DEMO_MODE=true` (`next.config.ts:4` `NEXT_PUBLIC_DEMO_MODE`, `src/app/layout.tsx:26` `window.__RINSETU_DEMO__`, `public/manifest.json:1` PWA) → `src/llm/extract.ts:119` fixture cache (7 fixtures) + `src/llm/explain.ts:49` deterministic prose + `src/components/DatasetBanner.tsx:1` `DEMO MODE` stamp + `src/components/PartnerMap.tsx:48` offline fallback (no OSM fetch, shows codes) + `tests/dataset-db.parity.test.ts:38` now `DB unreachable, skipping parity check` (2s probe, 236+1 skipped wifi off). Full demo runs with wifi off.
-- **Save my applications — ✓ done 2026-09-11 — `src/lib/db.ts:1` singleton `getPrisma()` (`PrismaPg` pool `ssl:{rejectUnauthorized:false}`, `hasDatabaseUrl()`/`isDbUnreachableError()` 503 graceful) + `src/app/api/applications/route.ts:1` `POST` (`search`/`applicant`→`parseApplicantParams`→`recommend()`→`Application` `prisma/schema.prisma:367` `applicant`+`result` JSON receipt + `schemeCode`/`figuresAuthoritative`/`datasetLabel`/`language`, 201 `{id}`) + `GET` (100 latest) + `src/app/applications/page.tsx:1` ledger list (empty `needs_db_*` + 503 fallback) + `src/app/applications/[id]/page.tsx:1` receipt view (never re-priced, `DatasetBanner` from stored `figuresAuthoritative`/`datasetLabel` + `applicantToParams`→`/result`/`/api/packet`), `SaveApplicationButton.tsx:1` on `/result` (disabled 503 when `DATABASE_URL` missing), `layout.tsx:51` nav `Saved`, `en.json`+`hi`/`mr` 297 keys (`ui.applications.*` 22+`nav.applications`). Verified `POST ?persona=P19 →201` `GET →2` (then `deleteMany`→0), `npm run build` **18 routes** (`ƒ /api/applications` `ƒ /applications` `ƒ /applications/[id]`).**
-- **`README.md`** — was boilerplate at Phase 2, 58 lines at `b9f34ba`; rewritten 2026-08-31 to a full setup + architecture doc, refreshed 2026-09-07 for admin+demo+parity, **2026-09-11 still accurate (237 tests, 18 routes, `src/lib/db.ts` + `/applications`).**
+ - **Save my applications — ✓ done 2026-09-11 — `src/lib/db.ts:1` singleton `getPrisma()` (`PrismaPg` pool `ssl:{rejectUnauthorized:false}`, `hasDatabaseUrl()`/`isDbUnreachableError()` 503 graceful) + `src/app/api/applications/route.ts:1` `POST` (`search`/`applicant`→`parseApplicantParams`→`recommend()`→`Application` `prisma/schema.prisma:367` `applicant`+`result` JSON receipt + `schemeCode`/`figuresAuthoritative`/`datasetLabel`/`language`, 201 `{id}`) + `GET` (100 latest) + `src/app/applications/page.tsx:1` ledger list (empty `needs_db_*` + 503 fallback) + `src/app/applications/[id]/page.tsx:1` receipt view (never re-priced, `DatasetBanner` from stored `figuresAuthoritative`/`datasetLabel` + `applicantToParams`→`/result`/`/api/packet`), `SaveApplicationButton.tsx:1` on `/result` (disabled 503 when `DATABASE_URL` missing), `layout.tsx:51` nav `Saved`, `en.json`+`hi`/`mr` 297 keys (`ui.applications.*` 22+`nav.applications`). Verified `POST ?persona=P19 →201` `GET →2` (then `deleteMany`→0), `npm run build` **18 routes** (`ƒ /api/applications` `ƒ /applications` `ƒ /applications/[id]`).**
+ - **Delete + chosen-scheme wiring — ✓ done 2026-09-12 `90ee675` — `ResultActions.tsx:1` lifts `chosenCode` so Save stores user-picked ELIGIBLE (P41 MICRO vs AMY) not just `pickRecommended` — `LoanConfirmation.tsx:1` now controllable (`chosenCode`/`onChosenChange` with internal fallback), `src/app/api/applications/[id]/route.ts:1` `DELETE` + `GET` ( `hasDatabaseUrl()` 503, `isDbUnreachableError` 503, Prisma `P2025`→404, `select` 8 fields), `DeleteApplicationButton.tsx:1` (confirm→deleting→idle + error, `ui.applications.delete*` 5 keys `en`/`hi`/`mr`, `compact` on list, full on detail, detail delete → `window.location.href='/applications'`), `src/app/result/page.tsx:281` now `<ResultActions>` / `applications/[id]/page.tsx:154` + `applications/page.tsx:136` delete buttons. Verified `npm run check` 11/237 green, `npm run build` **19 routes** (`ƒ /api/applications/[id]` new, `ƒ /applications/[id]` page already).**
+ - **`README.md`** — was boilerplate at Phase 2, 58 lines at `b9f34ba`; rewritten 2026-08-31 to a full setup + architecture doc, refreshed 2026-09-07 for admin+demo+parity, 2026-09-11 Save+Delete update 2026-09-12 (`90ee675`, 19 routes, 304 keys / 498 leaves, `ResultActions`+`Delete`). **2026-10-26 split: `README.md` is now public-facing only; the gate tables, layout, quick start and deployment notes moved to §10 of this file.**
 
 **What we are trying to do next (deferred, not code):**
 
-- **Phase 0 verification** — **48 unverified figures (was 55) — 19 `demo_overlay` + 29 `placeholder` (`VERIFY.md:11`), 5/5 schemes unverified**, 11 open questions (`data/schemes.seed.json:1` `open_questions_for_phase_0`). Need official guideline `source_url`/`source_date` per field; engine ingests without logic change, `figures_authoritative` flips automatically when citable. F2 now expects P41 multi.
-- **Polish — Lighthouse a11y ≥90, XLSX alongside CSV, voice/Bhashini, wire `LoanConfirmation` chosen code into save, `DELETE` for saved rows.** Save is now done, deploy gated still needs unlock (`Vercel → Settings → Deployment Protection → Disable`). Not blocking the code gate.
+- **Phase 0 verification** — **48 unverified figures (was 55) — 10 `demo_overlay` + 38 `placeholder` (`VERIFY.md:13`), 5/5 schemes unverified** (checked 2026-09-11/12 PDFs still 48), 11 open questions (`data/schemes.seed.json:1` `open_questions_for_phase_0`). Need official guideline `source_url`/`source_date` per field; engine ingests without logic change, `figures_authoritative` flips automatically when citable. F2 now expects P41 multi.
+- **Polish — Lighthouse a11y ≥90, XLSX alongside CSV, voice/Bhashini, `PLACEHOLDER_*` → real `indicative-activities` flat list (you asked purpose should be generic — done `ApplyForm.tsx:59` deduped, next is real names). Deploy gated still needs unlock (`Vercel → Settings → Deployment Protection → Disable`). Not blocking the code gate. Save + chosen + Delete now done (2026-09-12 `90ee675`).**
 
 ---
 
@@ -277,14 +280,13 @@ re-litigate; extend.
 | --- | --- | --- |
 | `/` | `src/app/page.tsx` | Landing: provenance stamp (compact), claim, `/apply` + `/personas` + `/applications` CTAs, 4-step band, scheme list from dataset, detail block. |
 | `/apply` | `src/app/apply/page.tsx` | Guided intake, GET → `/result`. All option lists derived from dataset/partners/documents; blank → `undefined` → Zod default; no `required`, no geocoding. |
-| `/result` | `src/app/result/page.tsx` | Runs `recommend()` on query string or `?persona=P01`, renders `DatasetBanner` (full), answer summary, recommended `SchemeCard` + others, **PDF packet download** (`/api/packet?...` via `packet.tsx`) + `SaveApplicationButton.tsx:1` (`POST /api/applications`). |
+| `/result` | `src/app/result/page.tsx` | Runs `recommend()` on query string or `?persona=P01`, renders `DatasetBanner` (full), answer summary, recommended `SchemeCard` + others, **PDF packet download** (`/api/packet?...` via `packet.tsx`) + `ResultActions.tsx:1` (wraps `SaveApplicationButton`+`LoanConfirmation`, lifts `chosenCode`). |
 | `/personas` | `src/app/personas/page.tsx` | **41** fixtures live through `recommend()` at render time (P41 proves F2); no stored outcomes. |
-| `/applications` | `src/app/applications/page.tsx:1` | **Saved receipts** ledger list (100 latest, `ui.applications.*`, empty `needs_db_*`, 503 graceful when `DATABASE_URL` missing). |
-| `/applications/[id]` | `src/app/applications/[id]/page.tsx:1` | One saved receipt exactly as stored — never re-priced, `DatasetBanner` from stored `figuresAuthoritative`/`datasetLabel`, `applicantToParams` → `/result`/`/api/packet` re-open. |
+| `/applications` | `src/app/applications/page.tsx:1` | **Saved receipts** ledger list (100 latest, `ui.applications.*`, empty `needs_db_*`, 503 graceful when `DATABASE_URL` missing) + `DeleteApplicationButton.tsx:1` (compact) per row. |
+| `/applications/[id]` | `src/app/applications/[id]/page.tsx:1` | One saved receipt exactly as stored — never re-priced, `DatasetBanner` from stored `figuresAuthoritative`/`datasetLabel`, `applicantToParams` → `/result`/`/api/packet` re-open + `DeleteApplicationButton.tsx:1` (full). |
 | `/api/packet` | `src/app/api/packet/route.ts:1` | `GET` same query as `/result` → `application/pdf` (`renderToBuffer(<PacketDocument>)`, `force-dynamic`). Pre-filled packet, no new numbers. |
-| `/api/applications` | `src/app/api/applications/route.ts:1` | `POST` (`search`/`applicant`→`recommend()`→`Application` `prisma/schema.prisma:367` receipt) + `GET` list; `src/lib/db.ts:1` singleton `getPrisma()` 503 graceful. |
-
-Components: `ui.tsx` (Provenance/StatusPill/VerdictMark/FieldRow/DataOriginBadge), `DatasetBanner.tsx` (full + compact), `SchemeCard.tsx`, `VerdictList.tsx`, `LoanFigures.tsx` (incl. `computable: false` branch), `PartnerPanel.tsx` (dual ranking, exclusion reasons, SIMULATED badge) + `PartnerMap.tsx:1` (MapLibre GL JS `6.7.0` + OSM raster, eligible-only markers, `fitBounds`, 240/320px, 360px), `ChecklistPanel.tsx`, `SaveApplicationButton.tsx:1` (`POST /api/applications` on `/result`), `form.tsx`, `ScrollReveal.tsx`. Lib: `packet.tsx:1` (`PacketDocument`), `applicant-params.ts` (query ↔ `ApplicantProfile`), `format.ts`, `view.ts`, `db.ts:1` (`getPrisma()` singleton, `isDbUnreachableError`), `dataset-db.ts:1`.
+| `/api/applications` | `src/app/api/applications/route.ts:1` | `POST` (`search`/`applicant`+`schemeCode`→`recommend()`→`Application` `prisma/schema.prisma:367` receipt) + `GET` list; `src/lib/db.ts:1` singleton `getPrisma()` 503 graceful (+ `ResultActions` chosen wiring). |
+| `/api/applications/[id]` | `src/app/api/applications/[id]/route.ts:1` | **`DELETE`** (503/404 via `isDbUnreachableError`/`P2025`) + `GET` single (503/404), `force-dynamic`; no auth for demo. |
 
 Invariants preserved: no `src/core/` import from `src/llm/`/`app/`/`components/`; LLM never decides; every figure carries `FieldProvenance` rendered as a stamp; failures kept with remediations.
 
@@ -299,18 +301,20 @@ All code phases (3–9) are done. The remaining work is **non-code** (see §5):
 5. **Admin health upload (Phase 8):** **✓ done 2026-09-07–10 — `/admin/health-upload` (`src/app/admin/health-upload/page.tsx:1` + `AdminHealthUpload.tsx:1` + `AdminLogin.tsx:1` + `src/lib/admin-auth.ts:1` + `health-csv.ts:1` + 5 `api/admin/*`), CSV `partner_code…as_of` → `PartnerHealth.data_origin=MIS_UPLOAD` (default `rinsetu-admin`, 8h cookie), `DB unreachable` guard, **2026-09-10 duplicate guard `finalSeen` fixed**.**
 6. **Demo hardening (Phase 9):** **✓ done 2026-09-07 — `DEMO_MODE=true` (`next.config.ts:4` `NEXT_PUBLIC_DEMO_MODE`, `layout.tsx:26` `window.__RINSETU_DEMO__`, `public/manifest.json:1` PWA, `DatasetBanner` `DEMO MODE` stamp, `PartnerMap` offline fallback) + `tests/dataset-db.parity.test.ts:38` now 2s probe + `DB unreachable, skipping parity check` (236+1 skipped wifi off). Full demo runs with wifi off.**
  7. **5 schemes + F2 + cascade/LLM harden (2026-09-10):** **✓ done — 5 schemes (MICRO/TERM/EDU/AMY 15% NBFC-MFI/UNY 13% Coop) + 41 personas P41 tailoring 90k proves F2 ranking (MICRO 6.5% > AMY 15%) + purpose flat deduped + cascade strict (`district`/`tehsil` disabled) + `paramsKey` + `lakh` fix + LLM 2.5-flash fallback + `ui.confirm` fix + health-csv guard + PartnerMap offline i18n.**
- 8. **Save my applications (2026-09-11):** **✓ done — `src/lib/db.ts:1` singleton `getPrisma()` + `src/app/api/applications/route.ts:1` `POST` (`search`/`applicant`→`recommend()`→`Application` `prisma/schema.prisma:367` receipt) + `GET /applications` list + `GET /applications/[id]` receipt view (never re-priced) + `SaveApplicationButton.tsx:1` on `/result` + `layout.tsx:51` nav `Saved` + `en.json` 297 keys (`ui.applications.*` 22). Verified `POST ?persona=P19 →201` `GET →2` then `deleteMany`→0, `npm run build` 18 routes.**
+  8. **Save my applications (2026-09-11):** **✓ done — `src/lib/db.ts:1` singleton `getPrisma()` + `src/app/api/applications/route.ts:1` `POST` (`search`/`applicant`→`recommend()`→`Application` `prisma/schema.prisma:367` receipt) + `GET /applications` list + `GET /applications/[id]` receipt view (never re-priced) + `SaveApplicationButton.tsx:1` on `/result` + `layout.tsx:51` nav `Saved` + `en.json` 297 keys (`ui.applications.*` 22). Verified `POST ?persona=P19 →201` `GET →2` then `deleteMany`→0, `npm run build` 18 routes.**
+  9. **Delete + chosen wiring (2026-09-12 `90ee675`):** **✓ done — `ResultActions.tsx:1` + `DeleteApplicationButton.tsx:1` + `src/app/api/applications/[id]/route.ts:1` `DELETE`/`GET` (see above), `LoanConfirmation` now controllable, `applications` pages now deletable (list `compact`, detail full), `ui.applications.delete*` 5 keys `en`/`hi`/`mr`. Verified `npm run build` 19 routes, `npm run check` 11/237 green.**
 
-**We are trying to do next — updated 2026-09-11 after Save my applications:**
+**We are trying to do next — updated 2026-09-12 after Save+Delete+chosen:**
 
-**Immediate — done 2026-09-11:**
-- **Phase 0 transcription attempt:** fetched `NSFDC SCHEMES` PDF `2026-06-15` + `LENDING POLICY` 172p `2026-05-15` staging — both confirm costs/rates/tenure/duration but contain **no explicit `margin_pct` / `subsidy` / `moratorium_interest_treatment`**; all three correctly stay `placeholder TODO(verify)` per hard rule 1, notes updated `data/schemes.seed.json:31`, `VERIFY.md:58` now records check date. Goal `MICRO/TERM → verified:true` blocked pending a circular that actually states the 3 fields — ask nodal officer for written treatment.
-- **Intent-filter + LoanConfirmation:** `src/app/result/page.tsx:180` now filters by `intent` and re-derives recommendation; `P41` tailoring `90k LIVELIHOOD` shows `MICRO+AMY` only (EDU hidden), education `pro_course` shows only `EDU`. Both `ELIGIBLE` radios still shown `src/components/LoanConfirmation.tsx:15` — verify with you on next `P41` demo.
+**Immediate — done 2026-09-11 + 2026-09-12:**
+- **Phase 0 transcription attempt:** fetched `NSFDC SCHEMES` PDF `2026-06-15` + `LENDING POLICY` 172p `2026-05-15` staging — both confirm costs/rates/tenure/duration but contain **no explicit `margin_pct` / `subsidy` / `moratorium_interest_treatment`**; all three correctly stay `placeholder TODO(verify)` per hard rule 1, notes updated `data/schemes.seed.json:31`, `VERIFY.md:13` (48 = 10 demo_overlay+38 placeholder, re-verified 2026-09-12 `npm run check:verify` still up to date). Goal `MICRO/TERM → verified:true` blocked pending a circular that actually states the 3 fields — ask nodal officer for written treatment.
+- **Intent-filter + LoanConfirmation:** `src/app/result/page.tsx:180` now filters by `intent` and re-derives recommendation; `P41` tailoring `90k LIVELIHOOD` shows `MICRO+AMY` only (EDU hidden), education `pro_course` shows only `EDU`. Both `ELIGIBLE` radios now correctly wire via `ResultActions` → `Save` (`src/components/ResultActions.tsx:22` `chosenCode` lifted) — verify P41 picks MICRO before save vs AMY.
 - **Save my applications:** **✓ done 2026-09-11 — `src/lib/db.ts:1` + `src/app/api/applications/route.ts:1` (`POST` search→receipt `prisma/schema.prisma:367`) + `src/app/applications/page.tsx:1` list + `[id]/page.tsx:1` receipt (never re-priced) + `SaveApplicationButton.tsx:1` on `/result`. So manual form isn't lost if you lose the link `src/lib/applicant-params.ts:122` — now wired, see `/applications` and test `POST ?persona=P19 →201`.**
+- **Delete + chosen wiring:** **✓ done 2026-09-12 `90ee675` — `ResultActions.tsx:1` lifts `chosenCode` → `SaveApplicationButton schemeCode`, `LoanConfirmation` controllable, `DELETE /api/applications/[id]` + `DeleteApplicationButton` (confirm step, 503/404, list+detail). Verified `npm run check` 11/237 green, `npm run build` 19 routes.**
 
 **Next (this week):**
-- **Deploy unlock:** `Vercel` → `Settings → Deployment Protection → Vercel Authentication → Disable` to go public (currently gated), `DEMO_MODE` rehearsal `docs/ROADMAP.md:391` 4-min script, record video.
-- **Polish:** Lighthouse a11y ≥90, XLSX alongside CSV, voice/Bhashini (optional), replace `PLACEHOLDER_*` with real `indicative-activities` flat list (you asked purpose should be generic, not scheme-picked — done `ApplyForm.tsx:59`), wire `LoanConfirmation` chosen code into save, `DELETE` for saved rows.
+- **Deploy unlock:** `Vercel` → `Settings → Deployment Protection → Vercel Authentication → Disable` to go public (currently gated, verified 2026-09-12 still gated), `DEMO_MODE` rehearsal `docs/ROADMAP.md:391` 4-min script, record video.
+- **Polish:** Lighthouse a11y ≥90, XLSX alongside CSV, voice/Bhashini (optional), replace `PLACEHOLDER_*` with real `indicative-activities` flat list (you asked purpose should be generic, not scheme-picked — done `ApplyForm.tsx:59` deduped). Save+chosen+Delete now done.
 
 After that: Vercel deploy + rehearsal (§12).
 
@@ -331,11 +335,11 @@ green tree:
 npm install && npm run check   # postinstall runs prisma generate; no manual npx needed
 ```
 
-That must end with `237 passed` (11 files, wifi on: 237 passed, wifi off: 236 passed +1 skipped `DB unreachable, skipping parity check`). If it does not, stop and fix that before writing anything new — every claim in this document was true at `13b111d` (re-checked 2026-09-10, 5 schemes + P41 + cascade/LLM harden).
+That must end with `237 passed` (11 files, wifi on: 237 passed, wifi off: 236 passed +1 skipped `DB unreachable, skipping parity check`). If it does not, stop and fix that before writing anything new — every claim in this document was true at `90ee675` (re-checked 2026-09-12, 5 schemes + P41 + cascade/LLM harden + Save+Delete 19 routes, 304 keys / 498 leaves).
 
 Working tree will be dirty with the 2026-09-10 doc refresh (this file); commit before continuing. The old instruction to `git add -A && git commit -m "Phases 1-2: ..."` was for the Phase 1–2 gate when nothing was committed — that gate is now captured in `6737439`/`4a8eea7` plus `13b111d`.
 
-**Where we are now — 2026-09-11 after Save my applications + intent-filter + Phase 0 check + deploy (gated):** `npm run check` **11/237** green (236+1 skipped offline), `npm run build` **18 routes** (`ƒ /api/admin/*`×5 + `ƒ /admin/health-upload` + `ƒ /api/applications` + `ƒ /applications` + `ƒ /applications/[id]`, locale via `cookies()`), DB **5/15/15 +53 doc reqs + applications** + `src/lib/db.ts:1` singleton `getPrisma()`/`isDbUnreachableError` 503 graceful + `GEMINI_API_KEY` **`gemini-2.5-flash` → `flash-latest` 429/503 `Retry-After`** + `DEMO_MODE=true` fixture cache (7 fixtures) + `ADMIN_PASSWORD=rinsetu-admin` (default), i18n `hi`/`mr` accurate (PartnerMap offline keys + `ui.confirm` + `ui.applications` 297 keys, `layout.tsx:51` nav `Saved`), form `state→district→tehsil` (36×7–16, `village` removed, **purpose flat deduped**, **cascade strict** `district`/`tehsil` disabled, `paramsKey` + `lakh`/`thousand` fix, auto-detect `tehsil→district→state`, 360px mobile-first) + **`result/page.tsx:180` intent-filter (EDU hidden from livelihood, livelihood hidden from education)** + **Phase 0 check 2026-09-11 PDFs: no margin/subsidy/treatment found, stays placeholder** + **Save my applications 2026-09-11** (`POST /api/applications` search→receipt `prisma/schema.prisma:367` + `SaveApplicationButton.tsx:1` on `/result` → `GET /applications` list + `[id]` receipt never re-priced) + **deploy `rin-setu-git-main-dewang-chirlekars-projects.vercel.app` (Vercel Auth gated, 18 routes)**, free-text stays on `/apply` + missing nudge, admin CSV → `MIS_UPLOAD` (duplicate guard fixed), map offline fallback, **41 personas / 24 eligible / 0 no figures (P41 proves F2)**. **Next when you return:** unlock Vercel Auth to go public, then **indicative-activities flat list** or Lighthouse a11y / `DELETE` for saved rows. **Phase 0 still blocked on written treatment** (48 figures — 10 `demo_overlay` + 38 `placeholder`, 5/5 schemes unverified + 11 open questions) — see `docs/ROADMAP.md` §10 and `VERIFY.md:58` checked notes.
+**Where we are now — 2026-09-12 after Save+Delete+chosen + intent-filter + Phase 0 check + deploy (gated) at `90ee675`:** `npm run check` **11/237** green (236+1 skipped offline), `npm run build` **19 routes** (`ƒ /api/admin/*`×5 + `ƒ /admin/health-upload` + `ƒ /api/applications` + `ƒ /api/applications/[id]` + `ƒ /applications` + `ƒ /applications/[id]`, locale via `cookies()`), DB **5/15/15 +53 doc reqs + applications** + `src/lib/db.ts:1` singleton `getPrisma()`/`isDbUnreachableError` 503 graceful (+ `DELETE` 503/404 `P2025`) + `GEMINI_API_KEY` **`gemini-2.5-flash` → `flash-latest` 429/503 `Retry-After`** + `DEMO_MODE=true` fixture cache (7 fixtures) + `ADMIN_PASSWORD=rinsetu-admin` (default), i18n `hi`/`mr` accurate (PartnerMap offline keys + `ui.confirm` + `ui.applications` **304 keys / 498 leaves**, 27 `ui.applications` incl. delete, `layout.tsx:51` nav `Saved`, `ResultActions` chosen wiring), form `state→district→tehsil` (36×7–16, `village` removed, **purpose flat deduped**, **cascade strict** `district`/`tehsil` disabled, `paramsKey` + `lakh`/`thousand` fix, auto-detect `tehsil→district→state`, 360px mobile-first) + **`result/page.tsx:180` intent-filter (EDU hidden from livelihood, livelihood hidden from education)** + **Phase 0 check 2026-09-11 PDFs: no margin/subsidy/treatment found, stays placeholder (re-verified 2026-09-12 48 unverified)** + **Save+Delete 2026-09-11/12** (`POST /api/applications` search→receipt `prisma/schema.prisma:367` + `Save` → `GET /applications` list + `[id]` receipt never re-priced + `DELETE` + `ResultActions` chosen wiring) + **deploy `rin-setu-git-main-dewang-chirlekars-projects.vercel.app` (Vercel Auth gated, 19 routes)**, free-text stays on `/apply` + missing nudge, admin CSV → `MIS_UPLOAD` (duplicate guard fixed), map offline fallback, **41 personas / 24 eligible / 0 no figures (P41 proves F2)**. **Next when you return:** unlock Vercel Auth to go public, then **indicative-activities flat list** or Lighthouse a11y / XLSX. **Phase 0 still blocked on written treatment** (48 figures — 10 `demo_overlay` + 38 `placeholder`, 5/5 schemes unverified + 11 open questions) — see `docs/ROADMAP.md` §10 and `VERIFY.md:13` (re-checked 2026-09-12)IFY.md:58` checked notes.
 
 To see the engine work with no database and no API key:
 
@@ -349,9 +353,9 @@ DEMO_MODE=true npm run dev  # offline demo — no GEMINI_API_KEY, no tiles, pari
 To see a single persona's full result: `npm run personas P41` (F2 multi) or `npm run personas P19` or open
 `/result?persona=P41` in the browser — now 200 (was 500 before `ui.confirm` fix). To see saved flow: `/result?persona=P41` → Save → `/applications/[id]`.
 
-Fresh-clone build also verified 2026-09-11: `npm run build` compiles cleanly —
-`ƒ /`, `ƒ /apply` 12.9kB, `ƒ /result` 5.96kB, `ƒ /applications` 152 B, `ƒ /applications/[id]` 2.17kB, `ƒ /admin/health-upload`, 103 kB First Load JS, **18 routes**.
-DB path verified 2026-09-11: `npx prisma migrate status` sees `20260905144514_init` as applied; `5/15/15 +53` via pooler 6543 (`npm run seed` idempotent, `POST /api/applications` `?persona=P19 →201` `GET →2` then `deleteMany`→0). Offline path verified 2026-09-11: `DEMO_MODE=true` `npx tsx` extract + `npm run personas` 41 rows + `PartnerMap` fallback, parity 236+1 skipped, `/applications` shows `needs_db_*` gracefully.
+Fresh-clone build also verified 2026-09-12: `npm run build` compiles cleanly —
+`ƒ /`, `ƒ /apply` 13 kB, `ƒ /result` 6.15 kB, `ƒ /applications` 974 B, `ƒ /applications/[id]` 2.79 kB, `ƒ /api/applications` 152 B, `ƒ /api/applications/[id]` 152 B, `ƒ /admin/health-upload`, 103 kB First Load JS, **19 routes** (new `ƒ /api/applications/[id]` `DELETE`+`GET`).
+DB path verified 2026-09-12: `npx prisma migrate status` sees `20260905144514_init` as applied; `5/15/15 +53` via pooler 6543 (`npm run seed` idempotent, `POST /api/applications` `?persona=P19 →201` `GET →2` then `DELETE /api/applications/[id] →200` then `GET →404`, `deleteMany`→0). Offline path verified 2026-09-12: `DEMO_MODE=true` `npx tsx` extract + `npm run personas` 41 rows + `PartnerMap` fallback, parity 236+1 skipped, `/applications` shows `needs_db_*` gracefully.
 
 ## 9. Rules that are not negotiable
 
@@ -376,3 +380,89 @@ Read the full file. It also covers the moratorium trap (all three of `CAPITALISE
 `SERVICED` / `WAIVED` are implemented, and which one applies is a per-scheme field from
 the official guideline — never assume), hard filters before soft ranking, one rounding
 policy, tests in the same commit as core logic, and the pinned stack.
+
+---
+
+## 10. Public README / internal notes split (2026-10-26)
+
+`README.md` is now **public-facing only** — the page GitHub shows to judges, reviewers and
+visitors. It carries the problem statement, what the product does, how the pipeline is
+shaped, the stack, a minimal local-run section, the Vercel demo link and the disclaimer.
+It deliberately no longer carries commit hashes, route/test counts, working-state tables,
+phase status, environment internals or file-by-file changelogs.
+
+Everything internal that used to live in `README.md` is preserved here or in the section
+named next to it:
+
+| was in README | now lives in |
+| --- | --- |
+| current-state gate table, commit, deploy status | §2 of this file + `docs/TEST-RECORD.md` |
+| "What's built" / "What is not yet built" | §3, §5, §7 of this file |
+| architecture diagram | `docs/ROADMAP.md` §2 |
+| pinned stack rationale | `docs/ROADMAP.md` §3 |
+| "Why the numbers can be defended" | §3.1, §9 of this file + `CLAUDE.md` + `docs/HANDOFF.md` |
+| quick start and environment notes | §8 of this file + the block below |
+| full project layout | the tree below |
+
+### Current project layout (moved from README 2026-09-12)
+
+```
+rinsetu/
+├─ CLAUDE.md, VERIFY.md (generated), README.md (public)
+├─ docs/  PROGRESS.md  ROADMAP.md  HANDOFF.md  FRAGILE.md  TEST-RECORD.md
+├─ data/  schemes.seed.json (5: MICRO/TERM/EDU/AMY/UNY)  schemes.demo-overlay.json
+│         partners.seed.json (15)  partner-health.sim.json (15)
+│         health-scoring.json  documents.seed.json (53 reqs)
+│         personas.fixtures.json (41, P41 multi-eligible)
+│         india-states-districts.json (36 states/UTs, MH 36×7–16 tehsils)
+│         llm.fixtures.json (7, DEMO_MODE)
+├─ prisma/  schema.prisma  seed.ts  migrations/20260905144514_init
+├─ src/
+│  ├─ core/  types.ts  eligibility/  finance/  partners/  documents/  recommend.ts
+│  ├─ app/   layout.tsx  page.tsx  apply/  result/  personas/  applications/[id]/
+│  │         admin/health-upload/  api/{extract,extract-documents,explain,packet,
+│  │         applications,applications/[id],admin/*}/route.ts
+│  ├─ components/  ui  DatasetBanner  SchemeCard  VerdictList  LoanFigures  PartnerPanel
+│  │               PartnerMap  ChecklistPanel  LocaleSwitcher  FreeTextIntake
+│  │               LoanConfirmation  DocumentUpload  SaveApplicationButton
+│  │               DeleteApplicationButton  ResultActions  ExplainPanel
+│  │               AdminHealthUpload  AdminLogin  form  ScrollReveal
+│  ├─ lib/   dataset.ts  dataset-db.ts  db.ts  packet.tsx  locale.ts
+│  │         applicant-params.ts  format.ts  view.ts  admin-auth.ts  health-csv.ts
+│  ├─ llm/   client.ts  extract.ts  explain.ts
+│  ├─ i18n.ts
+│  └─ messages/  en.json  hi.json  mr.json  index.ts
+├─ public/  manifest.json
+├─ scripts/  check-boundaries.mjs  verify-report.ts  personas.ts
+└─ tests/   11 files
+```
+
+### Quick start / environment (moved from README)
+
+```bash
+npm install && npm run check   # postinstall runs prisma generate
+npm run personas              # 41 rows through recommend()
+npm run dev                   # http://localhost:3000
+DEMO_MODE=true npm run dev    # offline demo (fixtures, no tiles, parity skips)
+npm run verify:report         # regenerate VERIFY.md after editing data/*.json
+```
+
+`DATABASE_URL` is gitignored in `.env` and uses the pooled `6543` port at runtime (use the
+direct `5432` for `prisma migrate dev`). Tests/build/dev do not need a live DB; `npm run
+seed` does. Other env keys: `GEMINI_API_KEY`, `ADMIN_PASSWORD` (default `rinsetu-admin`),
+`DEMO_MODE=true`.
+
+### Deployment (kept from README because it is operational, not public copy)
+
+- Vercel project: `rin-setu-git-main-dewang-chirlekars-projects.vercel.app`, built from
+  `main`, with `DATABASE_URL` (pooled `6543`), `GEMINI_API_KEY`, `ADMIN_PASSWORD` and
+  `DEMO_MODE=true`.
+- The deployment is **Vercel Authentication gated** (SSO wall), verified again 2026-10-26:
+  `GET /` returns `302` to `vercel.com/sso-api`. Disable it under
+  `Settings → Deployment Protection → Vercel Authentication` to go public; no rebuild is
+  needed.
+- The database expected by that deployment is the Supabase project seeded via `npm run
+  seed` (5 schemes / 15 partners / 15 health rows / 53 document requirements). **Checked
+  2026-10-26 from this machine: the pooler returns `tenant/user
+  postgres.fhtyxkzmmcnmoztezugb not found`, so the project is paused/deleted and DB-backed
+  paths (`/applications`, save, delete) return 503 until it is restored or replaced.**
