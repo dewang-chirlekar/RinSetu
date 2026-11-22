@@ -1,10 +1,6 @@
 # RinSetu
 
-<<<<<<< HEAD
 **Concessional credit for SC entrepreneurs, matched in plain language.**
-=======
-**AI-assisted concessional credit scheme matching and assessment platform : SIH 2026, SIH26092**
->>>>>>> 88a39068fc5d85b76c11ffeb846715f2f51126c6
 
 Built for Smart India Hackathon 2026, problem statement SIH26092.
 
